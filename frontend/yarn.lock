@@ -1107,9 +1107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"frontend ams@workspace:.":
+"frontend-ams@workspace:.":
   version: 0.0.0-use.local
-  resolution: "frontend ams@workspace:."
+  resolution: "frontend-ams@workspace:."
   dependencies:
     "@eslint/js": "npm:^10.0.1"
     "@types/node": "npm:^24.13.2"
