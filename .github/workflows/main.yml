@@ -45,8 +45,8 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Trigger Render Deploy:
-        if: success()
+      - name: Trigger Render Deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
 
   frontend:
@@ -75,6 +75,6 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Trigger Netfily Deploy:
-        if: success()
+      - name: Trigger Netlify Deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: curl -X POST "${{ secrets.NETLIFY_DEPLOY_HOOK }}"
