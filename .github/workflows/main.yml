@@ -82,8 +82,12 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Trigger Netlify Deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          curl --fail --show-error --silent --write-out "\nHTTP Status: %{http_code}\n" \
-          -X POST "${{ secrets.NETLIFY_DEPLOY_HOOK }}"
+      - name: Install Netlify CLI
+        run: yarn install netlify-cli -g
+
+      - name: Netlify Deploy
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --prod
+        run: echo "✅ Netlify deploy triggered successfully."
