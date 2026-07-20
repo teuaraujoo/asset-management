@@ -79,16 +79,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Install Netlify CLI
+        run: yarn global add netlify-cli 
+
       - name: Build
         run: yarn build
-
-      - name: Install Netlify CLI
-        run: yarn install netlify-cli -g
 
       - name: Netlify Deploy
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: | 
-          netlify deploy --prod
+          netlify deploy --build --prod
           echo "✅ Netlify deploy triggered successfully."
