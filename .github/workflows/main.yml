@@ -84,5 +84,6 @@ jobs:
 
       - name: Trigger Netlify Deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: curl --fail --show-error --silent --write-out "\nHTTP Status: %{http_code}\n" \
+        run: |
+          curl --fail --show-error --silent --write-out "\nHTTP Status: %{http_code}\n" \
           -X POST "${{ secrets.NETLIFY_DEPLOY_HOOK }}"
