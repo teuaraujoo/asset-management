@@ -27,11 +27,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
           cache-dependency-path: backend/yarn.lock
       
       - name: Corepack Enable
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Check versions
+        run: |
+          node -v
+          corepack --version
+          yarn -v
 
       - name: Install dependencies
         run: yarn install --immutable
