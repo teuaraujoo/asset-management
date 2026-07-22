@@ -1,3 +1,4 @@
+import { Prisma } from "../../generated/prisma/browser";
 import prisma from "../../libs/prisma";
 
 export default class UserRepository {
@@ -16,5 +17,9 @@ export default class UserRepository {
                 email
             }
         });
+    };
+
+    static async createUser(user: Prisma.usersCreateInput) {
+        return prisma.users.create({ data: user });
     };
 };

@@ -5,6 +5,7 @@ import helmet from "helmet";
 import compression from "compression";
 import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
+import UserRoutes from "./modules/users/users.routes";
 
 const app = express();
 const apiVersion = "/api/v1";
@@ -22,6 +23,7 @@ app.get("/health", (_req, res) => {
 
 app.use(errorHandler);
 app.use(apiVersion, AuthRoutes);
+app.use(apiVersion, UserRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
