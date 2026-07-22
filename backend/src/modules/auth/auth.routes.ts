@@ -6,10 +6,10 @@ import { loginLimiter } from "../../libs/express-rate-limit";
 
 const router = express.Router();
 
-router.post("/login", loginLimiter, AuthController.login);
-router.post("/logout", refreshTokenMiddleware, AuthController.logout);
-router.post("/refresh", refreshTokenMiddleware, AuthController.refresh);
+router.post("/auth/login", loginLimiter, AuthController.login);
+router.post("/auth/logout", refreshTokenMiddleware, AuthController.logout);
+router.post("/auth/refresh", refreshTokenMiddleware, AuthController.refresh);
 
-router.get("/test", AuthController.test);
+router.get("/auth/test", AuthController.test);
 
 export default router;
