@@ -14,7 +14,7 @@ model playing_with_neon {
 }
 
 model refresh_tokens {
-  id         String    @id @db.Uuid
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id    String    @db.Uuid
   token_hash String    @db.VarChar(255)
   revoked    Boolean?  @default(false)
@@ -25,7 +25,7 @@ model refresh_tokens {
 }
 
 model users {
-  id             String           @id @db.Uuid
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name           String           @db.VarChar(150)
   email          String           @unique @db.VarChar(255)
   password_hash  String           @db.VarChar(255)

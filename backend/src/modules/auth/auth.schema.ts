@@ -5,3 +5,11 @@ export const loginUserSchema = z.object({
     password: z.string().min(1, "A senha é obrigatória.")
 });
 export type LoginBody = z.infer<typeof loginUserSchema>;
+
+export type LoginResponse = {
+    accessToken: string;
+    refreshToken: string;
+    user: {
+        name: string
+    };
+};
