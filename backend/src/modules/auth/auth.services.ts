@@ -5,9 +5,10 @@ import crypto from "crypto";
 import { LoginBody, LoginResponse, loginUserSchema } from "./auth.schema";
 import AuthRepository from "./auth.repositories";
 import UserRepository from "../users/users.repositories";
+import { email } from "zod";
 export default class AuthSerivces {
 
-    private static FIFTEEN_MINUTES = 15;
+    private static FIFTEEN_MINUTES = 1;
     private static SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
     static async login(body: LoginBody) {
@@ -83,7 +84,7 @@ export default class AuthSerivces {
                 await AuthRepository.revokedToken(findToken.id);
 
                 throw new AppError("Refresh token já expirado", 401);
-            }; 
+            };
 
             if (findToken.revoked_at) throw new AppError("Refresh token já revogado", 401);
 
@@ -93,10 +94,29 @@ export default class AuthSerivces {
 
             const accessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: `${this.FIFTEEN_MINUTES}m` });
 
-            return { accessToken };
+            return {
+                accessToken,
+                user: {
+                    id: user.id,
+                    email: user.email
+                }
+
+            };
         } catch (err) {
             throw err;
         };
+    };
+
+    static async me(email: string) {
+        const user = await UserRepository.getUserByEmail(email);
+
+        if (!user) throw new AppError("Usuário não encontrado.", 404);
+
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
     };
 
     private static hashToken(token: string) {
