@@ -1,10 +1,11 @@
 import AuthServices from "./auth.services";
 import { Request, Response } from "express";
+import AppError from "../../error/app-error";
 
 export default class AuthController {
 
-    private static ONE_HUNDRED_MINUTES_IN_MILLISECONDS = 1000 * 60 * 100;
-    private static SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
+    private static readonly ONE_HUNDRED_MINUTES_IN_MILLISECONDS = 1000 * 60 * 100;
+    private static readonly SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
     static async login(req: Request, res: Response) {
         const body = await req.body;
@@ -15,7 +16,7 @@ export default class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: this.ONE_HUNDRED_MINUTES_IN_MILLISECONDS,
+            maxAge: 1000 * 60 * 100,
             path: "/"
         });
 
@@ -23,7 +24,7 @@ export default class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: this.SEVEN_DAYS_IN_MILLISECONDS,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
             path: "/"
         });
 
@@ -54,6 +55,7 @@ export default class AuthController {
     };
 
     static async refresh(req: Request, res: Response) {
+
         const result = await AuthServices.refresh(req.refreshToken);
 
         res.cookie("accessToken", result.accessToken, {

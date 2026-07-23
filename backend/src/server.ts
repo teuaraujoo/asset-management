@@ -21,9 +21,9 @@ app.get("/health", (_req, res) => {
     });
 });
 
-app.use(errorHandler);
 app.use(apiVersion, AuthRoutes);
 app.use(apiVersion, UserRoutes);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

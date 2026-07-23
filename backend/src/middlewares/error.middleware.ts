@@ -9,6 +9,23 @@ export default function errorHandler(
     next: NextFunction
 ) {
     if (err instanceof AppError) {
+
+        if (err.statusCode === 401) {
+
+            res.clearCookie("accessToken", {
+                path: "/"
+            });
+
+            res.clearCookie("refreshToken", {
+                path: "/"
+            });
+
+            return res.status(err.statusCode).json({
+                message: err.message
+            });
+
+        };
+
         return res.status(err.statusCode).json({
             message: err.message
         });
@@ -21,6 +38,10 @@ export default function errorHandler(
     };
 
     if (err instanceof jwt.JsonWebTokenError) {
+        res.clearCookie("accessToken", {
+            path: "/"
+        });
+
         return res.status(401).json({
             message: "Access Token inválido."
         });

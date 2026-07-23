@@ -82,8 +82,8 @@ export default class AuthSerivces {
             if (findToken.expires_at <= now) {
                 await AuthRepository.revokedToken(findToken.id);
 
-                throw new AppError("Refresh token já expirado", 401)
-            };
+                throw new AppError("Refresh token já expirado", 401);
+            }; 
 
             if (findToken.revoked_at) throw new AppError("Refresh token já revogado", 401);
 

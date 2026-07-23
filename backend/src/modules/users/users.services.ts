@@ -22,7 +22,12 @@ export class UserServices {
                 password_hash: hashPassword
             };
 
-            return await UserRepository.createUser(parsedData);
+            const createUser = await UserRepository.createUser(parsedData);
+
+            return {
+                id: createUser.id,
+                name: createUser.name
+            };
 
         } catch (err) {
             throw err;
