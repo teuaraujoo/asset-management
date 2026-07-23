@@ -4,7 +4,7 @@ import AppError from "../../error/app-error";
 
 export default class AuthController {
 
-    private static readonly ONE_HUNDRED_MINUTES_IN_MILLISECONDS = 1000 * 60 * 100;
+    private static readonly FIFTEEN_MINUTES_IN_MILLISECONDS = 1000 * 60 * 15;
     private static readonly SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
     static async login(req: Request, res: Response) {
@@ -16,7 +16,7 @@ export default class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 1000 * 60 * 100,
+            maxAge: AuthController.FIFTEEN_MINUTES_IN_MILLISECONDS,
             path: "/"
         });
 
@@ -24,7 +24,7 @@ export default class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: AuthController.SEVEN_DAYS_IN_MILLISECONDS,
             path: "/"
         });
 
@@ -62,7 +62,7 @@ export default class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 1000 * 60 * 100,
+            maxAge: AuthController.FIFTEEN_MINUTES_IN_MILLISECONDS,
             path: "/"
         });
 
