@@ -21,29 +21,31 @@ const s3 = new S3Client({
 
 export default class Bucket {
 
-    static async upload(bucket: string, key: string, body: string) {
+    private static bucket_name = "asset-management";
+
+    static async upload(key: string, body: string) {
         return s3.send(
             new PutObjectCommand({
-                Bucket: bucket,
+                Bucket: this.bucket_name,
                 Key: key,
                 Body: body
             }),
         );
     };
 
-    static async download(bucket: string, key: string) {
+    static async download(key: string) {
         return s3.send(
             new GetObjectCommand({
-                Bucket: bucket,
+                Bucket: this.bucket_name,
                 Key: key
             }),
         );
     };
 
-    static async listFolders(bucket: string) {
+    static async listFolders() {
         return s3.send(
             new ListObjectsV2Command({
-                Bucket: bucket
+                Bucket: this.bucket_name
             }),
         );
     };
