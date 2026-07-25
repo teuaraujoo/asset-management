@@ -2,13 +2,12 @@ import AppError from "../../error/app-error";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { LoginBody, LoginResponse, loginUserSchema } from "./auth.schema";
+import { LoginBody, loginUserSchema } from "./auth.schema";
 import AuthRepository from "./auth.repositories";
 import UserRepository from "../users/users.repositories";
-import { email } from "zod";
 export default class AuthSerivces {
 
-    private static FIFTEEN_MINUTES = 1;
+    private static FIFTEEN_MINUTES = 15;
     private static SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
     static async login(body: LoginBody) {
@@ -86,7 +85,7 @@ export default class AuthSerivces {
                 throw new AppError("Refresh token já expirado", 401);
             };
 
-            if (findToken.revoked_at) throw new AppError("Refresh token já revogado", 401);
+            if (findToken.revoked) throw new AppError("Refresh token já revogado", 401);
 
             const user = await UserRepository.getUserById(findToken?.user_id);
 

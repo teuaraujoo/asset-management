@@ -1,6 +1,6 @@
 import AuthServices from "./auth.services";
 import { Request, Response } from "express";
-import AppError from "../../error/app-error";
+import AuthenticationManage from "../../shared/auth/authentication-manager";
 
 export default class AuthController {
 
@@ -12,21 +12,7 @@ export default class AuthController {
 
         const result = await AuthServices.login(body);
 
-        res.cookie("accessToken", result.accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: AuthController.FIFTEEN_MINUTES_IN_MILLISECONDS,
-            path: "/"
-        });
-
-        res.cookie("refreshToken", result.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: AuthController.SEVEN_DAYS_IN_MILLISECONDS,
-            path: "/"
-        });
+        AuthenticationManage.setCookies(req, res, result.accessToken, result.refreshToken)
 
         return res.status(200).json({
             message: `Login realizado com sucesso. Bem vindo ${result.user.name}`,
@@ -36,19 +22,7 @@ export default class AuthController {
     static async logout(req: Request, res: Response) {
         const revokedToken = await AuthServices.logout(req.refreshToken);
 
-        res.clearCookie("accessToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            path: "/"
-        });
-
-        res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            path: "/"
-        });
+        AuthenticationManage.clearCookies(req, res);
 
         return res.status(200).json({ message: "Logout  realizado com sucesso.", data: revokedToken });
 
@@ -58,13 +32,7 @@ export default class AuthController {
 
         const result = await AuthServices.refresh(req.refreshToken);
 
-        res.cookie("accessToken", result.accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: AuthController.FIFTEEN_MINUTES_IN_MILLISECONDS,
-            path: "/"
-        });
+        AuthenticationManage.setAccessTokenCookie(req, res, result.accessToken);
 
         res.status(200).json({ message: "Token renovado com sucesso." });
     };
@@ -73,7 +41,7 @@ export default class AuthController {
         const result = await AuthServices.me(req.user.email);
 
         res.status(200).json({ message: "infos encontradas com sucesso.", data: result });
-    }
+    };
 
     static async test(_req: Request, res: Response) {
         return res.status(200).json({

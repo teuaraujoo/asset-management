@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../error/app-error";
-import AuthSerivces from "../modules/auth/auth.services";
+// import AuthSerivces from "../modules/auth/auth.services";
+import AuthenticationManage from "../shared/auth/authentication-manager";
 
 export default async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies.accessToken;
@@ -12,23 +13,8 @@ export default async function authenticateMiddleware(req: Request, res: Response
         if (!accessToken && !refreshToken) throw new AppError("Tokens não informados.", 401);
 
         if (!accessToken) {
-
-            if (!refreshToken) throw new AppError("Refresh Token não informado.", 401);
-
-            const result = await AuthSerivces.refresh(refreshToken);
-
-            req.user = {
-                sub: result.user.id,
-                email: result.user.email,
-            };
-
-            res.cookie("accessToken", result.accessToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                maxAge: 1000 * 60 * 15,
-                path: "/"
-            })
+            
+            await AuthenticationManage.authenticateWithRefresh(req, res, refreshToken);
 
             return next();
         };
@@ -44,22 +30,10 @@ export default async function authenticateMiddleware(req: Request, res: Response
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError) {
             if (!refreshToken) return next(new AppError("Refresh Token não informado.", 401));
-            
+
             try {
-                const result = await AuthSerivces.refresh(refreshToken);
-                
-                req.user = {
-                    sub: result.user.id,
-                    email: result.user.email,
-                };
-                
-                res.cookie("accessToken", result.accessToken, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                    maxAge: 1000 * 60 * 15,
-                    path: "/"
-                });
+
+                await AuthenticationManage.authenticateWithRefresh(req, res, refreshToken);
 
                 return next();
             } catch {
