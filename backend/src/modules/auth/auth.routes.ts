@@ -11,6 +11,4 @@ router.post("/auth/logout", refreshTokenMiddleware, AuthController.logout);
 router.post("/auth/refresh", refreshTokenMiddleware, AuthController.refresh);
 router.get("/auth/me", authenticateMiddleware, AuthController.me)
 
-router.get("/auth/test", AuthController.test);
-
 export default router;

@@ -42,10 +42,4 @@ export default class AuthController {
 
         res.status(200).json({ message: "infos encontradas com sucesso.", data: result });
     };
-
-    static async test(_req: Request, res: Response) {
-        return res.status(200).json({
-            message: "Ok"
-        });
-    };
 };
