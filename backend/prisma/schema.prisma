@@ -32,5 +32,59 @@ model users {
   is_active      Boolean?         @default(true)
   created_at     DateTime         @default(now()) @db.Timestamp(6)
   updated_at     DateTime         @default(now()) @db.Timestamp(6)
+  files          files[]
+  projects       projects[]
   refresh_tokens refresh_tokens[]
+
+  @@index([email], map: "idx_users_email")
+}
+
+model files {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String    @db.Uuid
+  folder_id     String?   @db.Uuid
+  original_name String    @db.VarChar(255)
+  storage_name  String    @db.VarChar(255)
+  object_key    String    @unique
+  bucket        String    @db.VarChar(120)
+  mime_type     String    @db.VarChar(120)
+  extension     String    @db.VarChar(20)
+  size          BigInt
+  checksum      String?   @db.VarChar(64)
+  status        String    @default("PENDING") @db.VarChar(20)
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  uploaded_at   DateTime? @db.Timestamp(6)
+  updated_at    DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime? @db.Timestamp(6)
+  folders       folders?  @relation(fields: [folder_id], references: [id], onDelete: Cascade)
+  users         users     @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([object_key], map: "idx_files_object_key")
+  @@index([status], map: "idx_files_status")
+  @@index([user_id], map: "idx_files_user")
+}
+
+model folders {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String     @db.VarChar(150)
+  description String?
+  slug        String     @db.VarChar(120)
+  path        String
+  created_at  DateTime   @default(now()) @db.Timestamp(6)
+  updated_at  DateTime   @default(now()) @db.Timestamp(6)
+  files       files[]
+  projects    projects[]
+}
+
+model projects {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String   @db.Uuid
+  folder_id        String   @db.Uuid
+  name             String   @db.VarChar(150)
+  mini_description String   @db.VarChar(255)
+  description      String
+  created_at       DateTime @default(now()) @db.Timestamp(6)
+  updated_at       DateTime @default(now()) @db.Timestamp(6)
+  folders          folders  @relation(fields: [folder_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users            users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }

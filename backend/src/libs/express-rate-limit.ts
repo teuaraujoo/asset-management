@@ -6,3 +6,13 @@ export const loginLimiter = rateLimit({
     message: { message: "Muitas tentativas de login. Tente novamente mais tarde." },
     legacyHeaders: false // Desativa cabeçalhos antigos com prefixo X-
 });
+
+export class ProjectLimiters {
+
+    static createProjectLimiter = rateLimit({
+        windowMs: 60 * 60 * 1000, // 1 hora
+        max: 5, // 5 vezes 
+        message: { message: "Muitas tentativas de criar projeto. Tente novamente mais tarde." },
+        legacyHeaders: false // Desativa cabeçalhos antigos com prefixo X-
+    });
+};
