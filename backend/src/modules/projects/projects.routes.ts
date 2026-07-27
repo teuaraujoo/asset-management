@@ -10,11 +10,11 @@ router.get(
     authenticateMiddleware,
     ProjectController.get
 );
-router.get("projects/:id");
-router.get("projects/:id/download");
-router.get("projects/:id");
-router.post("/projects", ProjectLimiters.createProjectLimiter);
-router.patch("/projects/:id");
-router.delete("/projects/:id")
+// router.get("projects/:id");
+// router.get("projects/:id/download");
+// router.get("projects/:id");
+// router.post("/projects", ProjectLimiters.createProjectLimiter);
+// router.patch("/projects/:id");
+// router.delete("/projects/:id")
 
 export default router;
