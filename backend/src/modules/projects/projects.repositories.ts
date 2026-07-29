@@ -2,12 +2,20 @@ import { Prisma } from "../../generated/prisma/browser";
 import prisma from "../../libs/prisma";
 
 export default class ProjectRepository {
-    static get() {
-
+    static async get() {
+        return prisma.projects.findMany({
+            orderBy: {
+                created_at: "asc"
+            }
+        });
     };
 
-    static getById() {
-
+    static async getById(id: string) {
+        return prisma.projects.findUnique({
+            where: {
+                id: id
+            }
+        })
     };
 
     static create() {
