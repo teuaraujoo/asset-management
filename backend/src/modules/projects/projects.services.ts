@@ -17,19 +17,16 @@ export default class ProjectService {
         const project = await ProjectRepository.getById(id);
         if (!project) throw new AppError("Projeto não encontrado.", 404);
 
-        const folder = await FolderService.getById(project?.folder_id);
-        if (!folder) throw new AppError("Nenhuma pasta vinculado a esse projeto.", 404);
+        await FolderService.getById(project?.folder_id);
 
         return ProjectMapper.toResponseGet(project);
     };
 
     static async createProject(body: CreateProjectBody) {
         const data = createProjectSchema.parse(body);
-        const folder = await FolderService.getByName(data.name);
-
-        if (folder) throw new AppError("Já existe um projeto vinculado a essa pasta.", 409);
 
         const slug = this.generateProjectSlug(data.name);
+        const folder_path = `${mainFolder_name}/${childFolder_name}`;
 
         const folderData = {
             name: data.name,
@@ -38,11 +35,11 @@ export default class ProjectService {
             path: ,
         }
 
-        const persistFolder = await FolderService.create(folderData);
+        const folder = await FolderService.create(folderData);
 
         const dataWithFolderId = {
             ...data,
-            folder_id: persistFolder.id
+            folder_id: folder.id
         };
 
         const project = await ProjectRepository.create(dataWithFolderId);

@@ -1,3 +1,4 @@
+import { Prisma } from "../../generated/prisma/browser";
 import prisma from "../../libs/prisma";
 
 export default class FolderRepository {
@@ -10,4 +11,16 @@ export default class FolderRepository {
             where: { id: id }
         });
     };
-}
+
+    static async getByName(name: string) {
+        return prisma.folders.findFirst({
+            where: {
+                name: name
+            },
+        });
+    };
+
+    static async create(folder: Prisma.foldersCreateInput) {
+
+    };
+};
