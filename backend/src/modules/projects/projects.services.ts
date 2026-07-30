@@ -1,10 +1,14 @@
 import AppError from "../../error/app-error";
+import slugify from "slugify";
 import { CreateProjectBody, createProjectSchema } from "./projects.schema";
 import ProjectRepository from "./projects.repositories";
 import { ProjectMapper } from "./projects.mapper";
 import { FolderService } from "../folders/folders.services";
 
 export default class ProjectService {
+
+    private static MAIN_FOLDER = "projetos"
+
     static async get() {
         const projects = await ProjectRepository.get();
 
@@ -22,41 +26,38 @@ export default class ProjectService {
         return ProjectMapper.toResponseGet(project);
     };
 
-    static async createProject(body: CreateProjectBody) {
+    static async create(body: CreateProjectBody) {
         const data = createProjectSchema.parse(body);
 
         const slug = this.generateProjectSlug(data.name);
-        const folder_path = `${mainFolder_name}/${childFolder_name}`;
-
+        const folderPath = `${this.MAIN_FOLDER}/${slug}/`;
         const folderData = {
             name: data.name,
             description: data.description,
             slug: slug,
-            path: ,
-        }
+            path: folderPath,
+        };
 
         const folder = await FolderService.create(folderData);
 
-        const dataWithFolderId = {
-            ...data,
-            folder_id: folder.id
-        };
+        const project = await ProjectRepository.create(ProjectMapper.toPrismaCreate(data, folder.id));
 
-        const project = await ProjectRepository.create(dataWithFolderId);
-
-        return project;
-        // return ProjectMapper.toResponseCreate(project);
+        return ProjectMapper.toResponseCreatae(project, folder)
     };
 
-    static async updateProject() {
+    static async update() {
 
     };
 
-    static async deleteProject(id: string) {
+    static async delete(id: string) {
 
     };
 
     private static generateProjectSlug(name: string) {
-
+        return slugify(name, {
+            replacement: "-",
+            lower: true,
+            strict: true
+        });
     };
 };

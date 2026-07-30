@@ -21,6 +21,8 @@ export default class FolderRepository {
     };
 
     static async create(folder: Prisma.foldersCreateInput) {
-
+        return prisma.folders.create({
+            data: folder
+        });
     };
 };

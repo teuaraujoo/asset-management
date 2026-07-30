@@ -1,4 +1,5 @@
 import { Prisma } from "../../generated/prisma/browser";
+import { CreateProjectBody } from "./projects.schema";
 
 export type ProjectWithRelations = Prisma.projectsGetPayload<{
     include: {
@@ -28,6 +29,40 @@ export class ProjectMapper {
                 name: project.users.name,
                 email: project.users.email,
             }
+        };
+    };
+
+    static toPrismaCreate(project: CreateProjectBody, folderId: string) {
+        return {
+            name: project.name,
+            mini_description: project.mini_description,
+            description: project.description,
+            users: {
+                connect: {
+                    id: project.user_id
+                }
+            },
+            folders: {
+                connect: {
+                    id: folderId
+                }
+            }
+        };
+    };
+
+    static toResponseCreatae(
+        project: Prisma.projectsUncheckedCreateInput,
+        folder: Prisma.foldersUncheckedCreateInput
+    ) {
+        return {
+            id: project.id,
+            folder_id: project.folder_id,
+            name: project.name,
+            mini_description: project.mini_description,
+            description: project.description,
+            slug: folder.slug,
+            path: folder.path,
+            created_at: project.created_at,
         };
     };
 };

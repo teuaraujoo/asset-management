@@ -1089,6 +1089,7 @@ __metadata:
     helmet: "npm:^8.3.0"
     jsonwebtoken: "npm:^9.0.3"
     prisma: "npm:^7.8.0"
+    slugify: "npm:^1.6.9"
     tsx: "npm:^4.23.1"
     typescript: "npm:5.9.2"
     zod: "npm:^4.4.3"
@@ -2721,6 +2722,13 @@ __metadata:
   version: 4.1.0
   resolution: "signal-exit@npm:4.1.0"
   checksum: 10c0/41602dce540e46d599edba9d9860193398d135f7ff72cab629db5171516cfae628d21e7bfccde1bbfdf11c48726bc2a6d1a8fb8701125852fbfda7cf19c6aa83
+  languageName: node
+  linkType: hard
+
+"slugify@npm:^1.6.9":
+  version: 1.6.9
+  resolution: "slugify@npm:1.6.9"
+  checksum: 10c0/8473c566ae00c5db26bfbf6182a4a9478ab3c912a9c926e1fdb410736a77228bfca4fdc5c755b46fafa7d2d9900de482fd7a9bd5e5c91128c4743c2c072d88da
   languageName: node
   linkType: hard
 

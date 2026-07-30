@@ -16,8 +16,12 @@ router.get(
     ProjectController.getById
 );
 // router.get("projects/:id/download");
-// router.get("projects/:id");
-// router.post("/projects", ProjectLimiters.createProjectLimiter);
+router.post(
+    "/projects",
+    ProjectLimiters.createProjectLimiter,
+    // authenticateMiddleware,
+    ProjectController.create
+);
 // router.patch("/projects/:id");
 // router.delete("/projects/:id")
 
