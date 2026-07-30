@@ -7,6 +7,8 @@ import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
 import UserRoutes from "./modules/users/users.routes";
 import ProjectRoutes from "./modules/projects/projects.routes";
+import FolderRepository from "./modules/folders/folders.repositories";
+import ProjectRepository from "./modules/projects/projects.repositories";
 
 const app = express();
 const apiVersion = "/api/v1";

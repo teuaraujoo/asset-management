@@ -7,10 +7,14 @@ const router = express.Router();
 
 router.get(
     "/projects",
-    authenticateMiddleware,
+    // authenticateMiddleware,
     ProjectController.get
 );
-// router.get("projects/:id");
+router.get(
+    "projects/:id",
+    // authenticateMiddleware,
+    ProjectController.getById
+);
 // router.get("projects/:id/download");
 // router.get("projects/:id");
 // router.post("/projects", ProjectLimiters.createProjectLimiter);
