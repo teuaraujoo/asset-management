@@ -26,4 +26,12 @@ export default class ProjectController {
 
         return res.status(201).json({ message: "Projeto criado com sucesso.", data: result });
     };
+
+    static async update(req: Request, res: Response) {
+
+    };
+
+    static async delete(_req: Request, res: Response) {
+
+    };
 };

@@ -15,6 +15,7 @@ router.get(
     // authenticateMiddleware,
     ProjectController.getById
 );
+
 // router.get("projects/:id/download");
 router.post(
     "/projects",
@@ -22,7 +23,19 @@ router.post(
     // authenticateMiddleware,
     ProjectController.create
 );
-// router.patch("/projects/:id");
-// router.delete("/projects/:id")
+
+router.patch(
+    "/projects/:id",
+    ProjectLimiters.createProjectLimiter,
+    // authenticateMiddleware,
+    ProjectController.update
+);
+
+router.delete(
+    "/projects/:id",
+    ProjectLimiters.createProjectLimiter,
+    // authenticateMiddleware,
+    ProjectController.delete
+);
 
 export default router;
