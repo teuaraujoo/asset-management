@@ -1,15 +1,10 @@
-"use client";
-
 import { User, Lock } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-
-import { LoginInput } from "./login-input";
+import { LoginInput } from "./LoginInput";
 
 export function LoginForm() {
   return (
     <form className="space-y-5">
-
       <LoginInput
         icon={User}
         placeholder="USERNAME"
@@ -28,7 +23,6 @@ export function LoginForm() {
           Login
         </Button>
       </div>
-
     </form>
   );
 }

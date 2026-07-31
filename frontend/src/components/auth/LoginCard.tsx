@@ -1,5 +1,5 @@
-import { LoginLogo } from "./login-logo";
-import { LoginForm } from "./login-form";
+import { LoginLogo } from "./LoginLogo";
+import { LoginForm } from "./LoginForm";
 
 export function LoginCard() {
   return (

@@ -1,5 +1,4 @@
 import type { LucideIcon } from "lucide-react";
-
 import { Input } from "@/components/ui/input";
 
 interface Props {
@@ -15,7 +14,6 @@ export function LoginInput({
 }: Props) {
   return (
     <div className="relative">
-
       <Icon
         className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70"
       />
@@ -36,7 +34,6 @@ export function LoginInput({
           focus-visible:ring-white
         "
       />
-
     </div>
   );
 }

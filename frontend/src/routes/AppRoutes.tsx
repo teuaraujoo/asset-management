@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "@/pages/login/LoginPage";
+import LoginPage from "@/pages/Login/LoginPage";
 import AuthLayout from "@/layouts/AuthLayout";
 
 export function AppRoutes() {
