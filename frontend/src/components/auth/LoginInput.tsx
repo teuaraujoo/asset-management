@@ -17,38 +17,42 @@ export function LoginInput({
   type = "text",
   registration,
   placeholder,
-  error
+  error,
 }: Props) {
   return (
+    <div>
+      <div className="relative">
+        <Icon
+          className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70"
+        />
 
-    <div className="relative">
-      <Icon
-        className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70"
-      />
+        <Input
+          {...registration}
+          name={name}
+          type={type}
+          placeholder={placeholder}
+          className="
+            h-12
+            border-white/70
+            bg-transparent
+            pl-11
+            tracking-wider
+            text-white
+            placeholder:text-white/60
+            focus-visible:ring-2
+            focus-visible:ring-white
+          "
+        />
+      </div>
 
-      <Input
-        {...registration}
-        type={type}
-        placeholder={placeholder}
-        name={name}
-        className="
-          h-12
-          border-white/70
-          bg-transparent
-          pl-11
-          tracking-wider
-          text-white
-          placeholder:text-white/60
-          focus-visible:ring-2
-          focus-visible:ring-white
-        "
-      />
-
-      {error && (
-        <p className="mt-1 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+      <div className="mt-1 min-h-5 px-2">
+        {error && (
+          <p className="text-sm text-red-500">
+            {error}
+          </p>
+        )}
+      </div>
+      
     </div>
   );
 }
