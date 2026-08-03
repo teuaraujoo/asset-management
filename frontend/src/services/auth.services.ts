@@ -6,8 +6,6 @@ type LoginBody = {
 }
 
 export async function login(data: LoginBody) {
-    console.log("CHEGUEI AQUI")
-    
     const response = await fetch(apiRoutes.login, {
         method: "POST",
         headers: {
@@ -21,6 +19,5 @@ export async function login(data: LoginBody) {
     
     if (!response.ok) throw new Error(result.message);
     
-    console.log("CHEGUEI AQUI 2")
     return result;
 };
