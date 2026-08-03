@@ -2,21 +2,29 @@ import "dotenv/config"
 import express from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import cors from "cors";
 import compression from "compression";
 import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
 import UserRoutes from "./modules/users/users.routes";
 import ProjectRoutes from "./modules/projects/projects.routes";
-import FolderRepository from "./modules/folders/folders.repositories";
-import ProjectRepository from "./modules/projects/projects.repositories";
 
 const app = express();
 const apiVersion = "/api/v1";
+const allowedOrigins = [
+    "http://localhost:5173",
+];
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(compression());
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL,
+        credentials: true,
+    })
+);
 
 app.get("/health", (_req, res) => {
     res.status(200).json({
