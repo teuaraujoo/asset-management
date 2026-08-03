@@ -12,12 +12,12 @@ const navigation = [
   {
     name: "Dashboard",
     icon: LayoutDashboard,
-    href: "/",
+    href: "/dashboard/home",
   },
   {
     name: "Projects",
     icon: Folder,
-    href: "/projects",
+    href: "/dashboard/projects",
   },
 ];
 
@@ -74,8 +74,8 @@ export function DashboardSidebar() {
                 font-medium
                 transition-all
                 ${isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-blue-600 text-primary-foreground"
+                  : "text-muted-foreground hover:bg-blue-100 hover:text-foreground"
                 }
               `
               }
@@ -107,7 +107,7 @@ export function DashboardSidebar() {
                   font-medium
                   text-muted-foreground
                   transition-all
-                  hover:bg-muted
+                  hover:bg-blue-100
                   hover:text-foreground
                 "
               >
@@ -124,6 +124,9 @@ export function DashboardSidebar() {
               h-11
               w-full
               gap-2
+              bg-blue-600
+              hover:bg-blue-800
+              cursor-pointer
             "
           >
             <Upload size={18} />

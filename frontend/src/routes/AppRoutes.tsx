@@ -3,6 +3,7 @@ import LoginPage from "@/pages/Login/LoginPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import DashboardHomePage from "@/pages/Dashboard/Home";
+import DashboardProjectsPage from "@/pages/Dashboard/Projects";
 
 export function AppRoutes() {
     return (
@@ -14,6 +15,7 @@ export function AppRoutes() {
 
             <Route element={<DashboardLayout />}>
                 <Route path="/dashboard/home" element={<DashboardHomePage />} />
+                <Route path="/dashboard/projects" element={<DashboardProjectsPage />} />
             </Route>
         </Routes>
     );
