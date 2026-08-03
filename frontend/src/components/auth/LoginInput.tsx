@@ -4,7 +4,6 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 
 interface Props {
   icon: LucideIcon;
-  name: string;
   type?: string;
   registration: UseFormRegisterReturn;
   placeholder: string;
@@ -13,7 +12,6 @@ interface Props {
 
 export function LoginInput({
   icon: Icon,
-  name,
   type = "text",
   registration,
   placeholder,
@@ -28,7 +26,6 @@ export function LoginInput({
 
         <Input
           {...registration}
-          name={name}
           type={type}
           placeholder={placeholder}
           className="
