@@ -49,3 +49,6 @@ backend/src/generated/prisma
 
 #!.yarn/cache
 .pnp.*
+
+# Local Netlify folder
+.netlify
