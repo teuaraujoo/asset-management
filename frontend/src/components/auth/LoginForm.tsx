@@ -16,7 +16,6 @@ export function LoginForm() {
     <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-5">
       <LoginInput
         icon={User}
-        name="email"
         registration={form.register("email")}
         placeholder="EMAIL"
         error={form.formState.errors.email?.message}
@@ -24,7 +23,6 @@ export function LoginForm() {
 
       <LoginInput
         icon={Lock}
-        name="password"
         placeholder="PASSWORD"
         registration={form.register("password")}
         type="password"
