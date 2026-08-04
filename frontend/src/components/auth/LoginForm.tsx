@@ -1,7 +1,7 @@
 import { User, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoginInput } from "./LoginInput";
-import { useLoginForm } from "@/hooks/use-login-fom";
+import { useLoginForm } from "@/hooks/auth/use-login-fom";
 
 export function LoginForm() {
 

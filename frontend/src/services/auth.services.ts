@@ -35,3 +35,7 @@ export async function login(data: LoginBody) {
 export async function logout() {
     return fetchRequest({ method: "POST", url: apiRoutes.logout });
 };
+
+export async function user() {
+    return fetchRequest({ method: "GET", url: apiRoutes.me });
+};
