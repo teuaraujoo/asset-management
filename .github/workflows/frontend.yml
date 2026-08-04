@@ -46,7 +46,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Install Netlify CLI
-        run: yarn global add netlify-cli
+        run: npm install -g netlify-cli
 
       - name: Build
         run: yarn build
