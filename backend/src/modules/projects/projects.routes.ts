@@ -7,34 +7,40 @@ const router = express.Router();
 
 router.get(
     "/projects",
-    // authenticateMiddleware,
+    authenticateMiddleware,
     ProjectController.get
 );
 router.get(
     "projects/:id",
-    // authenticateMiddleware,
+    authenticateMiddleware,
     ProjectController.getById
 );
+
+router.get(
+    "projects/:id/files",
+    authenticateMiddleware,
+    ProjectController.getFiles
+)
 
 // router.get("projects/:id/download");
 router.post(
     "/projects",
     ProjectLimiters.createProjectLimiter,
-    // authenticateMiddleware,
+    authenticateMiddleware,
     ProjectController.create
 );
 
 router.patch(
     "/projects/:id",
     ProjectLimiters.createProjectLimiter,
-    // authenticateMiddleware,
+    authenticateMiddleware,
     ProjectController.update
 );
 
 router.delete(
     "/projects/:id",
     ProjectLimiters.createProjectLimiter,
-    // authenticateMiddleware,
+    authenticateMiddleware,
     ProjectController.delete
 );
 
