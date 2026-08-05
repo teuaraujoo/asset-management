@@ -2,11 +2,12 @@ import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { AvatarDropdown } from "./AvatarDropwDown";
-import { logout } from "@/services/auth.services";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export function DashboardHeader() {
   const navigate = useNavigate();
+  const { logout, user } = useAuthContext();
 
   async function handleLogout() {
     await logout();
@@ -32,8 +33,8 @@ export function DashboardHeader() {
         <div className="flex items-center gap-4">
           <AvatarDropdown
             user={{
-              name: "Mateus Araujo",
-              email: "mateus@email.com",
+              name: user?.name ?? "",
+              email: user?.email ?? ""
             }}
             onLogout={handleLogout}
           />

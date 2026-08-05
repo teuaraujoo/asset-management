@@ -9,7 +9,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { formatFilesCount, formatRelativeUpdate } from "@/lib/format";;
 import type { Project } from "@/@types/projects/projects.types";
 import { formatRelativeDate } from "@/utils/date.utils";
 
@@ -38,22 +37,24 @@ export function ProjectCard({
         >
             <CardContent className="flex flex-col gap-4 p-5">
                 <div className="flex items-start justify-between">
-                    <div className="flex size-11 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex size-11 items-center justify-center rounded-lg bg-blue-50">
                         <Folder className="size-5 text-primary" />
                     </div>
 
                     <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
-                                onClick={(e) => e.stopPropagation()}
-                                aria-label="Ações do projeto"
-                            >
-                                <MoreVertical className="size-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
+                        <DropdownMenuTrigger
+                            render={
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"
+                                    onClick={(e) => e.stopPropagation()}
+                                    aria-label="Ações do projeto"
+                                >
+                                    <MoreVertical className="size-4" />
+                                </Button>
+                            }
+                        />
                         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                             <DropdownMenuItem
                                 onClick={() =>
