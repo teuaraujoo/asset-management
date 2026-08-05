@@ -45,6 +45,8 @@
     - `yarn create vite`
     - `yarn dlx shadcn@latest init -t vite`
     - `yarn add tailwindcss @tailwindcss/vite`
+    - `yarn add @hookform/resolvers`
+    - `yarn dlx shadcn@latest add [component-name]`
 
 ## Scripts:
 
