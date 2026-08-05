@@ -6,6 +6,7 @@ import DashboardHomePage from "@/pages/Dashboard/Home";
 import DashboardProjectsPage from "@/pages/Dashboard/Projects";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import DashboardProjectPage from "@/pages/Dashboard/Project";
 
 export function AppRoutes() {
     return (
@@ -21,8 +22,9 @@ export function AppRoutes() {
                 <Route element={<DashboardLayout />}>
                     <Route path="/dashboard/home" element={<DashboardHomePage />} />
                     <Route path="/dashboard/projects" element={<DashboardProjectsPage />} />
+                    <Route path="/dashboard/projects/:id" element={<DashboardProjectPage />} />
                 </Route>
             </Route>
         </Routes>
     );
-}
+};
