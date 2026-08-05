@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const value = useMemo(
         () => ({
             user,
-            isAuth: !!user,
+            isAuth: !!user, // !! = user ? true : false
             loading,
             refreshUser,
             logout,

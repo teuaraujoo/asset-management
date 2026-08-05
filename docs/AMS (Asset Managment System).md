@@ -571,3 +571,5 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 ## Aprendizado(s):
 
 - O `<Outlet />` do [**React Router**](https://reactrouter.com/api/components/Outlet) é um componente marcador de posição que serve para **renderizar rotas filhas**, criar **layouts aninhados** e evitar **repetição de código**.
+  
+- Na programação, usar dois pontos de exclamação antes de uma variável (!!variavel) serve para converter o valor da variável em um tipo booleano (verdadeiro ou falso), forçando a negação dupla do valor original.
