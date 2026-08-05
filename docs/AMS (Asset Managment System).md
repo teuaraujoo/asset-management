@@ -16,7 +16,7 @@
 - **Front:** React, Shadcn, Tailwind
 - **Banco de dados:** PostgreSQL (Neon), Cloudflare R2 (Blob Store)
 - **ORM:** Prisma
-- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react
+- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react^, date-fns
 
 ## Comandos para instalação:
 
@@ -47,6 +47,7 @@
     - `yarn add tailwindcss @tailwindcss/vite`
     - `yarn add @hookform/resolvers`
     - `yarn dlx shadcn@latest add [component-name]`
+    - `yarn add date-fns`
 
 ## Scripts:
 
