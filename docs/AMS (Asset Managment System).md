@@ -16,7 +16,7 @@
 - **Front:** React, Shadcn, Tailwind
 - **Banco de dados:** PostgreSQL (Neon), Cloudflare R2 (Blob Store)
 - **ORM:** Prisma
-- **Libs:** JWT, bcrypt, shad
+- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react
 
 ## Comandos para instalação:
 
@@ -26,6 +26,7 @@
     - `yarn add helmet`
     - `yarn add cors`
     - `yarn add cookie-parser`
+    - `yarn add jsonwebtoken`
     - `yarn add bcrypt`
     - `yarn add zod`
     - `yarn add prisma @prisma/client @prisma/adapter-pg`
@@ -42,7 +43,8 @@
     - `yarn add -D tsx`
 - Frontend:
     - `yarn create vite`
-    - `yarn dlx shadcn@latest init`
+    - `yarn dlx shadcn@latest init -t vite`
+    - `yarn add tailwindcss @tailwindcss/vite`
 
 ## Scripts:
 
@@ -182,7 +184,8 @@ const putUrl = await getSignedUrl(
 5. Nome físico do arquivo deve ser único.
 6. Toda operação deve ser auditável.
 7. Outros sistemas devem consumir arquivos por URL retornada pela API, nunca pelo banco.
-8. Mudar o nome do projeto muda nome da pasta.
+8. Todo projeto possui uma pasta. Mudou nome de projeto, muda nome de pasta. Excluiu pasta, exclui projeto. Nome do projeto é o mesmo nome da pasta. **(Mesmo vale para descrição)**
+9. O refresh token possui 1 semana de valdiade.
 
 ## MIME Types
 
@@ -204,9 +207,9 @@ const putUrl = await getSignedUrl(
 - Todo o projeto em ingês (funções, classes, constantes, variáveis)
 - Layered Architecture
 
-![image.png](33b4850e-4c2c-4175-835c-a8e04b2c6ef1.png)
+![layred.png](layred.png)
 
-![shapes at 26-07-18 18.55.50.png](shapes_at_26-07-18_18.55.50.png)
+![arq.png](arq.png)
 
 ## Rotas da API
 
@@ -234,7 +237,7 @@ const putUrl = await getSignedUrl(
     - Listar - GET - /files
     - Listar pelo id - GET - /files/:id
 
-- Projeto
+- Projetos
     - GET - /projects
     - GET - /projects/:id
     - POST - Upload - /projects
@@ -446,6 +449,16 @@ const putUrl = await getSignedUrl(
     - **updateProject:** verificar existência de projeto → verificar campos que estão sendo editados → gerar  novo slug → gerar novo path → salvar alterações do projeto no banco → chamar folder services compativeis enviando as novas informações
     - **deleteProject:** verificar existência de projeto → deletar folder → deletar projeto → deletrar folder no bucket → retornar success
     - **generateProjectSlug:**
+    
+    ```jsx
+    export default class ProjectService {
+    	static createPorjetct(){}
+    	static updateProject(){}
+    	static deleteProject(){}
+    	private generateProjectSlug(){}
+    };
+    ```
+    
 
 - Folder Service:
     - **createFolder**: verificar slug → verificar nome → gerar path → criar folder no banco → criar folder no bucket → retorna objeto criado
@@ -454,6 +467,18 @@ const putUrl = await getSignedUrl(
     - **deleteFolder:**
     - **buildFolderPath:**
     - **generateObjectKey:**
+    
+    ```jsx
+    export default class FolderService{
+    	static createFolder()
+    	static renameFolder()
+    	static updateFolderPath()
+    	static deleteFolder()
+    	private buildFolderPath()
+    	private generateObjectKey()
+    };
+    ```
+    
 
 - File Service:
     - **createFile:**  validar mime types de arquivos → validar extensao de arquivos  → verificar tamanho do arquivo → gerar storage_name → fazer checksum → gerar object key → criar arquivo(s) no banco → gera urls assinadas → retornar objetos criados no banco e urls
@@ -464,6 +489,20 @@ const putUrl = await getSignedUrl(
     - **validateExtension:**
     - **validateFileSize:**
     - **calculateChecksum:**
+    
+    ```jsx
+    export default class FileService{
+    	static createFile()
+    	static renameFile()
+    	static updateObjectKey()
+    	static deleteFile()
+    	private validateMimeType()
+    	private validateExtension()
+    	private validateFileSize()
+    	private calculateChecksum()
+    };
+    ```
+    
 
 ```jsx
 const object_key = `${mainFolder_name}/${childFolder_name}/${file_storage_name}`;
@@ -479,6 +518,18 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
     - **delete:**
     - **getFileByStorageName:**
     - **generatePressignedUrl:**
+    
+    ```jsx
+    export default class StorageService{
+    	static **generateUploadUrl(**)
+    	static **generateDownloadUrl**()
+    	static **add**()
+    	static **edit**()
+    	static **delete()**
+    	static **getFileByStorageName**()
+    	private **generatePressignedUrl**()
+    };
+    ```
     
 - Auth:
     - **Login:** verifica usuário pelo email → compara senhas → gera JWT (access + refresh) → salva refresh token no banco → retorna tokens
@@ -516,4 +567,4 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 
 ## Aprendizado(s):
 
--
+- O `<Outlet />` do [**React Router**](https://reactrouter.com/api/components/Outlet) é um componente marcador de posição que serve para **renderizar rotas filhas**, criar **layouts aninhados** e evitar **repetição de código**.
