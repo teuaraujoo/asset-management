@@ -1,4 +1,4 @@
-import apiRoutes from "@/lib/api";
+import apiRoutes from "@/lib/http/api";
 import type { ProjectBody } from "@/@types/projects/projects.types";
 
 type fetchProps = {
