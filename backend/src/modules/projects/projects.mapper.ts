@@ -24,6 +24,7 @@ export class ProjectMapper {
             description: project.description,
             slug: project.folders.slug,
             path: project.folders.path,
+            updated_at: project.updated_at,
             user: {
                 id: project.user_id,
                 name: project.users.name,
