@@ -4,9 +4,6 @@ import AuthenticationManage from "../../shared/auth/authentication-manager";
 
 export default class AuthController {
 
-    private static readonly FIFTEEN_MINUTES_IN_MILLISECONDS = 1000 * 60 * 15;
-    private static readonly SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
-
     static async login(req: Request, res: Response) {
         const body = await req.body;
 

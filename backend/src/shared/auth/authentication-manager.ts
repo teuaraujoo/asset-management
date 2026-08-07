@@ -3,7 +3,7 @@ import AuthSerivces from "../../modules/auth/auth.services";
 
 export default class AuthenticationManage {
 
-    private static readonly FIFTEEN_MINUTES_IN_MILLISECONDS = 1000 * 60 + 15;
+    private static readonly FIFTEEN_MINUTES_IN_MILLISECONDS = 1000 * 60 * 15;
     private static readonly SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
     static async authenticateWithRefresh(req: Request, res: Response, refreshToken: string) {
