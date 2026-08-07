@@ -11,13 +11,13 @@ router.get(
     ProjectController.get
 );
 router.get(
-    "projects/:id",
+    "/projects/:id",
     authenticateMiddleware,
     ProjectController.getById
 );
 
 router.get(
-    "projects/:folderId/files",
+    "/projects/:folderId/files",
     authenticateMiddleware,
     ProjectController.getFiles
 )
