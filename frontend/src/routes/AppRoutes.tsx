@@ -7,6 +7,7 @@ import DashboardProjectsPage from "@/pages/Dashboard/Projects";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardProjectPage from "@/pages/Dashboard/Project";
+import { NotFound } from "@/NotFound";
 
 export function AppRoutes() {
     return (
@@ -25,6 +26,7 @@ export function AppRoutes() {
                     <Route path="/dashboard/projects/:id" element={<DashboardProjectPage />} />
                 </Route>
             </Route>
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };

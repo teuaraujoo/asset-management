@@ -16,7 +16,7 @@
 - **Front:** React, Shadcn, Tailwind
 - **Banco de dados:** PostgreSQL (Neon), Cloudflare R2 (Blob Store)
 - **ORM:** Prisma
-- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react^, date-fns
+- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react, date-fns
 
 ## Comandos para instalação:
 
