@@ -1,40 +1,39 @@
-import { login } from "@/services/auth.services";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { loginSchema, type LoginFormData } from "@/schemas/login.schema";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useProjects } from "./use-projects";
+import { createProject } from "@/services/projects.services";
+import { createProjectSchema, type CreateProjectFormData } from "@/schemas/projects/projects.schema";
 import toast from "react-hot-toast";
 
-export function useLoginForm() {
-    const navigate = useNavigate();
-    const { refreshUser } = useAuthContext();
+export function useProjectsForm() {
+    const { refetch } = useProjects();
 
     const [error, setError] = useState("");
 
-    const form = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<CreateProjectFormData>({
+        resolver: zodResolver(createProjectSchema),
         defaultValues: {
-            email: "",
-            password: ""
+            user_id: "",
+            name: "",
+            mini_description: "",
+            description: ""
         },
     });
 
-    async function handleLogin(data: LoginFormData) {
+    async function handleCreate(data: CreateProjectFormData) {
         setError("");
 
         try {
-            const request = await login(data);
+            const request = await createProject(data);
 
             if (request.err) {
                 setError(request.err);
                 return;
             };
-            
+
             toast.success(request.message);
-            navigate("/dashboard/home", { replace: true });
-            await refreshUser();
+            await refetch();
             form.reset();
         } catch (err) {
             const message = err instanceof Error ? err.message : "Error inesperado ao fazer login. Tente novamente.";
@@ -46,6 +45,6 @@ export function useLoginForm() {
         form,
         error,
         loading: form.formState.isSubmitting,
-        handleLogin,
+        handleCreate
     };
 };
