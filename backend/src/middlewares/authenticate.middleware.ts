@@ -8,18 +8,26 @@ export default async function authenticateMiddleware(req: Request, res: Response
     const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
 
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) throw new AppError("JWT_SECRET não configurado no .env", 500);
+
     try {
 
         if (!accessToken && !refreshToken) throw new AppError("Tokens não informados.", 401);
 
         if (!accessToken) {
-            
+
             await AuthenticationManage.authenticateWithRefresh(req, res, refreshToken);
 
             return next();
         };
 
-        const payload = jwt.verify(accessToken, process.env.JWT_SECRET!) as jwt.JwtPayload;
+        const payload = jwt.verify(accessToken, jwtSecret, {
+            algorithms: ["HS256"],
+            issuer: "ams-api",
+            audience: "ams-frontend"
+        }) as jwt.JwtPayload;
 
         req.user = {
             sub: payload.sub as string,

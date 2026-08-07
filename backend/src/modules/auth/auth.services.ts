@@ -21,7 +21,19 @@ export default class AuthSerivces {
 
             if (!correctPassword) throw new AppError("Senha ou email incorretos!", 401);
 
-            const accessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: `${this.FIFTEEN_MINUTES}m` });
+            const accessToken = jwt.sign(
+                {
+                    sub: user.id,
+                    email: user.email
+                },
+                process.env.JWT_SECRET!,
+                {
+                    expiresIn: `${this.FIFTEEN_MINUTES}m`,
+                    algorithm: "HS256", // Algoritimo usado na assinatura
+                    issuer: "ams-api", // ISSUER = Quem emitiu o token
+                    audience: "ams-frontend", // AUDIENC = Para quem aquele token foi criado
+                });
+
             const { refreshToken, tokenHash } = this.generateTokenHash();
 
             const refreshTokenData = {
@@ -91,7 +103,19 @@ export default class AuthSerivces {
 
             if (!user) throw new AppError("Nenhum usuário vinculado a esse token.", 401);
 
-            const accessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: `${this.FIFTEEN_MINUTES}m` });
+            const accessToken = jwt.sign(
+                {
+                    sub: user.id,
+                    email: user.email
+                },
+                process.env.JWT_SECRET!,
+                {
+                    expiresIn: `${this.FIFTEEN_MINUTES}m`,
+                    algorithm: "HS256", // Algoritimo usado na assinatura
+                    issuer: "ams-api", // ISSUER = Quem emitiu o token
+                    audience: "ams-frontend", // AUDIENC = Para quem aquele token foi criado
+                }
+            );
 
             return {
                 accessToken,
