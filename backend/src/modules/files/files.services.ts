@@ -48,7 +48,7 @@ export default class FilesServices {
         const data = requestFileSchema.parse(body);
 
         const { folder, mimeType, extension, bucket } = await this.validateFile(data, userId);
-        const storageName = this.generateStorageName(extension, data.originial_name);
+        const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
 
         console.log("mimeType: ", mimeType);
@@ -94,7 +94,7 @@ export default class FilesServices {
         if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.") //TODO: COLOCAR STATUS CODE
 
         const mimeType = data.mime_type;
-        const extension = path.extname(data.originial_name).toLocaleLowerCase();
+        const extension = path.extname(data.original_name).toLocaleLowerCase();
 
         this.validateExtension(extension);
         this.validateFileSize(data.size);

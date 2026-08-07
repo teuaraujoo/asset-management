@@ -39,7 +39,7 @@ export default class ProjectService {
 
         const project = await ProjectRepository.create(ProjectMapper.toPrismaCreate(data, folder.id));
 
-        return ProjectMapper.toResponseCreatae(project, folder)
+        return ProjectMapper.toResponseCreate(project, folder)
     };
 
     static async update() {

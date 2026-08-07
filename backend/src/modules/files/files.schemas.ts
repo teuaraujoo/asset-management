@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const requestFileSchema = z.object({
     folder_id: z.string(),
-    originial_name: z.string(),
+    original_name: z.string(),
     mime_type: z.string(),
     size: z.number(),
 });

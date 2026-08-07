@@ -51,7 +51,7 @@ export default class ProjectMapper {
         };
     };
 
-    static toResponseCreatae(
+    static toResponseCreate(
         project: Prisma.projectsUncheckedCreateInput,
         folder: Prisma.foldersUncheckedCreateInput
     ) {

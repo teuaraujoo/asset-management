@@ -26,7 +26,7 @@ export default class FilesMapper {
             user_id: userId,
             folder_id: data.folder_id,
             mime_type: mimeType,
-            original_name: data.originial_name,
+            original_name: data.original_name,
             storage_name: storageName,
             object_key: objectKey,
             size: data.size,
