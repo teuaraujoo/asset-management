@@ -8,6 +8,7 @@ type payloadPedingCreate = {
     objectKey: string;
     extension: string;
     bucket: string;
+    userId: string;
 };
 
 export default class FilesMapper {
@@ -19,9 +20,10 @@ export default class FilesMapper {
         objectKey,
         extension,
         bucket,
+        userId
     }: payloadPedingCreate) {
         return {
-            user_id: data.user_id,
+            user_id: userId,
             folder_id: data.folder_id,
             mime_type: mimeType,
             original_name: data.originial_name,

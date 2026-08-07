@@ -4,8 +4,9 @@ import FilesServices from "./files.services";
 export default class FilesController {
     static async create(req: Request, res: Response) {
         const body = req.body;
+        const userId = req.user.sub;
 
-        const result = await FilesServices.create(body);
+        const result = await FilesServices.create(body, userId);
 
         return res.status(201).json({ message: "Arquivo armazenado com sucesso.", data: result })
 

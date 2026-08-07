@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import ApiError from "../../error/app-error";
 import { CreateUserBody, createUserSchema } from "./users.schemas";
 import UserRepository from "./users.repositories";
+import AppError from "../../error/app-error";
 
 export class UserServices {
 
@@ -33,4 +34,12 @@ export class UserServices {
             throw err;
         };
     };
-}
+
+    static async getById(id: string) {
+        const user = await UserRepository.getUserById(id);
+
+        if (!user) throw new AppError("Usuário não encontrado", 401);
+
+        return user;
+    };
+};

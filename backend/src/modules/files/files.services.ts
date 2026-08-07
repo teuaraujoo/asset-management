@@ -7,6 +7,7 @@ import FolderService from "../folders/folders.services";
 import { completeUploadFileBody, completeUploadFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
 import StorageService from "../storage/storage.services";
+import { UserServices } from "../users/users.services";
 export default class FilesServices {
 
     private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
@@ -43,10 +44,10 @@ export default class FilesServices {
         return files;
     };
 
-    static async create(body: requestFileBody) {
+    static async create(body: requestFileBody, userId: string) {
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension, bucket } = await this.validateFile(data);
+        const { folder, mimeType, extension, bucket } = await this.validateFile(data, userId);
         const storageName = this.generateStorageName(extension, data.originial_name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
 
@@ -55,7 +56,7 @@ export default class FilesServices {
         console.log("tamanho do arquivo: ", data.size);
         console.log("object_key: ", objectKey);
 
-        const signedUrl = await StorageService.generatePressignedUrl(bucket, objectKey, mimeType)
+        const signedUrl = await StorageService.generatePressignedUrl(bucket, objectKey, mimeType);
 
         const file = await FilesRepository.create(
             FilesMapper.toPrismaPendingCreate(
@@ -65,7 +66,8 @@ export default class FilesServices {
                     storageName,
                     objectKey,
                     extension,
-                    bucket
+                    bucket,
+                    userId
                 }));
 
         return FilesMapper.toResponsePendingCreate(file, signedUrl);
@@ -82,8 +84,9 @@ export default class FilesServices {
         await FilesRepository.completeUpload(id, data.checksum); //TODO: TROCAR NOME DE METODO NO REPOSITROY
     };
 
-    private static async validateFile(data: requestFileBody) {
+    private static async validateFile(data: requestFileBody, userId: string) {
         const folder = await FolderService.getById(data.folder_id);
+        const user = await UserServices.getById(userId);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
 
