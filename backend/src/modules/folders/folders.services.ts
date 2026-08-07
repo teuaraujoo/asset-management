@@ -1,8 +1,12 @@
 import AppError from "../../error/app-error";
+import slugify from "slugify";
 import { CreateFolderBody, createFolderSchema } from "./folder.schema";
 import FolderRepository from "./folders.repositories";
+import FolderMapper from "./folder.mapper";
 
-export class FolderService {
+export default class FolderService {
+    private static MAIN_FOLDER_NAME = "projetos"
+
     static async get() {
         const folders = await FolderRepository.get();
 
@@ -25,8 +29,21 @@ export class FolderService {
 
         if (folder) throw new AppError("Já existe uma pasta com esse nome.", 409);
 
-        const persistFolder = await FolderRepository.create(data);
+        const slug = this.generateFolderSlug(data.name);
+        const folderPath = `${this.MAIN_FOLDER_NAME}/${slug}/`;
+
+        const persistFolder = await FolderRepository.create(
+            FolderMapper.toPrismaCreate(data, slug, folderPath)
+        );
 
         return persistFolder;
+    };
+
+    private static generateFolderSlug(name: string) {
+        return slugify(name, {
+            replacement: "-",
+            lower: true,
+            strict: true
+        });
     };
 };
