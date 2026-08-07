@@ -28,7 +28,11 @@ export default class ProjectController {
     };
 
     static async getFiles(req: Request, res: Response) {
+        const folderId = req.params.folderId as string;
 
+        const result = await ProjectService.getFiles(folderId);
+
+        return res.status(200).json({ message: "Arquivos do projeto encontrados com sucesso.", data: result });
     };
 
     static async update(req: Request, res: Response) {

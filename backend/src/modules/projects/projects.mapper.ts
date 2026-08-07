@@ -14,7 +14,7 @@ export type ProjectWithRelations = Prisma.projectsGetPayload<{
     };
 }>;
 
-export class ProjectMapper {
+export default class ProjectMapper {
     static toResponseGet(project: ProjectWithRelations) {
         return {
             id: project.id,

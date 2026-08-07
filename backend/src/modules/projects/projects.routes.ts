@@ -17,7 +17,7 @@ router.get(
 );
 
 router.get(
-    "projects/:id/files",
+    "projects/:folderId/files",
     authenticateMiddleware,
     ProjectController.getFiles
 )

@@ -16,7 +16,7 @@
 - **Front:** React, Shadcn, Tailwind
 - **Banco de dados:** PostgreSQL (Neon), Cloudflare R2 (Blob Store)
 - **ORM:** Prisma
-- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react, date-fns
+- **Libs:** JWT, bcrypt, shadcn, react-hook-form, lucide-react, date-fns, slugify
 
 ## Comandos para instalação:
 
@@ -30,7 +30,8 @@
     - `yarn add bcrypt`
     - `yarn add zod`
     - `yarn add prisma @prisma/client @prisma/adapter-pg`
-    - `yarn add @aws-sdk/client-s3`
+    - `yarn add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner`
+    - `yarn add slugify`
     - `yarn tsc --init`
 - Depedências de desenvolvimento:
     - `yarn add -D typescript`
@@ -129,7 +130,7 @@ const putUrl = await getSignedUrl(
 
 ## Fluxos
 
-- **Upload de arquivo:** Uusário seleciona arquivo(s) → frontend solicita Signed URL → api valida permissões e gera url → frontend envia arquivo diretamente para bucket R2 → Após sucesso, api registra metadados no banco → arquivo fica disponível para consumo
+- **Upload de arquivo:** Usuário seleciona arquivo(s) e seleciona projeto → frontend envia parte dos metadados necessários e solicita Signed URL → api valida permissões e gera url → api guarda parte dos metadados no banco com status pending -> api retorna metadados compeltos e url assinada -> frontend envia arquivo diretamente para bucket R2 → Após sucesso, frontend envia metadados com checksum para o banco e com status completo -> api registra metadados no banco → arquivo fica disponível para consumo
 
 - **Renoameação de arquivo:** Usuário solicita renomeação de arquivo → api valida solicitação → arquivo é renomeado no banco e na blob store
 
@@ -234,6 +235,7 @@ const putUrl = await getSignedUrl(
 
 - Arquivos
     - Upload - POST - /files/upload
+    - Complete upload - PUT - /files/:id/complete
     - Download - GET - /files/:id/download
     - Editar - PATCH - /files/:id
     - Deletar - DELETE - /files/:id
@@ -458,7 +460,6 @@ const putUrl = await getSignedUrl(
     	static createPorjetct(){}
     	static updateProject(){}
     	static deleteProject(){}
-    	private generateProjectSlug(){}
     };
     ```
     
@@ -477,8 +478,7 @@ const putUrl = await getSignedUrl(
     	static renameFolder()
     	static updateFolderPath()
     	static deleteFolder()
-    	private buildFolderPath()
-    	private generateObjectKey()
+        private generateFolderSlug(){}
     };
     ```
     
@@ -502,7 +502,7 @@ const putUrl = await getSignedUrl(
     	private validateMimeType()
     	private validateExtension()
     	private validateFileSize()
-    	private calculateChecksum()
+        private generateStorageName()
     };
     ```
     
@@ -566,6 +566,12 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 - Com base na estrutura das tabelas de files e folders no SQL, quais coisa serão armazenadas no bucket e no banco?
     
     R: Slug, storage name, name do arquivo e do folder.
+
+- Para que server a verificação de checksum?
+    R:
+
+- O que é buffer?
+    R:
     
 
 ## Aprendizado(s):
@@ -573,3 +579,5 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 - O `<Outlet />` do [**React Router**](https://reactrouter.com/api/components/Outlet) é um componente marcador de posição que serve para **renderizar rotas filhas**, criar **layouts aninhados** e evitar **repetição de código**.
   
 - Na programação, usar dois pontos de exclamação antes de uma variável (!!variavel) serve para converter o valor da variável em um tipo booleano (verdadeiro ou falso), forçando a negação dupla do valor original.
+
+- Cada serviço deve conhecer apenas as regras do seu próprio domínio.

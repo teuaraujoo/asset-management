@@ -18,5 +18,11 @@ export type Project = {
         id: string
         name: string;
         email: string;
-    }
-}
+    };
+};
+
+export type UploadFileFormData = {
+  projectId: string;
+  folderId: string;
+  file: File;
+};
