@@ -25,4 +25,12 @@ export default class FolderRepository {
             data: folder
         });
     };
+
+    static async delete(tx: Prisma.TransactionClient, id: string) {
+        return prisma.folders.delete({
+            where: {
+                id: id
+            }
+        });
+    };
 };

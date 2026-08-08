@@ -1,5 +1,6 @@
 import { Prisma } from "../../generated/prisma/browser";
 import prisma from "../../libs/prisma";
+import FolderRepository from "../folders/folders.repositories";
 
 export default class ProjectRepository {
     static async get() {
@@ -48,7 +49,14 @@ export default class ProjectRepository {
 
     };
 
-    static delete() {
-
+    static async delete(id: string) {
+        await prisma.$transaction(async (tx) => {
+            const deletedProject = await prisma.projects.delete({
+                where: {
+                    id: id
+                }
+            });
+            await FolderRepository.delete(tx, deletedProject.folder_id);
+        });
     };
 };

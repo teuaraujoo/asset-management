@@ -4,6 +4,7 @@ import ProjectRepository from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
 import FilesServices from "../files/files.services";
+import prisma from "../../libs/prisma";
 
 export default class ProjectService {
 
@@ -47,6 +48,10 @@ export default class ProjectService {
     };
 
     static async delete(id: string) {
+        const project = ProjectRepository.getById(id);
 
+        if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
+
+         await ProjectRepository.delete(id);
     };
 };

@@ -7,6 +7,9 @@ export const loginLimiter = rateLimit({
     legacyHeaders: false // Desativa cabeçalhos antigos com prefixo X-
 });
 
+//TODO: CRIAR LIMIT PARA CADA CASO DE USO
+// FIXME: CORRIGIR TEMPO DE LIMITADOR PARA ALGUNS CASOS DE USO
+
 export class Limiters {
 
     static generalCreateLimiter = rateLimit({

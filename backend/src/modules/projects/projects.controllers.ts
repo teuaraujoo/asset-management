@@ -40,7 +40,11 @@ export default class ProjectController {
 
     };
 
-    static async delete(_req: Request, res: Response) {
+    static async delete(req: Request, res: Response) {
+        const id = req.params.id as string;
 
+        await ProjectService.delete(id);
+
+        return res.status(200).json({ message: "Projeto excluído com sucesso." });
     };
 };
