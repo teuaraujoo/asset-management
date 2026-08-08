@@ -44,7 +44,7 @@ export function NewProjectDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md max-h-[50vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>Novo Projeto</DialogTitle>
                     <DialogDescription>
@@ -53,79 +53,82 @@ export function NewProjectDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Nome</Label>
-                        <Input
-                            id="name"
-                            placeholder="Ex: Marketing Q4 Assets"
-                            autoFocus
-                            aria-invalid={!!form.formState.errors.name}
-                            {...form.register("name")}
-                        />
-                        {form.formState.errors.name && (
-                            <p className="text-sm text-destructive">
-                                {form.formState.errors.name.message}
-                            </p>
-                        )}
-                    </div>
+                <div className="flex-1 overflow-y-auto pr-2">
 
-                    <div className="space-y-2">
-                        <Label htmlFor="miniDescription">Mini descrição</Label>
-                        <Input
-                            id="miniDescription"
-                            placeholder="Resumo curto do projeto"
-                            aria-invalid={!!form.formState.errors.mini_description}
-                            {...form.register("mini_description")}
-                        />
-                        {form.formState.errors.mini_description && (
-                            <p className="text-sm text-destructive">
-                                {form.formState.errors.mini_description.message}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="description">Descrição</Label>
-                        <Textarea
-                            id="description"
-                            placeholder="Descrição detalhada do projeto"
-                            rows={4}
-                            className="resize-none"
-                            aria-invalid={!!form.formState.errors.description}
-                            {...form.register("description")}
-                        />
-                        {form.formState.errors.description && (
-                            <p className="text-sm text-destructive">
-                                {form.formState.errors.description.message}
-                            </p>
-                        )}
-                    </div>
-
-                    {form.formState.errors.root && (
-                        <p className="text-sm text-destructive">
-                            {form.formState.errors.root.message}
-                        </p>
-                    )}
-
-                    <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => handleOpenChange(false)}
-                            disabled={loading}
-                            className="cursor-pointer"
-                        >
-                            Cancelar
-                        </Button>
-                        <Button type="submit" disabled={loading} className="cursor-pointer bg-blue-600 hover:bg-blue-800">
-                            {loading && (
-                                <Loader2 className="size-4 animate-spin" />
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Nome</Label>
+                            <Input
+                                id="name"
+                                placeholder="Ex: Marketing Q4 Assets"
+                                autoFocus
+                                aria-invalid={!!form.formState.errors.name}
+                                {...form.register("name")}
+                            />
+                            {form.formState.errors.name && (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.name.message}
+                                </p>
                             )}
-                            {loading ? "Criando..." : "Criar Projeto"}
-                        </Button>
-                    </DialogFooter>
-                </form>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="miniDescription">Mini descrição</Label>
+                            <Input
+                                id="miniDescription"
+                                placeholder="Resumo curto do projeto"
+                                aria-invalid={!!form.formState.errors.mini_description}
+                                {...form.register("mini_description")}
+                            />
+                            {form.formState.errors.mini_description && (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.mini_description.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="description">Descrição</Label>
+                            <Textarea
+                                id="description"
+                                placeholder="Descrição detalhada do projeto"
+                                rows={4}
+                                className="resize-none"
+                                aria-invalid={!!form.formState.errors.description}
+                                {...form.register("description")}
+                            />
+                            {form.formState.errors.description && (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.description.message}
+                                </p>
+                            )}
+                        </div>
+
+                        {form.formState.errors.root && (
+                            <p className="text-sm text-destructive">
+                                {form.formState.errors.root.message}
+                            </p>
+                        )}
+
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => handleOpenChange(false)}
+                                disabled={loading}
+                                className="cursor-pointer"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button type="submit" disabled={loading} className="cursor-pointer bg-blue-600 hover:bg-blue-800">
+                                {loading && (
+                                    <Loader2 className="size-4 animate-spin" />
+                                )}
+                                {loading ? "Criando..." : "Criar Projeto"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </div>
             </DialogContent>
         </Dialog>
     );
