@@ -14,5 +14,5 @@ export default async function fetchRequest({ method, url, body }: fetchProps) {
 
     if (!response.ok) throw new Error(result.message);
 
-    return result.data ?? result;
+    return method === "GET" ? result.data : result;
 };
