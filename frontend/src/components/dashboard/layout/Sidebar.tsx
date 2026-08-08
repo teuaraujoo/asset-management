@@ -1,7 +1,6 @@
 import {
   Folder,
   BookText,
-  LayoutDashboard,
   Upload,
 } from "lucide-react";
 
@@ -9,11 +8,6 @@ import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
-  {
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/dashboard/home",
-  },
   {
     name: "Projects",
     icon: Folder,
@@ -131,7 +125,7 @@ export function DashboardSidebar() {
           >
             <Upload size={18} />
 
-            Upload Files
+            Upload Arquivos
           </Button>
         </div>
       </nav>

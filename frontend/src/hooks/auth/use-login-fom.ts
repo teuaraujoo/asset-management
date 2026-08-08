@@ -32,7 +32,7 @@ export function useLoginForm() {
             };
 
             toast.success(request.message);
-            navigate("/dashboard/home", { replace: true });
+            navigate("/dashboard/projects", { replace: true });
             await refreshUser();
             form.reset();
         } catch (err) {
