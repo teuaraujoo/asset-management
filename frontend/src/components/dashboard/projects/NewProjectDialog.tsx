@@ -1,5 +1,3 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import {
     Dialog,
@@ -13,8 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { createProject } from "@/services/projects.services";
-import { type CreateProjectFormData, createProjectSchema } from "@/schemas/projects/projects.schema";
+import { useProjectsForm } from "@/hooks/projects/use-projects-form";
+import type { CreateProjectFormData } from "@/schemas/projects/projects.schema";
 
 interface NewProjectDialogProps {
     open: boolean;
@@ -27,39 +25,22 @@ export function NewProjectDialog({
     onOpenChange,
     onSuccess,
 }: NewProjectDialogProps) {
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setError,
-        formState: { errors, isSubmitting },
-    } = useForm<CreateProjectFormData>({
-        resolver: zodResolver(createProjectSchema),
-        defaultValues: {
-            name: "",
-            mini_description: "",
-            description: "",
-        },
-    });
+
+    const { form, loading, handleCreate } = useProjectsForm();
 
     async function onSubmit(data: CreateProjectFormData) {
-        try {
-            await createProject(data);
-            reset();
-            onOpenChange(false);
-            onSuccess();
-        } catch (err) {
-            setError("root", {
-                message:
-                    err instanceof Error ? err.message : "Erro ao criar projeto",
-            });
-        }
-    }
+        const success = await handleCreate(data);
+
+        if (!success) return;
+
+        onOpenChange(false);
+        onSuccess();
+    };
 
     function handleOpenChange(nextOpen: boolean) {
-        if (!nextOpen) reset();
+        if (!nextOpen) form.reset();
         onOpenChange(nextOpen);
-    }
+    };
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -72,19 +53,19 @@ export function NewProjectDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="name">Nome</Label>
                         <Input
                             id="name"
                             placeholder="Ex: Marketing Q4 Assets"
                             autoFocus
-                            aria-invalid={!!errors.name}
-                            {...register("name")}
+                            aria-invalid={!!form.formState.errors.name}
+                            {...form.register("name")}
                         />
-                        {errors.name && (
+                        {form.formState.errors.name && (
                             <p className="text-sm text-destructive">
-                                {errors.name.message}
+                                {form.formState.errors.name.message}
                             </p>
                         )}
                     </div>
@@ -94,12 +75,12 @@ export function NewProjectDialog({
                         <Input
                             id="miniDescription"
                             placeholder="Resumo curto do projeto"
-                            aria-invalid={!!errors.mini_description}
-                            {...register("mini_description")}
+                            aria-invalid={!!form.formState.errors.mini_description}
+                            {...form.register("mini_description")}
                         />
-                        {errors.mini_description && (
+                        {form.formState.errors.mini_description && (
                             <p className="text-sm text-destructive">
-                                {errors.mini_description.message}
+                                {form.formState.errors.mini_description.message}
                             </p>
                         )}
                     </div>
@@ -111,19 +92,19 @@ export function NewProjectDialog({
                             placeholder="Descrição detalhada do projeto"
                             rows={4}
                             className="resize-none"
-                            aria-invalid={!!errors.description}
-                            {...register("description")}
+                            aria-invalid={!!form.formState.errors.description}
+                            {...form.register("description")}
                         />
-                        {errors.description && (
+                        {form.formState.errors.description && (
                             <p className="text-sm text-destructive">
-                                {errors.description.message}
+                                {form.formState.errors.description.message}
                             </p>
                         )}
                     </div>
 
-                    {errors.root && (
+                    {form.formState.errors.root && (
                         <p className="text-sm text-destructive">
-                            {errors.root.message}
+                            {form.formState.errors.root.message}
                         </p>
                     )}
 
@@ -132,16 +113,16 @@ export function NewProjectDialog({
                             type="button"
                             variant="outline"
                             onClick={() => handleOpenChange(false)}
-                            disabled={isSubmitting}
+                            disabled={loading}
                             className="cursor-pointer"
                         >
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={isSubmitting} className="cursor-pointer bg-blue-600 hover:bg-blue-800">
-                            {isSubmitting && (
+                        <Button type="submit" disabled={loading} className="cursor-pointer bg-blue-600 hover:bg-blue-800">
+                            {loading && (
                                 <Loader2 className="size-4 animate-spin" />
                             )}
-                            Criar Projeto
+                            {loading ? "Criando..." : "Criar Projeto"}
                         </Button>
                     </DialogFooter>
                 </form>
