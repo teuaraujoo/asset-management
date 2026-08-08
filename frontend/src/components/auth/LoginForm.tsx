@@ -7,7 +7,6 @@ export function LoginForm() {
 
   const {
     form,
-    error,
     handleLogin,
     loading,
   } = useLoginForm();
@@ -29,9 +28,9 @@ export function LoginForm() {
         error={form.formState.errors.password?.message}
       />
 
-      {error && (
-        <p className="text-sm text-red-500">
-          {error}
+      {form.formState.errors.root && (
+        <p className="text-sm text-destructive">
+          {form.formState.errors.root.message}
         </p>
       )}
 
