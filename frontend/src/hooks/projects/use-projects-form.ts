@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useProjects } from "./use-projects";
@@ -9,12 +8,9 @@ import toast from "react-hot-toast";
 export function useProjectsForm() {
     const { refetch } = useProjects();
 
-    const [error, setError] = useState("");
-
     const form = useForm<CreateProjectFormData>({
         resolver: zodResolver(createProjectSchema),
         defaultValues: {
-            user_id: "",
             name: "",
             mini_description: "",
             description: ""
@@ -22,28 +18,33 @@ export function useProjectsForm() {
     });
 
     async function handleCreate(data: CreateProjectFormData) {
-        setError("");
+        form.clearErrors("root");
 
         try {
             const request = await createProject(data);
 
             if (request.err) {
-                setError(request.err);
+                form.setError("root", {
+                    message: request.err
+                });
                 return;
             };
 
             toast.success(request.message);
             await refetch();
             form.reset();
+            return true;
         } catch (err) {
             const message = err instanceof Error ? err.message : "Error inesperado ao fazer login. Tente novamente.";
-            setError(message);
+            form.setError("root", {
+                message: message
+            });
+            return false;
         };
     };
 
     return {
         form,
-        error,
         loading: form.formState.isSubmitting,
         handleCreate
     };

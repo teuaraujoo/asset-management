@@ -1,5 +1,4 @@
 import { login } from "@/services/auth.services";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,8 +10,6 @@ export function useLoginForm() {
     const navigate = useNavigate();
     const { refreshUser } = useAuthContext();
 
-    const [error, setError] = useState("");
-
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -22,29 +19,32 @@ export function useLoginForm() {
     });
 
     async function handleLogin(data: LoginFormData) {
-        setError("");
+        form.clearErrors("root");
 
         try {
             const request = await login(data);
 
             if (request.err) {
-                setError(request.err);
+                form.setError("root", {
+                    message: request.err
+                });
                 return;
             };
-            
+
             toast.success(request.message);
             navigate("/dashboard/home", { replace: true });
             await refreshUser();
             form.reset();
         } catch (err) {
             const message = err instanceof Error ? err.message : "Error inesperado ao fazer login. Tente novamente.";
-            setError(message);
+            form.setError("root", {
+                message: message
+            });
         };
     };
 
     return {
         form,
-        error,
         loading: form.formState.isSubmitting,
         handleLogin,
     };

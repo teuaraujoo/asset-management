@@ -33,14 +33,14 @@ export default class ProjectMapper {
         };
     };
 
-    static toPrismaCreate(project: CreateProjectBody, folderId: string) {
+    static toPrismaCreate(project: CreateProjectBody, folderId: string, userId: string) {
         return {
             name: project.name,
             mini_description: project.mini_description,
             description: project.description,
             users: {
                 connect: {
-                    id: project.user_id
+                    id: userId
                 }
             },
             folders: {

@@ -1,5 +1,4 @@
 export type ProjectBody = {
-    user_id: string;
     name: string;
     mini_description: string;
     description: string;

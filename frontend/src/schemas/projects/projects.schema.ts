@@ -2,7 +2,6 @@
 import { z } from "zod";
 
 export const createProjectSchema = z.object({
-    user_id: z.string().nonoptional(),
     name: z
         .string()
         .min(3, "O nome deve ter pelo menos 3 caracteres")

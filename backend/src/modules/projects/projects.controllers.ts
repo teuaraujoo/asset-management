@@ -21,8 +21,9 @@ export default class ProjectController {
 
     static async create(req: Request, res: Response) {
         const body = await req.body;
+        const userId = req.user.sub;
 
-        const result = await ProjectService.create(body);
+        const result = await ProjectService.create(body, userId);
 
         return res.status(201).json({ message: "Projeto criado com sucesso.", data: result });
     };
