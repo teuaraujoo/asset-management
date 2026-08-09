@@ -6,9 +6,12 @@ import { NewProjectDialog } from "@/components/dashboard/projects/NewProjectDial
 import { useProjects } from "@/hooks/projects/use-projects";
 import { deleteProject } from "@/services/projects.services";
 import type { Project } from "@/@types/projects/projects.types";
+import { UploadFileDialog } from "@/components/dashboard/projects/UploadFileDialog";
+import toast from "react-hot-toast";
 
 export default function DashboardProjectsPage() {
     const navigate = useNavigate();
+    const [isUploadOpen, setIsUploadOpen] = useState(false);
     const { projects, isLoading, error, refetch } = useProjects();
     const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
 
@@ -16,29 +19,20 @@ export default function DashboardProjectsPage() {
         navigate(`/dashboard/projects/${project.id}`);
     };
 
-    function handleUploadFiles() {
-        navigate("/dashboard/upload");
-    };
-
     async function handleDeleteProject(project: Project) {
-        const confirmed = window.confirm(
-            `Excluir o projeto "${project.name}"? A pasta e todos os arquivos também serão excluídos.`,
-        );
-        if (!confirmed) return;
-
-        try {
-            await deleteProject(project.id);
-            await refetch();
-        } catch {
-            alert("Erro ao excluir projeto. Tente novamente.");
-        };
+        await toast.promise(deleteProject(project.id), {
+            loading: 'Excluindo...',
+            success: (response) => response.message,
+            error: (error) => error.message || "Error ao conectar com o servidor!",
+        });
+        await refetch();
     };
 
     return (
         <main className="mx-auto w-full space-y-8 lg:p-2">
             <ProjectsHeader
                 onNewProject={() => setIsNewProjectOpen(true)}
-                onUploadFiles={handleUploadFiles}
+                onUploadFiles={() => setIsUploadOpen(true)}
             />
 
             {error && (
@@ -59,6 +53,12 @@ export default function DashboardProjectsPage() {
                 open={isNewProjectOpen}
                 onOpenChange={setIsNewProjectOpen}
                 onSuccess={refetch}
+            />
+
+            <UploadFileDialog
+                open={isUploadOpen}
+                onOpenChange={setIsUploadOpen}
+                projects={projects}
             />
         </main>
     );

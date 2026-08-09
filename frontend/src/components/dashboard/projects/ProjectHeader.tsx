@@ -1,5 +1,6 @@
 import { Plus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+// import { UploadFileDialog } from "./UploadFileDialog";
 
 interface ProjectsHeaderProps {
     onNewProject: () => void;
@@ -26,11 +27,12 @@ export function ProjectsHeader({
                     <Plus className="size-4" />
                     Novo Projeto
                 </Button>
-                <Button onClick={onUploadFiles} className="bg-blue-600 hover:bg-blue-800">
+                <Button onClick={() => onUploadFiles()} className="bg-blue-600 hover:bg-blue-800">
                     <Upload className="size-4" />
                     Upload Arquivos
                 </Button>
             </div>
+            {/* <UploadFileDialog onUploadFile={onUploadFiles} /> */}
         </header>
     );
 };
