@@ -8,6 +8,7 @@ import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
 import UserRoutes from "./modules/users/users.routes";
 import ProjectRoutes from "./modules/projects/projects.routes";
+import FilesRoutes from "./modules/files/files.routes";
 
 const app = express();
 const apiVersion = "/api/v1";
@@ -35,6 +36,7 @@ app.get("/health", (_req, res) => {
 app.use(apiVersion, AuthRoutes);
 app.use(apiVersion, UserRoutes);
 app.use(apiVersion, ProjectRoutes);
+app.use(apiVersion, FilesRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;

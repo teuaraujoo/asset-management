@@ -2,7 +2,6 @@ import path from "node:path";
 import AppError from "../../error/app-error";
 import FilesRepository from "./files.repositories";
 import { randomUUID } from "node:crypto";
-import crypto from "node:crypto"
 import FolderService from "../folders/folders.services";
 import { completeUploadFileBody, completeUploadFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
@@ -79,9 +78,14 @@ export default class FilesServices {
 
         if (!file) throw new AppError("File não encontrado.", 404);
 
-        if (file.status === "PENDING") throw new AppError("File já foi baixado no bucket.", 400); //FIXME: CORRIGIR MENSAGEM E STATUS CODE
+        if (file.status !== "PENDING") throw new AppError("File já foi baixado no bucket.", 400); //FIXME: CORRIGIR MENSAGEM E STATUS CODE
 
-        await FilesRepository.completeUpload(id, data.checksum); //TODO: TROCAR NOME DE METODO NO REPOSITROY
+        const completedUpload = await FilesRepository.completeUpload(id, data.checksum);
+
+        if (!completedUpload) {
+            await StorageService.deleteObject(file.bucket, file.object_key);
+            throw new AppError("Não foi possível completar o upload."); //TODO: COLOCAR STATUS CODE
+        };
     };
 
     private static async validateFile(data: requestFileBody, userId: string) {
@@ -89,6 +93,7 @@ export default class FilesServices {
         const user = await UserServices.getById(userId);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
+        if (!user) throw new AppError("Usuário não encontrado"); //TODO: COLOCAR STATUS CODE
 
         const bucket = process.env.STORAGE_BUCKET;
         if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.") //TODO: COLOCAR STATUS CODE

@@ -567,6 +567,9 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
     
     R: Slug, storage name, name do arquivo e do folder.
 
+- Porque a pasta é salva no banco mesmo não sendo criada no bucket R2?
+    R:
+
 - Para que server a verificação de checksum?
     R:
 
@@ -581,3 +584,5 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 - Na programação, usar dois pontos de exclamação antes de uma variável (!!variavel) serve para converter o valor da variável em um tipo booleano (verdadeiro ou falso), forçando a negação dupla do valor original.
 
 - Cada serviço deve conhecer apenas as regras do seu próprio domínio.
+
+- O navegador quando possue um url pré assinada primeiro envia uma requisição do tipo OPTIONS
