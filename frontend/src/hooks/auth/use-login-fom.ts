@@ -2,7 +2,7 @@ import { login } from "@/services/auth.services";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { loginSchema, type LoginFormData } from "@/schemas/login.schema";
+import { loginSchema, type LoginFormData } from "@/schemas/auth/login.schema";
 import { useAuthContext } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 

@@ -16,7 +16,7 @@ export default function DashboardProjectsPage() {
     const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
 
     function handleOpenProject(project: Project) {
-        navigate(`/dashboard/projects/${project.id}`);
+        navigate(`/dashboard/projects/${project.folder_id}`);
     };
 
     async function handleDeleteProject(project: Project) {
