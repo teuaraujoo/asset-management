@@ -83,7 +83,7 @@ export default class FilesServices {
         const completedUpload = await FilesRepository.completeUpload(id, data.checksum);
 
         if (!completedUpload) {
-            await StorageService.deleteObject(file.bucket, file.object_key);
+            await StorageService.deleteObject(file.object_key);
             throw new AppError("Não foi possível completar o upload."); //TODO: COLOCAR STATUS CODE
         };
     };

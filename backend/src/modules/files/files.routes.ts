@@ -6,7 +6,7 @@ import { Limiters } from "../../libs/express-rate-limit";
 const router = express.Router();
 
 router.post(
-    "/files/upload",
+    "/files/upload-url",
     Limiters.generalCreateLimiter,
     authenticateMiddleware,
     FilesController.create

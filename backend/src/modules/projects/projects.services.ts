@@ -5,6 +5,7 @@ import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
 import FilesServices from "../files/files.services";
 import prisma from "../../libs/prisma";
+import StorageService from "../storage/storage.services";
 
 export default class ProjectService {
 
@@ -48,10 +49,16 @@ export default class ProjectService {
     };
 
     static async delete(id: string) {
-        const project = ProjectRepository.getById(id);
+        const project = await ProjectRepository.getById(id);
 
         if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
 
-         await ProjectRepository.delete(id);
+        await ProjectRepository.delete(id);
+
+        const deleteBlob = await StorageService.deleteObject(project.folders.path);
+
+        console.log("response r2 buckket: ", deleteBlob);
+
+        if (!deleteBlob) throw new AppError("Error ao deletar do bucket");
     };
 };

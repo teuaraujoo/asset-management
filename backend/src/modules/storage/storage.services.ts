@@ -1,5 +1,5 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../../libs/r2-bucket";
 
 
@@ -40,6 +40,15 @@ export default class StorageService {
                 Bucket: this.BUCKET_NAME,
                 Prefix: prefix,
                 Delimiter: "/"
+            }),
+        );
+    };
+
+    static async deleteObject(objectKey: string) {
+        return s3.send(
+            new DeleteObjectCommand({
+                Bucket: "asset-management",
+                Key: objectKey
             }),
         );
     };
