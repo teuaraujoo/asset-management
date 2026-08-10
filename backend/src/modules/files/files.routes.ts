@@ -9,7 +9,7 @@ router.post(
     "/files/upload-url",
     Limiters.generalCreateLimiter,
     authenticateMiddleware,
-    FilesController.create
+    FilesController.prepareUpload
 );
 
 router.put(
@@ -17,6 +17,12 @@ router.put(
     Limiters.generalCreateLimiter,
     authenticateMiddleware, 
     FilesController.complete
+);
+
+router.get(
+    "/files/:folderId",
+    authenticateMiddleware,
+    FilesController.getByFolderId
 );
 
 export default router;

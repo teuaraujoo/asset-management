@@ -15,6 +15,9 @@ export default class FilesRepository {
         return prisma.files.findFirst({
             where: {
                 folder_id: folderId
+            },
+            orderBy: {
+                created_at: "asc"
             }
         });
     };
@@ -32,7 +35,8 @@ export default class FilesRepository {
             },
             data: {
                 status: "COMPLETE",
-                checksum: checksum
+                checksum: checksum,
+                uploaded_at: new Date()
             },
         });
     };

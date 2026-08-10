@@ -573,6 +573,9 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 - Para que server a verificação de checksum?
     R:
 
+- Como vou fazer para impedir um arquivo malicioso? Atualmente os metadados do arquivo são obtidos no front e enviados para o back, mas um atacante pode simplemente alterar os metadados e enviar um arquivo malicioso para o bucket, como posso proteger o bucket?
+    R:
+
 - O que é buffer?
     R:
     
