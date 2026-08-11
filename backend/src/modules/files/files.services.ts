@@ -47,7 +47,6 @@ export default class FilesServices {
     };
 
     static async prepareUpload(body: requestFileBody, userId: string) {
-        //TODO: VERIFICAR DE FATO O MIMETYPE  / EXTESNION -> UMA OPCAO SERIA PASSAR O ARQUIVO PARA A API MAS NAO RETORNA-LO PARA VERIFICAR DE FATO O ARQUIVO EM SI, POREM TEM QUE VER O CONSUMO DE MEMORIA E SE ISSO É VANTAJSO PARA A ARQUITETURA IDEAL COM PRE SIGNED URLs
         const data = requestFileSchema.parse(body);
 
         const { folder, mimeType, extension, bucket } = await this.validateFileOnPrepare(data, userId);
@@ -83,11 +82,9 @@ export default class FilesServices {
 
         const completedUpload = await FilesRepository.completeUpload(id, data.checksum);
 
-        if (!completedUpload) {
-            await StorageService.deleteObject(file.object_key);
-            await FilesRepository.failedUplaod(file.id);
-            throw new AppError("Não foi possível completar o upload.", 500);
-        };
+        if (!completedUpload) await this.handleFailedUpload(file.id, file.object_key);
+
+        return;
     };
 
     private static async validateFileOnComplete(id: string, userId: string) {
@@ -105,9 +102,9 @@ export default class FilesServices {
 
         if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
 
-        if (BigInt(bucketFile.ContentLength!) !== file.size) throw new AppError("Arquivo diferente do esperado.", 409);
+        if (BigInt(bucketFile.ContentLength!) !== file.size) await this.handleFailedUpload(file.id, file.object_key);
 
-        return file
+        return file;
     };
 
     private static async validateFileOnPrepare(data: requestFileBody, userId: string) {
@@ -134,6 +131,12 @@ export default class FilesServices {
             extension,
             bucket
         };
+    };
+
+    private static async handleFailedUpload(id: string, objectKey: string) {
+        await StorageService.deleteObject(objectKey);
+        await FilesRepository.failedUplaod(id);
+        throw new AppError("Não foi possível completar o upload.", 500);
     };
 
     private static validateMimeType(mimeType: string) {
