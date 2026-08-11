@@ -75,7 +75,7 @@ export default class FilesServices {
         //TODO: VERIFICAR SE ARQUIVO EXISTE NO BUCKET 
         //TODO: COMPARAR CHECKSUM DO CLIENT COM CHECKSUM DO BUCKET
         //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
-        //TODO: ADICIONAR MAIS STATUS AO FILE -> CASO FALHE, MARCA "FAILED"
+        //TODO: ADICIONAR MAIS STATUS AO FILE -> CASO FALHE, MARCA "FAILED" ✓
         //TODO: VERIFICACAO MELHOR DE MIME TYPE
         const file = await FilesRepository.getById(id);
         const data = completeUploadFileSchema.parse(body);
@@ -88,6 +88,7 @@ export default class FilesServices {
 
         if (!completedUpload) {
             await StorageService.deleteObject(file.object_key);
+            await FilesRepository.failedUplaod(file.id);
             throw new AppError("Não foi possível completar o upload.", 500);
         };
     };

@@ -40,4 +40,15 @@ export default class FilesRepository {
             },
         });
     };
+
+    static async failedUplaod(id: string) {
+        return prisma.files.update({
+            where: {
+                id: id,
+            },
+            data: {
+                status: "FAILED"
+            }
+        });
+    };
 };
