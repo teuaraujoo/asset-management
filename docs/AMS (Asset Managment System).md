@@ -589,3 +589,44 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 - Cada serviço deve conhecer apenas as regras do seu próprio domínio.
 
 - O navegador quando possue um url pré assinada primeiro envia uma requisição do tipo OPTIONS
+
+- Autenticar -> Verificar se o usuario existe ou nao / quem é o usuário?
+- Autorizar -> Verificar se o usuario pode fazer algo ou nao / o que o usuario pode fazer?
+
+- Verificacao -> O sistema está sendo construído de acordo com a especificação?
+- Validacao -> O sistema realmente resolve o problema que o usuário precisa? 
+
+    Exemplo:
+
+    Imagine que o cliente pediu uma casa.
+
+    Você verifica:
+
+    A casa foi construída conforme a planta?
+
+    Validação:
+
+    Você pergunta:
+
+    Essa casa realmente atende às necessidades do cliente?
+
+    Talvez a planta esteja perfeitamente executada, mas o cliente descubra:
+
+    "Eu precisava de um escritório."
+
+    A construção está correta (verificada), mas a solução não atende à necessidade (não validada).
+
+- IDOR -> Insecure Direct Object Reference
+  - ocorre quando a API aceita um ID enviado pelo cliente (na URL, body ou query) e acessa o recurso no banco sem verificar se aquele recurso pertence ao usuário autenticado.
+
+  - Um cenário comum de IDOR é:
+
+    Usuário A envia uma requisição para editar o perfil:
+
+    POST /api/users/123
+
+    O sistema pega o ID 123 e atualiza o usuário no banco.
+
+    No entanto, o sistema não verifica se o usuário logado é realmente o usuário 123.
+
+    Resultado: Usuário A consegue editar o perfil de Usuário B apenas sabendo o ID.
