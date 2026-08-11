@@ -78,25 +78,27 @@ export default class FilesServices {
 
         if (!file) throw new AppError("File não encontrado.", 404);
 
-        if (file.status !== "PENDING") throw new AppError("File já foi baixado no bucket.", 400); //FIXME: CORRIGIR MENSAGEM E STATUS CODE
+        if (file.status !== "PENDING") throw new AppError("File já foi baixado no bucket.", 409); //FIXME: CORRIGIR MENSAGEM E STATUS CODE
 
         const completedUpload = await FilesRepository.completeUpload(id, data.checksum);
 
         if (!completedUpload) {
             await StorageService.deleteObject(file.object_key);
-            throw new AppError("Não foi possível completar o upload."); //TODO: COLOCAR STATUS CODE
+            throw new AppError("Não foi possível completar o upload.", 500);
         };
     };
 
     private static async validateFile(data: requestFileBody, userId: string) {
         const folder = await FolderService.getById(data.folder_id);
-        const user = await UserServices.getById(userId);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
-        if (!user) throw new AppError("Usuário não encontrado"); //TODO: COLOCAR STATUS CODE
+
+        const user = await UserServices.getById(userId);
+
+        if (!user) throw new AppError("Usuário não encontrado", 404);
 
         const bucket = process.env.STORAGE_BUCKET;
-        if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.") //TODO: COLOCAR STATUS CODE
+        if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.", 500);
 
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();
