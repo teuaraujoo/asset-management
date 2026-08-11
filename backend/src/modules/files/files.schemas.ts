@@ -5,15 +5,10 @@ export const requestFileSchema = z.object({
     original_name: z.string(),
     mime_type: z.string(),
     size: z.number(),
+    checksum: z.string().length(44)
 });
 
 export type requestFileBody = z.infer<typeof requestFileSchema>
-
-export const completeUploadFileSchema = z.object({
-    checksum: z.string().length(64)
-});
-
-export type completeUploadFileBody = z.infer<typeof completeUploadFileSchema>
 
 export const createFileSchema = z.object({
     user_id: z.string(),

@@ -25,7 +25,7 @@ import { useUploadFileForm } from "@/hooks/files/use-upload-file-form";
 import type { UploadFileBody } from "@/schemas/files/files.schema";
 import { Controller } from "react-hook-form";
 import { completeUpload, uploadToBucket } from "@/services/files.services";
-import { calculateChecksum } from "@/utils/calculate-checksum";
+// import { calculateChecksum } from "@/utils/calculate-checksum";
 import { UploadStatus, type UploadState } from "./UploadStatus";
 import toast from "react-hot-toast";
 
@@ -101,9 +101,9 @@ export function UploadFileDialog({
         progress: 100,
       });
 
-      const checksum = await calculateChecksum(file);
+      // const checksum = await calculateChecksum(file);
 
-      await completeUpload(upload.data.file_id, { checksum });
+      await completeUpload(upload.data.file_id);
 
       updateUploadToast(uploadToastId, {
         status: "completed",

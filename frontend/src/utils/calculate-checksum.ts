@@ -1,5 +1,4 @@
 export async function calculateChecksum(file: File): Promise<string> {
-
     const buffer = await file.arrayBuffer();
 
     const hashBuffer = await crypto.subtle.digest(
@@ -7,9 +6,13 @@ export async function calculateChecksum(file: File): Promise<string> {
         buffer
     );
 
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashArray = new Uint8Array(hashBuffer);
 
-    return hashArray
-        .map((byte) => byte.toString(16).padStart(2, "0"))
-        .join("");
-};
+    let binary = "";
+
+    for (const byte of hashArray) {
+        binary += String.fromCharCode(byte);
+    }
+
+    return btoa(binary);
+}

@@ -44,7 +44,7 @@ export default class FilesMapper {
             bucket: file.bucket,
             mime_type: file.mime_type,
             extension: file.extension,
-            // size: file.size as number,
+            size: file.size,
             checksum: file.checksum,
             status: file.status,
             created_at: file.created_at,
@@ -72,6 +72,7 @@ export default class FilesMapper {
             size: data.size,
             extension: extension,
             bucket: bucket,
+            checksum: data.checksum
         };
     };
 

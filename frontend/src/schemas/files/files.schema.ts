@@ -7,6 +7,7 @@ export const createFileSchema = z.object({
     original_name: z.string(),
     mime_type: z.string(),
     size: z.number(),
+    checksum: z.string().length(44)
 });
 
 // segunda requisicao pos usar signed url

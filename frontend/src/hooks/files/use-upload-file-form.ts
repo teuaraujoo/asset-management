@@ -7,6 +7,7 @@ import { createFile } from "@/services/files.services";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast";
+import { calculateChecksum } from "@/utils/calculate-checksum";
 
 export function useUploadFileForm() {
 
@@ -22,12 +23,14 @@ export function useUploadFileForm() {
         form.clearErrors("root");
 
         try {
+            const checksum = await calculateChecksum(body.file);
 
             const payload = {
                 folder_id: body.folder_id,
                 original_name: body.file.name,
                 mime_type: body.file.type,
-                size: body.file.size
+                size: body.file.size,
+                checksum: checksum
             };
 
             const data = createFileSchema.parse(payload);

@@ -29,14 +29,13 @@ export default class FilesRepository {
         });
     };
 
-    static async completeUpload(id: string, checksum: string) {
+    static async completeUpload(id: string) {
         return prisma.files.update({
             where: {
                 id: id
             },
             data: {
                 status: "COMPLETE",
-                checksum: checksum,
                 uploaded_at: new Date()
             },
         });

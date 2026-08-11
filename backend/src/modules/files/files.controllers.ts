@@ -24,10 +24,9 @@ export default class FilesController {
 
     static async complete(req: Request, res: Response) {
         const id = req.params.id;
-        const body = await req.body;
         const userId = req.user.sub;
 
-        await FilesServices.complete(id as string, body, userId);
+        await FilesServices.complete(id as string, userId);
 
         return res.status(200).json({ message: "Status atualizado com sucesso." });
     };
