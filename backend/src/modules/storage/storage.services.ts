@@ -1,8 +1,6 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand, HeadObjectCommand  } from "@aws-sdk/client-s3";
 import s3 from "../../libs/r2-bucket";
-
-
 export default class StorageService {
 
     private static BUCKET_NAME = "asset-management";
@@ -50,6 +48,16 @@ export default class StorageService {
                 Bucket: "asset-management",
                 Key: objectKey
             }),
+        );
+    };
+
+    static async getObjectMetaData(objectKey: string) {
+        return s3.send(
+            new HeadObjectCommand({
+                Bucket: this.BUCKET_NAME,
+                Key: objectKey,
+                ChecksumMode: "ENABLED",
+            })
         );
     };
 

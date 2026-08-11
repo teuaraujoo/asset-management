@@ -45,7 +45,7 @@ export default class FilesServices {
         //TODO: VERIFICAR DE FATO O MIMETYPE  / EXTESNION -> UMA OPCAO SERIA PASSAR O ARQUIVO PARA A API MAS NAO RETORNA-LO PARA VERIFICAR DE FATO O ARQUIVO EM SI, POREM TEM QUE VER O CONSUMO DE MEMORIA E SE ISSO É VANTAJSO PARA A ARQUITETURA IDEAL COM PRE SIGNED URLs
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension, bucket } = await this.validateFile(data, userId);
+        const { folder, mimeType, extension, bucket } = await this.validateFile(data);
         const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
 
@@ -72,15 +72,20 @@ export default class FilesServices {
     };
 
     static async complete(id: string, body: completeUploadFileBody) {
-        //TODO: VERIFICAR SE ARQUIVO EXISTE NO BUCKET 
-        //TODO: COMPARAR CHECKSUM DO CLIENT COM CHECKSUM DO BUCKET
-        //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
+        //TODO: VERIFICAR SE ARQUIVO EXISTE NO BUCKET ✓
         //TODO: ADICIONAR MAIS STATUS AO FILE -> CASO FALHE, MARCA "FAILED" ✓
-        //TODO: VERIFICACAO MELHOR DE MIME TYPE
+        //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
         const file = await FilesRepository.getById(id);
+
         const data = completeUploadFileSchema.parse(body);
 
         if (!file) throw new AppError("File não encontrado.", 404);
+
+        const bucketFile = await StorageService.getObjectMetaData(file.object_key);
+        
+        if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
+        
+        if (BigInt(bucketFile.ContentLength!) !== file.size) throw new AppError("Arquivo diferente do esperado.", 409);
 
         if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
 
@@ -93,13 +98,13 @@ export default class FilesServices {
         };
     };
 
-    private static async validateFile(data: requestFileBody, userId: string) {
+    private static async validateFile(data: requestFileBody) {
         const folder = await FolderService.getById(data.folder_id);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
 
         const bucket = process.env.STORAGE_BUCKET;
-        
+
         if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.", 500);
 
         const mimeType = data.mime_type;
