@@ -3,9 +3,10 @@ import ProjectService from "./projects.services";
 
 export default class ProjectController {
 
-    static async get(_req: Request, res: Response) {
+    static async get(req: Request, res: Response) {
+        const userId = req.user.sub;
 
-        const result = await ProjectService.get();
+        const result = await ProjectService.get(userId);
 
         return res.status(200).json({ message: "Projetos encontrados com sucesso.", data: result });
     };
@@ -13,8 +14,9 @@ export default class ProjectController {
     static async getById(req: Request, res: Response) {
 
         const id = req.params.id;
+        const userId = req.user.sub;
 
-        const result = await ProjectService.getById(id as string);
+        const result = await ProjectService.getById(id as string, userId);
 
         return res.status(200).json({ message: "Projeto encontrado com sucesso.", data: result });
     };
@@ -30,8 +32,9 @@ export default class ProjectController {
 
     static async getFiles(req: Request, res: Response) {
         const folderId = req.params.folderId as string;
+        const userId = req.user.sub;
 
-        const result = await ProjectService.getFiles(folderId);
+        const result = await ProjectService.getFiles(folderId, userId);
 
         return res.status(200).json({ message: "Arquivos do projeto encontrados com sucesso.", data: result });
     };
@@ -42,8 +45,9 @@ export default class ProjectController {
 
     static async delete(req: Request, res: Response) {
         const id = req.params.id as string;
+        const userId = req.user.sub;
 
-        await ProjectService.delete(id);
+        await ProjectService.delete(id, userId);
 
         return res.status(200).json({ message: "Projeto excluído com sucesso." });
     };

@@ -6,6 +6,7 @@ import FolderService from "../folders/folders.services";
 import { completeUploadFileBody, completeUploadFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
 import StorageService from "../storage/storage.services";
+import ProjectService from "../projects/projects.services";
 export default class FilesServices {
 
     private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
@@ -33,8 +34,12 @@ export default class FilesServices {
         ".app",
     ]);
 
-    static async getByFolderId(folderId: string) {
-        const files = await FilesRepository.getByFolderId(folderId);
+    static async getByFolderId(folderId: string, userId: string) {
+        const folder = await FolderService.getById(folderId);
+
+        if (!folder) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
+
+        const files = await FilesRepository.getByFolderId(folderId, userId);
 
         if (!files) throw new AppError("Arquivos não encontrados.", 404);
 
@@ -45,7 +50,7 @@ export default class FilesServices {
         //TODO: VERIFICAR DE FATO O MIMETYPE  / EXTESNION -> UMA OPCAO SERIA PASSAR O ARQUIVO PARA A API MAS NAO RETORNA-LO PARA VERIFICAR DE FATO O ARQUIVO EM SI, POREM TEM QUE VER O CONSUMO DE MEMORIA E SE ISSO É VANTAJSO PARA A ARQUITETURA IDEAL COM PRE SIGNED URLs
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension, bucket } = await this.validateFile(data);
+        const { folder, mimeType, extension, bucket } = await this.validateFile(data, userId);
         const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
 
@@ -71,7 +76,7 @@ export default class FilesServices {
         return FilesMapper.toResponsePendingCreate(file, signedUrl);
     };
 
-    static async complete(id: string, body: completeUploadFileBody) {
+    static async complete(id: string, body: completeUploadFileBody, userId: string) {
         //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
         const file = await FilesRepository.getById(id);
 
@@ -79,10 +84,12 @@ export default class FilesServices {
 
         if (!file) throw new AppError("File não encontrado.", 404);
 
+        if (file.user_id !== userId) throw new AppError("Não é possível concluir upload de arquivo não pertencente ao usuário.", 403);
+
         const bucketFile = await StorageService.getObjectMetaData(file.object_key);
-        
+
         if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
-        
+
         if (BigInt(bucketFile.ContentLength!) !== file.size) throw new AppError("Arquivo diferente do esperado.", 409);
 
         if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
@@ -96,10 +103,12 @@ export default class FilesServices {
         };
     };
 
-    private static async validateFile(data: requestFileBody) {
+    private static async validateFile(data: requestFileBody, userId: string) {
         const folder = await FolderService.getById(data.folder_id);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
+
+        await ProjectService.getByFolderId(folder.id, userId);
 
         const bucket = process.env.STORAGE_BUCKET;
 

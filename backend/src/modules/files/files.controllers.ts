@@ -5,10 +5,9 @@ export default class FilesController {
 
     static async getByFolderId(req: Request, res: Response) {
         const folderId = req.params.folderId as string;
+        const userId = req.user.sub;
 
-        const result = await FilesServices.getByFolderId(folderId);
-
-        console.log(result);
+        const result = await FilesServices.getByFolderId(folderId, userId);
 
         return res.status(200).json({ message: "Arquivos encontrados com sucesso.", data: result });
     };
@@ -26,8 +25,9 @@ export default class FilesController {
     static async complete(req: Request, res: Response) {
         const id = req.params.id;
         const body = await req.body;
+        const userId = req.user.sub;
 
-        await FilesServices.complete(id as string, body);
+        await FilesServices.complete(id as string, body, userId);
 
         return res.status(200).json({ message: "Status atualizado com sucesso." });
     };

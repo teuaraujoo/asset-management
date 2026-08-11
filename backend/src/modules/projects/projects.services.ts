@@ -9,27 +9,40 @@ import StorageService from "../storage/storage.services";
 
 export default class ProjectService {
 
-    static async get() {
-        const projects = await ProjectRepository.get();
+    static async get(userId: string) {
+        const projects = await ProjectRepository.get(userId);
 
         if (!projects) throw new AppError("Nenhum projeto encontrado.", 404);
 
         return projects.map((project) => ProjectMapper.toResponseGet(project));
     };
 
-    static async getById(id: string) {
-        const project = await ProjectRepository.getById(id);
+    static async getById(id: string, userId: string) {
+        const project = await ProjectRepository.getById(id, userId);
+
         if (!project) throw new AppError("Projeto não encontrado.", 404);
 
-        await FolderService.getById(project?.folder_id);
+        // if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
+
+        await FolderService.getById(project.folder_id);
 
         return ProjectMapper.toResponseGet(project);
     };
 
-    static async getFiles(folderId: string) {
-        const files = FilesServices.getByFolderId(folderId);
+    static async getByFolderId(folderId: string, userId: string) {
+        const project = await ProjectRepository.getByFolderId(folderId, userId);
 
-        if (!files) throw new AppError("", 404);
+        if (!project) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
+
+        if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
+
+        return project;
+    };
+
+    static async getFiles(folderId: string, userId: string) {
+        const files = await FilesServices.getByFolderId(folderId, userId);
+
+        if (!files) throw new AppError("Arquivos não encontrados", 404);
 
         return files;
     };
@@ -48,16 +61,16 @@ export default class ProjectService {
 
     };
 
-    static async delete(id: string) {
-        const project = await ProjectRepository.getById(id);
+    static async delete(id: string, userId: string) {
+        const project = await ProjectRepository.getById(id, userId);
 
         if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
+
+        // if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
 
         await ProjectRepository.delete(id);
 
         const deleteBlob = await StorageService.deleteObject(project.folders.path);
-
-        console.log("response r2 buckket: ", deleteBlob);
 
         if (!deleteBlob) throw new AppError("Error ao deletar do bucket");
     };

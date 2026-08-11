@@ -11,10 +11,11 @@ export default class FilesRepository {
         });
     };
 
-    static async getByFolderId(folderId: string) {
+    static async getByFolderId(folderId: string, userId: string) {
         return prisma.files.findMany({
             where: {
-                folder_id: folderId
+                folder_id: folderId,
+                user_id: userId
             },
             orderBy: {
                 created_at: "asc"

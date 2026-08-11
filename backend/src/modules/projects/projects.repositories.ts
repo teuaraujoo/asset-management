@@ -3,8 +3,11 @@ import prisma from "../../libs/prisma";
 import FolderRepository from "../folders/folders.repositories";
 
 export default class ProjectRepository {
-    static async get() {
+    static async get(userId: string) {
         return prisma.projects.findMany({
+            where: {
+                user_id: userId
+            },
             include: {
                 folders: true,
                 users: {
@@ -21,8 +24,12 @@ export default class ProjectRepository {
         });
     };
 
-    static async getById(id: string) {
+    static async getById(id: string, userId: string) {
         return prisma.projects.findUnique({
+            where: {
+                id: id,
+                user_id: userId
+            },
             include: {
                 folders: true,
                 users: {
@@ -33,8 +40,17 @@ export default class ProjectRepository {
                     },
                 },
             },
+        });
+    };
+
+    static async getByFolderId(folderId: string, userId: string) {
+        return prisma.projects.findFirst({
             where: {
-                id: id
+                folder_id: folderId,
+                user_id: userId
+            },
+            include: {
+                folders: true
             }
         });
     };
