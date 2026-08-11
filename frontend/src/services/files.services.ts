@@ -2,6 +2,10 @@ import fetchRequest from "@/lib/http/client";
 import apiRoutes from "@/lib/http/api";
 import type { CompleteFileUploadBody, CreateFileBody } from "@/schemas/files/files.schema";
 
+export async function getFilesByFolderiId(folderId: string) {
+    return fetchRequest({ method: "GET", url: `${apiRoutes.files}/${folderId}` });
+};
+
 export async function createFile(data: CreateFileBody) {
     return fetchRequest({ method: "POST", url: `${apiRoutes.files}/upload-url`, body: data });
 };

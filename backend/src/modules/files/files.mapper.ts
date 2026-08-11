@@ -11,7 +11,47 @@ type payloadPedingCreate = {
     userId: string;
 };
 
+// FIXME: TENTAR PEGAR UM TIPO PRONTO AO INVES DE CRIAR UM
+
+type files = {
+    folder_id: string | null;
+    original_name: string;
+    mime_type: string;
+    size: bigint;
+    id: string;
+    storage_name: string;
+    object_key: string;
+    bucket: string;
+    extension: string;
+    checksum: string | null;
+    status: string;
+    created_at: Date;
+    uploaded_at: Date | null;
+    updated_at: Date;
+    user_id: string;
+    deleted_at: Date | null;
+} 
+
 export default class FilesMapper {
+
+    static async toResponseGet(file: files) {
+        return {
+            id: file.id,
+            folder_id: file.folder_id ,
+            original_name: file.original_name,
+            storage_name: file.storage_name,
+            object_key: file.object_key,
+            bucket: file.bucket,
+            mime_type: file.mime_type,
+            extension: file.extension,
+            // size: file.size as number,
+            checksum: file.checksum,
+            status: file.status,
+            created_at: file.created_at,
+            uploaded_at: file.uploaded_at,
+            updated_at: file.updated_at,
+        }
+    };
 
     static toPrismaPendingCreate({
         data,
