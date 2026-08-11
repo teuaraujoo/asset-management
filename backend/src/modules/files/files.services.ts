@@ -72,8 +72,6 @@ export default class FilesServices {
     };
 
     static async complete(id: string, body: completeUploadFileBody) {
-        //TODO: VERIFICAR SE ARQUIVO EXISTE NO BUCKET ✓
-        //TODO: ADICIONAR MAIS STATUS AO FILE -> CASO FALHE, MARCA "FAILED" ✓
         //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
         const file = await FilesRepository.getById(id);
 

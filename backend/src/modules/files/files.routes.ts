@@ -1,21 +1,21 @@
 import express from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import FilesController from "./files.controllers";
-import { Limiters } from "../../libs/express-rate-limit";
+import { uploadFileLimiter } from "../../libs/express-rate-limit";
 
 const router = express.Router();
 
 router.post(
     "/files/upload-url",
-    Limiters.generalCreateLimiter,
+    uploadFileLimiter,
     authenticateMiddleware,
     FilesController.prepareUpload
 );
 
 router.put(
-    "/files/:id/complete", 
-    Limiters.generalCreateLimiter,
-    authenticateMiddleware, 
+    "/files/:id/complete",
+    uploadFileLimiter,
+    authenticateMiddleware,
     FilesController.complete
 );
 

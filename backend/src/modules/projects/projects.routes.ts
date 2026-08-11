@@ -1,7 +1,7 @@
 import express from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import ProjectController from "./projects.controllers";
-import { Limiters } from "../../libs/express-rate-limit";
+import { createProjectLimiter } from "../../libs/express-rate-limit";
 
 const router = express.Router();
 
@@ -25,21 +25,21 @@ router.get(
 // router.get("projects/:id/download");
 router.post(
     "/projects",
-    Limiters.generalCreateLimiter,
+    createProjectLimiter,
     authenticateMiddleware,
     ProjectController.create
 );
 
 router.patch(
     "/projects/:id",
-    Limiters.generalCreateLimiter,
+    createProjectLimiter,
     authenticateMiddleware,
     ProjectController.update
 );
 
 router.delete(
     "/projects/:id",
-    Limiters.generalCreateLimiter,
+    createProjectLimiter,
     authenticateMiddleware,
     ProjectController.delete
 );

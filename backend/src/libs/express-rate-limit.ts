@@ -7,15 +7,16 @@ export const loginLimiter = rateLimit({
     legacyHeaders: false // Desativa cabeçalhos antigos com prefixo X-
 });
 
-//TODO: CRIAR LIMIT PARA CADA CASO DE USO
-// FIXME: CORRIGIR TEMPO DE LIMITADOR PARA ALGUNS CASOS DE USO
+export const uploadFileLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, 
+    max: 15, 
+    message: { message: "Muitas tentativas de upload. Tente novamente mais tarde." },
+    legacyHeaders: false
+});
 
-export class Limiters {
-
-    static generalCreateLimiter = rateLimit({
-        windowMs: 60 * 60 * 1000, // 1 hora
-        max: 5, // 5 vezes 
-        message: { message: "Muitas tentativas de criar projeto. Tente novamente mais tarde." },
-        legacyHeaders: false // Desativa cabeçalhos antigos com prefixo X-
-    });
-};
+export const createProjectLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hora
+    max: 5, 
+    message: { message: "Muitas tentativas de criar projeto. Tente novamente mais tarde." },
+    legacyHeaders: false
+});
