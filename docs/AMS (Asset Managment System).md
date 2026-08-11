@@ -232,19 +232,20 @@ const putUrl = await getSignedUrl(
     - Login - POST - /auth/login
     - Logout - POST - /auth/logout
     - Refresh - GET - /auth/refresh
+    - Me - GET - /auth/me
 
 - Arquivos
-    - Upload - POST - /files/upload
+    - Upload - POST - /files/upload-url
     - Complete upload - PUT - /files/:id/complete
     - Download - GET - /files/:id/download
     - Editar - PATCH - /files/:id
     - Deletar - DELETE - /files/:id
-    - Listar - GET - /files
-    - Listar pelo id - GET - /files/:id
+    - Listar arquivos de uma pasta - GET - /files/:folderId
 
 - Projetos
     - GET - /projects
     - GET - /projects/:id
+    - GET - /projects/:folderId/files
     - POST - Upload - /projects
     - PATCH - /projects/:id
     - DELETE - /projects/:id

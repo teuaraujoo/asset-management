@@ -50,7 +50,7 @@ export default class FilesServices {
         //TODO: VERIFICAR DE FATO O MIMETYPE  / EXTESNION -> UMA OPCAO SERIA PASSAR O ARQUIVO PARA A API MAS NAO RETORNA-LO PARA VERIFICAR DE FATO O ARQUIVO EM SI, POREM TEM QUE VER O CONSUMO DE MEMORIA E SE ISSO É VANTAJSO PARA A ARQUITETURA IDEAL COM PRE SIGNED URLs
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension, bucket } = await this.validateFile(data, userId);
+        const { folder, mimeType, extension, bucket } = await this.validateFileOnPrepare(data, userId);
         const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
 
@@ -77,22 +77,9 @@ export default class FilesServices {
     };
 
     static async complete(id: string, body: completeUploadFileBody, userId: string) {
-        //TODO: IDEMPOTENCIA DE FILES -> CASO JA EXISTA RETORNA PARA O CLIENTE DE IMEDIATO
-        const file = await FilesRepository.getById(id);
+        const file = await this.validateFileOnComplete(id, userId);
 
         const data = completeUploadFileSchema.parse(body);
-
-        if (!file) throw new AppError("File não encontrado.", 404);
-
-        if (file.user_id !== userId) throw new AppError("Não é possível concluir upload de arquivo não pertencente ao usuário.", 403);
-
-        const bucketFile = await StorageService.getObjectMetaData(file.object_key);
-
-        if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
-
-        if (BigInt(bucketFile.ContentLength!) !== file.size) throw new AppError("Arquivo diferente do esperado.", 409);
-
-        if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
 
         const completedUpload = await FilesRepository.completeUpload(id, data.checksum);
 
@@ -103,7 +90,27 @@ export default class FilesServices {
         };
     };
 
-    private static async validateFile(data: requestFileBody, userId: string) {
+    private static async validateFileOnComplete(id: string, userId: string) {
+        const file = await FilesRepository.getById(id);
+
+        if (!file) throw new AppError("File não encontrado.", 404);
+
+        if (file.user_id !== userId) throw new AppError("Não é possível concluir upload de arquivo não pertencente ao usuário.", 403);
+
+        if (file.status === "COMPLETE") throw new AppError("Arquivo com upload já feito.", 409);
+
+        if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
+
+        const bucketFile = await StorageService.getObjectMetaData(file.object_key);
+
+        if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
+
+        if (BigInt(bucketFile.ContentLength!) !== file.size) throw new AppError("Arquivo diferente do esperado.", 409);
+
+        return file
+    };
+
+    private static async validateFileOnPrepare(data: requestFileBody, userId: string) {
         const folder = await FolderService.getById(data.folder_id);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);

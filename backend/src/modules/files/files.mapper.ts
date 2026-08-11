@@ -13,7 +13,7 @@ type payloadPedingCreate = {
 
 // FIXME: TENTAR PEGAR UM TIPO PRONTO AO INVES DE CRIAR UM
 
-type files = {
+type Files = {
     folder_id: string | null;
     original_name: string;
     mime_type: string;
@@ -30,14 +30,14 @@ type files = {
     updated_at: Date;
     user_id: string;
     deleted_at: Date | null;
-} 
+};
 
 export default class FilesMapper {
 
-    static async toResponseGet(file: files) {
+    static async toResponseGet(file: Files) {
         return {
             id: file.id,
-            folder_id: file.folder_id ,
+            folder_id: file.folder_id,
             original_name: file.original_name,
             storage_name: file.storage_name,
             object_key: file.object_key,
