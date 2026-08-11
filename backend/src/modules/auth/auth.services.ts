@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { LoginBody, loginUserSchema } from "./auth.schema";
 import AuthRepository from "./auth.repositories";
 import UserRepository from "../users/users.repositories";
-export default class AuthSerivces {
+export default class AuthServices {
 
     private static FIFTEEN_MINUTES = 15;
     private static SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;

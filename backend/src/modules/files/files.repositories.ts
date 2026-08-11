@@ -12,7 +12,7 @@ export default class FilesRepository {
     };
 
     static async getByFolderId(folderId: string) {
-        return prisma.files.findFirst({
+        return prisma.files.findMany({
             where: {
                 folder_id: folderId
             },

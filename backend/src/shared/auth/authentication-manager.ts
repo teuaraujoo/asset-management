@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import AuthSerivces from "../../modules/auth/auth.services";
+import AuthServices from "../../modules/auth/auth.services";
 
 export default class AuthenticationManage {
 
@@ -7,7 +7,7 @@ export default class AuthenticationManage {
     private static readonly SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
     static async authenticateWithRefresh(req: Request, res: Response, refreshToken: string) {
-        const result = await AuthSerivces.refresh(refreshToken);
+        const result = await AuthServices.refresh(refreshToken);
 
         req.user = {
             sub: result.user.id,

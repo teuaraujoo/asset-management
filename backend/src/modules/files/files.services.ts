@@ -34,11 +34,11 @@ export default class FilesServices {
     ]);
 
     static async getByFolderId(folderId: string) {
-        const file = await FilesRepository.getByFolderId(folderId);
+        const files = await FilesRepository.getByFolderId(folderId);
 
-        if (!file) throw new AppError("Arquivos não encontrados.", 404);
+        if (!files) throw new AppError("Arquivos não encontrados.", 404);
 
-        return FilesMapper.toResponseGet(file);
+        return files.map((file) => FilesMapper.toResponseGet(file));
     };
 
     static async prepareUpload(body: requestFileBody, userId: string) {

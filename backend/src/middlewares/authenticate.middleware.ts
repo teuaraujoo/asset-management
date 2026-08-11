@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../error/app-error";
-// import AuthSerivces from "../modules/auth/auth.services";
 import AuthenticationManage from "../shared/auth/authentication-manager";
 
 export default async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {

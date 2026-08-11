@@ -27,7 +27,7 @@ export default class FolderRepository {
     };
 
     static async delete(tx: Prisma.TransactionClient, id: string) {
-        return prisma.folders.delete({
+        return tx.folders.delete({
             where: {
                 id: id
             }
