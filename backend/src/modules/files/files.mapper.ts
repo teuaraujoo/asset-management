@@ -34,7 +34,7 @@ type Files = {
 
 export default class FilesMapper {
 
-    static async toResponseGet(file: Files) {
+    static toResponseGet(file: Files) {
         return {
             id: file.id,
             folder_id: file.folder_id,
@@ -44,7 +44,7 @@ export default class FilesMapper {
             bucket: file.bucket,
             mime_type: file.mime_type,
             extension: file.extension,
-            size: file.size,
+            size: Number(file.size),
             checksum: file.checksum,
             status: file.status,
             created_at: file.created_at,
@@ -76,7 +76,7 @@ export default class FilesMapper {
         };
     };
 
-    static async toResponsePendingCreate(file: Prisma.filesUncheckedCreateInput, uploadUrl: string) {
+    static toResponsePendingCreate(file: Prisma.filesUncheckedCreateInput, uploadUrl: string) {
         return {
             file_id: file.id,
             uploadUrl: uploadUrl,

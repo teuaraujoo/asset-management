@@ -190,6 +190,7 @@ const putUrl = await getSignedUrl(
 7. Outros sistemas devem consumir arquivos por URL retornada pela API, nunca pelo banco.
 8. Todo projeto possui uma pasta. Mudou nome de projeto, muda nome de pasta. Excluiu pasta, exclui projeto. Nome do projeto é o mesmo nome da pasta. **(Mesmo vale para descrição)**
 9. O refresh token possui 1 semana de valdiade.
+10. Todo arquivo enviado deve possuir um checksum SHA-256 codificado em Base64 para validação de integridade.
 
 ## MIME Types
 
