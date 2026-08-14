@@ -66,12 +66,19 @@ export default class ProjectService {
 
         if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
 
-        // if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
+        const bucketProject = await StorageService.listObjects(project.folders.path);
+
+        if (!bucketProject) {
+            ProjectRepository.delete(id);
+            throw new AppError("Projeto não existente no bucket.", 409);
+        };
+
+        bucketProject.Contents?.map(async (file) => {
+            await StorageService.deleteObject(file.Key!);
+        });
 
         await ProjectRepository.delete(id);
 
-        const deleteBlob = await StorageService.deleteObject(project.folders.path);
-
-        if (!deleteBlob) throw new AppError("Error ao deletar do bucket");
+        return;
     };
 };
