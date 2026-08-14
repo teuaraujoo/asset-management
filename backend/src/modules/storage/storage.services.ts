@@ -1,5 +1,5 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand, HeadObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../../libs/r2-bucket";
 export default class StorageService {
 
@@ -59,6 +59,20 @@ export default class StorageService {
                 ChecksumMode: "ENABLED",
             })
         );
+    };
+
+    static async renameOnject(oldKey: string, newKey: string) {
+        console.log("CopySource: ",`${this.BUCKET_NAME}/${oldKey}`)
+        await s3.send(new CopyObjectCommand({
+            Bucket: this.BUCKET_NAME,
+            CopySource: `${this.BUCKET_NAME}/${encodeURIComponent(oldKey)}`,
+            Key: newKey
+        }));
+
+        await s3.send(new DeleteObjectCommand({
+            Bucket: this.BUCKET_NAME,
+            Key: oldKey
+        }));
     };
 
     static async generatePressignedUrl(

@@ -3,7 +3,7 @@ import AppError from "../../error/app-error";
 import FilesRepository from "./files.repositories";
 import { randomUUID } from "node:crypto";
 import FolderService from "../folders/folders.services";
-import { requestFileBody, requestFileSchema } from "./files.schemas";
+import { renameFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
 import StorageService from "../storage/storage.services";
 import ProjectService from "../projects/projects.services";
@@ -87,12 +87,11 @@ export default class FilesServices {
     };
 
     static async delete(id: string, userId: string) {
-        console.log("aquiiii")
         const file = await FilesRepository.getById(id);
 
-        if (!file) throw new AppError("", 400);
+        if (!file) throw new AppError("Arquivo não encontrado.", 400);
 
-        if (file.user_id !== userId) throw new AppError("", 403);
+        if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
 
         const fileOnBucket = StorageService.getObjectMetaData(file.object_key);
 
@@ -106,6 +105,32 @@ export default class FilesServices {
 
         return;
     };
+
+    static async rename(id: string, userId: string, body: string) {
+        const data = renameFileSchema.parse(body);
+
+        const file = await FilesRepository.getById(id);
+
+        if (!file) throw new AppError("Arquivo não encontrado.", 400);
+
+        if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
+
+        const folder = await FolderService.getById(file.folder_id!);
+
+        if (!folder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
+
+        const storageName = this.generateStorageName(file.extension, data.name);
+        const objectKey = `${this.MAIN_FOLDER_NAME}/${folder.slug}/${storageName}`;
+
+        await FilesRepository.rename(id, { original_name: data.name, storage_name: storageName, object_key: objectKey });
+        await StorageService.renameOnject(file.object_key, objectKey);
+
+        return;
+    };
+
+    private static validateExistingAndIDORFiles() {
+
+    }
 
     private static async validateFileOnComplete(id: string, userId: string) {
         const file = await FilesRepository.getById(id);

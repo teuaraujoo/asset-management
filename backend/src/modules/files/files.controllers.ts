@@ -37,8 +37,20 @@ export default class FilesController {
 
         await FilesServices.delete(id, userId)
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             message: "Arquivo deletado com sucesso."
-         });
+        });
+    };
+
+    static async rename(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+        const body = req.body;
+
+        await FilesServices.rename(id, userId, body);
+
+        return res.status(200).json({
+            message: "Arquivo renomeado com sucesso."
+        });
     };
 };

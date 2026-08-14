@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
-import { deleteFile } from "@/services/files.services";
+import { deleteFile, renameFile } from "@/services/files.services";
 import type { FileItem } from "@/@types/files/files.types";
 
 export default function DashboardProjectPage() {
@@ -26,6 +26,16 @@ export default function DashboardProjectPage() {
     async function handleDeleteFile(file: FileItem) {
         await toast.promise(deleteFile(file.id), {
             loading: 'Excluindo...',
+            success: (response) => response.message,
+            error: (error) => error.message || "Error ao conectar com o servidor!",
+        });
+
+        await refetch();
+    };
+
+    async function handleRename(id: string, name: string) {
+        await toast.promise(renameFile(id, name), {
+            loading: 'Renomeando...',
             success: (response) => response.message,
             error: (error) => error.message || "Error ao conectar com o servidor!",
         });
@@ -74,7 +84,7 @@ export default function DashboardProjectPage() {
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {files.map((file) => (
-                        <FileCard key={file.id} file={file} onDelete={handleDeleteFile} />
+                        <FileCard key={file.id} file={file} onDelete={handleDeleteFile} onRename={handleRename} />
                     ))}
                 </div>
             )}

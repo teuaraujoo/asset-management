@@ -59,4 +59,17 @@ export default class FilesRepository {
             }
         });
     };
+
+    static async rename(id: string, file: Prisma.filesUncheckedUpdateInput) {
+        return prisma.files.update({
+            where: {
+                id: id,
+            },
+            data: {
+                original_name: file.original_name,
+                storage_name: file.storage_name,
+                object_key: file.object_key
+            }
+        });
+    };
 };

@@ -31,4 +31,10 @@ router.delete(
     FilesController.delete
 );
 
+router.patch(
+    "/files/:id",
+    authenticateMiddleware,
+    FilesController.rename
+)
+
 export default router;

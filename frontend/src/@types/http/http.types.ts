@@ -5,5 +5,5 @@ import type { CompleteFileUploadBody, CreateFileBody } from "@/schemas/files/fil
 export type fetchProps = {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     url: string;
-    body?: LoginBody | ProjectBody | CreateFileBody | CompleteFileUploadBody;
+    body?: LoginBody | ProjectBody | CreateFileBody | CompleteFileUploadBody | { name: string };
 };

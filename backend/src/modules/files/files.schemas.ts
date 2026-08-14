@@ -24,3 +24,5 @@ export const createFileSchema = z.object({
 });
 
 export type FileSchema = z.infer<typeof createFileSchema>;
+
+export const renameFileSchema = z.object({ name: z.string() });

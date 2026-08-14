@@ -18,6 +18,10 @@ export async function deleteFile(fileId: string) {
     return fetchRequest({ method: "DELETE", url: `${apiRoutes.files}/${fileId}` });
 };
 
+export async function renameFile(fileId: string, name: string) {
+    return fetchRequest({ method: "PATCH", url: `${apiRoutes.files}/${fileId}`, body: { name } });
+};
+
 export async function uploadToBucket(signedUrl: string, file: File) {
 
     const response = await fetch(signedUrl, {
