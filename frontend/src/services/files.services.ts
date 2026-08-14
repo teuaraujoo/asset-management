@@ -14,6 +14,10 @@ export async function completeUpload(fileId: string) {
     return fetchRequest({ method: "PUT", url: `${apiRoutes.files}/${fileId}/complete` });
 };
 
+export async function deleteFile(fileId: string) {
+    return fetchRequest({ method: "DELETE", url: `${apiRoutes.files}/${fileId}` });
+};
+
 export async function uploadToBucket(signedUrl: string, file: File) {
 
     const response = await fetch(signedUrl, {

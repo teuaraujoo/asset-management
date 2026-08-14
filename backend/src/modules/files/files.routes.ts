@@ -25,4 +25,10 @@ router.get(
     FilesController.getByFolderId
 );
 
+router.delete(
+    "/files/:id",
+    authenticateMiddleware,
+    FilesController.delete
+);
+
 export default router;

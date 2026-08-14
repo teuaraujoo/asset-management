@@ -30,4 +30,15 @@ export default class FilesController {
 
         return res.status(200).json({ message: "Status atualizado com sucesso." });
     };
+
+    static async delete(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+
+        await FilesServices.delete(id, userId)
+
+        return res.status(200).json({ 
+            message: "Arquivo deletado com sucesso."
+         });
+    };
 };

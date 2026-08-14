@@ -86,23 +86,44 @@ export default class FilesServices {
         return;
     };
 
+    static async delete(id: string, userId: string) {
+        console.log("aquiiii")
+        const file = await FilesRepository.getById(id);
+
+        if (!file) throw new AppError("", 400);
+
+        if (file.user_id !== userId) throw new AppError("", 403);
+
+        const fileOnBucket = StorageService.getObjectMetaData(file.object_key);
+
+        if (!fileOnBucket) {
+            await StorageService.deleteObject(file.object_key);
+            throw new AppError("Arquivo não encontado no bucket.", 409);
+        };
+
+        await FilesRepository.delete(id);
+        await StorageService.deleteObject(file.object_key);
+
+        return;
+    };
+
     private static async validateFileOnComplete(id: string, userId: string) {
         const file = await FilesRepository.getById(id);
-        
+
         if (!file) throw new AppError("File não encontrado.", 404);
 
         if (file.user_id !== userId) throw new AppError("Não é possível concluir upload de arquivo não pertencente ao usuário.", 403);
 
         if (file.status === "COMPLETE") throw new AppError("Arquivo com upload já feito.", 409);
-        
+
         if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
-        
+
         const bucketFile = await StorageService.getObjectMetaData(file.object_key);
-        
+
         if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
 
         if (BigInt(bucketFile.ContentLength!) !== file.size) await this.handleFailedUpload(file.id, file.object_key);
-        
+
         return file;
     };
 

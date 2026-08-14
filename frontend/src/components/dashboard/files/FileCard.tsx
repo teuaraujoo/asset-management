@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 
 interface FileCardProps {
     file: FileItem;
+    onDelete?: (file: FileItem) => void;
 }
 
 const renderIcon = (mimeType: string | undefined, className: string) => {
@@ -41,7 +42,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
-export function FileCard({ file }: FileCardProps) {
+export function FileCard({ file, onDelete }: FileCardProps) {
     return (
 
         <Card className="relative flex flex-col justify-between overflow-hidden transition-all hover:shadow-md group">
@@ -72,7 +73,7 @@ export function FileCard({ file }: FileCardProps) {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             variant="destructive"
-                            // onClick={() => onDelete?.(project)}
+                            onClick={() => onDelete?.(file)}
                             className="cursor-pointer"
                         >
                             <Trash2 className="size-4" />

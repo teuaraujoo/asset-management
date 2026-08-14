@@ -41,6 +41,14 @@ export default class FilesRepository {
         });
     };
 
+    static async delete(id: string) {
+        return prisma.files.delete({
+            where: {
+                id: id
+            }
+        });
+    };
+
     static async failedUplaod(id: string) {
         return prisma.files.update({
             where: {

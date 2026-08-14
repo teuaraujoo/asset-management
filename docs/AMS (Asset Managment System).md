@@ -588,6 +588,9 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
   
 - Na programação, usar dois pontos de exclamação antes de uma variável (!!variavel) serve para converter o valor da variável em um tipo booleano (verdadeiro ou falso), forçando a negação dupla do valor original.
 
+- O que é prefix no listObjects da API do S3? 
+    R:
+
 - Cada serviço deve conhecer apenas as regras do seu próprio domínio.
 
 - O navegador quando possue um url pré assinada primeiro envia uma requisição do tipo OPTIONS
