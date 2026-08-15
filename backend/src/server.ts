@@ -14,7 +14,12 @@ const app = express();
 const apiVersion = "/api/v1";
 const allowedOrigins = [
     "http://localhost:5173",
+    "https://ams-teuaraujo.netlify.app"
 ];
+
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
 
 app.use(express.json());
 app.use(cookieParser());
@@ -22,7 +27,7 @@ app.use(helmet());
 app.use(compression());
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
+        origin: allowedOrigins,
         credentials: true,
     })
 );
