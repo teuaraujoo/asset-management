@@ -21,12 +21,14 @@ export default class AuthServices {
 
             if (!correctPassword) throw new AppError("Senha ou email incorretos!", 401);
 
+            if (!process.env.JWT_SECRET) throw new AppError("JWT SECRET não configurado na variável de ambiente.", 500);
+
             const accessToken = jwt.sign(
                 {
                     sub: user.id,
                     email: user.email
                 },
-                process.env.JWT_SECRET!,
+                process.env.JWT_SECRET,
                 {
                     expiresIn: `${this.FIFTEEN_MINUTES}m`,
                     algorithm: "HS256", // Algoritimo usado na assinatura

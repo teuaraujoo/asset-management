@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma/browser";
+import { Prisma } from "../../generated/prisma/client";
 import prisma from "../../libs/prisma";
 import FolderRepository from "../folders/folders.repositories";
 

@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma/browser";
+import { Prisma } from "../../generated/prisma/client";
 import prisma from "../../libs/prisma";
 export default class AuthRepository {
     static async persistRefreshToken(data: Prisma.refresh_tokensCreateInput) {

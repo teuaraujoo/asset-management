@@ -1,19 +1,24 @@
 import AuthServices from "./auth.services";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import AuthenticationManage from "../../shared/auth/authentication-manager";
 
 export default class AuthController {
 
-    static async login(req: Request, res: Response) {
-        const body = await req.body;
+    static async login(req: Request, res: Response, next: NextFunction) {
+        try {
 
-        const result = await AuthServices.login(body);
+            const body = await req.body;
 
-        AuthenticationManage.setCookies(req, res, result.accessToken, result.refreshToken)
+            const result = await AuthServices.login(body);
 
-        return res.status(200).json({
-            message: `Login realizado com sucesso. Bem vindo ${result.user.name}`,
-        });
+            AuthenticationManage.setCookies(req, res, result.accessToken, result.refreshToken)
+
+            return res.status(200).json({
+                message: `Login realizado com sucesso. Bem vindo ${result.user.name}`,
+            });
+        } catch (err) {
+            return next(err);
+        };
     };
 
     static async logout(req: Request, res: Response) {
@@ -34,9 +39,14 @@ export default class AuthController {
         res.status(200).json({ message: "Token renovado com sucesso." });
     };
 
-    static async me(req: Request, res: Response) {
-        const result = await AuthServices.me(req.user.email);
+    static async me(req: Request, res: Response, next: NextFunction) {
+        try {
 
-        res.status(200).json({ message: "infos encontradas com sucesso.", data: result });
+            const result = await AuthServices.me(req.user.email);
+
+            res.status(200).json({ message: "infos encontradas com sucesso.", data: result });
+        } catch (err) {
+            return next(err)
+        };
     };
 };
