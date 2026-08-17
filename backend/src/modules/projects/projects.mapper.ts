@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma/browser";
+import { Prisma } from "../../generated/prisma/client";
 import { CreateProjectBody } from "./projects.schema";
 
 export type ProjectWithRelations = Prisma.projectsGetPayload<{
