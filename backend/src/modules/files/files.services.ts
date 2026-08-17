@@ -114,23 +114,35 @@ export default class FilesServices {
         if (!file) throw new AppError("Arquivo não encontrado.", 400);
 
         if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
-
+        
         const folder = await FolderService.getById(file.folder_id!);
-
+        
         if (!folder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
-
+        
         const storageName = this.generateStorageName(file.extension, data.name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder.slug}/${storageName}`;
-
+        
         await FilesRepository.rename(id, { original_name: data.name, storage_name: storageName, object_key: objectKey });
         await StorageService.renameOnject(file.object_key, objectKey);
-
+        
         return;
+    };
+    
+    static async download(id: string, userId: string) {
+        const file = await FilesRepository.getById(id);
+        
+        if (!file) throw new AppError("Arquivo não encontrado.", 400);
+    
+        if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
+
+        const signedUrl = await StorageService.generateDownloadPreSignedUrl(file.object_key);
+
+        return FilesMapper.toResponseDownload(file, signedUrl);
     };
 
     private static validateExistingAndIDORFiles() {
 
-    }
+    };
 
     private static async validateFileOnComplete(id: string, userId: string) {
         const file = await FilesRepository.getById(id);

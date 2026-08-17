@@ -5,6 +5,19 @@ import { uploadFileLimiter } from "../../libs/express-rate-limit";
 
 const router = express.Router();
 
+router.get(
+    "/files/:id/download",
+    authenticateMiddleware,
+    FilesController.download
+);
+
+router.get(
+    "/files/:folderId",
+    authenticateMiddleware,
+    FilesController.getByFolderId
+);
+
+
 router.post(
     "/files/upload-url",
     uploadFileLimiter,
@@ -19,12 +32,6 @@ router.put(
     FilesController.complete
 );
 
-router.get(
-    "/files/:folderId",
-    authenticateMiddleware,
-    FilesController.getByFolderId
-);
-
 router.delete(
     "/files/:id",
     authenticateMiddleware,
@@ -35,6 +42,6 @@ router.patch(
     "/files/:id",
     authenticateMiddleware,
     FilesController.rename
-)
+);
 
 export default router;

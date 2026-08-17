@@ -9,7 +9,8 @@ import {
     ArchiveIcon,
     Pencil,
     MoreVertical,
-    Trash2
+    Trash2,
+    Download
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -33,6 +34,7 @@ interface FileCardProps {
     file: FileItem;
     onDelete?: (file: FileItem) => void;
     onRename?: (id: string, name: string) => void;
+    onDownload?: (id: string) => void; 
 }
 
 const renderIcon = (mimeType: string | undefined, className: string) => {
@@ -53,7 +55,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
-export function FileCard({ file, onDelete, onRename }: FileCardProps) {
+export function FileCard({ file, onDelete, onRename, onDownload }: FileCardProps) {
     const [isRenameOpen, setIsRenameOpen] = useState(false);
 
     const getBaseName = () => {
@@ -108,6 +110,15 @@ export function FileCard({ file, onDelete, onRename }: FileCardProps) {
                             >
                                 <Pencil className="size-4" />
                                 Renomear
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                variant="default"
+                                onClick={() => onDownload?.(file.id)}
+                                className="cursor-pointer"
+                            >
+                                <Download className="size-4" />
+                                Download
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

@@ -84,4 +84,12 @@ export default class FilesMapper {
             storageName: file.storage_name
         };
     };
+
+    static toResponseDownload(file: Prisma.filesUncheckedCreateInput, downloadUrl: string) {
+        return {
+            file_id: file.id,
+            file_name: file.original_name,
+            downloadUrl: downloadUrl
+        };
+    };
 };

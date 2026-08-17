@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFiles } from "@/hooks/files/use-files";
 import { useParams, useNavigate } from "react-router-dom";
 import { FileCard } from "@/components/dashboard/files/FileCard";
@@ -5,13 +6,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
-import { deleteFile, renameFile } from "@/services/files.services";
+import { deleteFile, downloadFile, downloadFromBucket, renameFile } from "@/services/files.services";
 import type { FileItem } from "@/@types/files/files.types";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function DashboardProjectPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { files, isLoading, error, refetch } = useFiles(id);
+    const [downloadTarget, setDownloadTarget] = useState<string | null>(null);
 
     if (!id) return null;
 
@@ -43,6 +54,26 @@ export default function DashboardProjectPage() {
         await refetch();
     };
 
+    function handleDownload(id: string) {
+        setDownloadTarget(id);
+    };
+
+    async function confirmDownload() {
+        if (!downloadTarget) return;
+        setDownloadTarget(null); 
+        await toast.promise(
+            // Uma única Promise encadeia as duas operações
+            (async () => {
+                const result = await downloadFile(downloadTarget);       // 1° chama a API
+                await downloadFromBucket(result.downloadUrl, result.file_name); // 2° baixa do bucket
+            })(),
+            {
+                loading: "Baixando...",
+                success: "Download realizado com sucesso.",
+                error: (err) => err instanceof Error ? err.message : "Erro ao fazer download.",
+            }
+        );
+    };
 
     return (
         <div className="space-y-6">
@@ -84,10 +115,29 @@ export default function DashboardProjectPage() {
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {files.map((file) => (
-                        <FileCard key={file.id} file={file} onDelete={handleDeleteFile} onRename={handleRename} />
+                        <FileCard key={file.id} file={file} onDelete={handleDeleteFile} onRename={handleRename} onDownload={handleDownload} />
                     ))}
                 </div>
             )}
+
+            <Dialog open={!!downloadTarget} onOpenChange={(open) => !open && setDownloadTarget(null)}>
+                <DialogContent showCloseButton={false}>
+                    <DialogHeader>
+                        <DialogTitle>Confirmar download</DialogTitle>
+                        <DialogDescription>
+                            Deseja baixar este arquivo?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <DialogClose render={<Button variant="outline" />}>
+                            Cancelar
+                        </DialogClose>
+                        <Button onClick={confirmDownload}>
+                            Baixar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

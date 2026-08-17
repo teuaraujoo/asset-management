@@ -22,6 +22,10 @@ export async function renameFile(fileId: string, name: string) {
     return fetchRequest({ method: "PATCH", url: `${apiRoutes.files}/${fileId}`, body: { name } });
 };
 
+export async function downloadFile(fileId: string) {
+    return fetchRequest({ method: "GET", url: `${apiRoutes.files}/${fileId}/download` });
+};
+
 export async function uploadToBucket(signedUrl: string, file: File) {
 
     const response = await fetch(signedUrl, {
@@ -35,4 +39,25 @@ export async function uploadToBucket(signedUrl: string, file: File) {
     if (!response.ok) throw new Error(`Falha no upload (${response.status})`);
 
     return true;
+};
+
+export async function downloadFromBucket(downloadUrl: string, filename: string) {
+
+    const response = await fetch(downloadUrl);
+
+    if (!response.ok) throw new Error("Não foi possível baixar o arquivo.");
+
+    const blob = await response.blob(); // converte resposta em blob
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a"); // cria um <a> invisível para forçar downmlaod
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
 };

@@ -5,23 +5,15 @@ export default class StorageService {
 
     private static BUCKET_NAME = "asset-management";
 
-    static async upload(key: string, body: string) {
-        return s3.send(
-            new PutObjectCommand({
-                Bucket: this.BUCKET_NAME,
-                Key: key,
-                Body: body
-            }),
-        );
-    };
+    static async generateDownloadPreSignedUrl(key: string) {
+        const command = new GetObjectCommand({
+            Bucket: this.BUCKET_NAME,
+            Key: key
+        });
 
-    static async download(key: string) {
-        return s3.send(
-            new GetObjectCommand({
-                Bucket: this.BUCKET_NAME,
-                Key: key
-            }),
-        );
+        return getSignedUrl(s3, command, {
+            expiresIn: 60 * 5
+        });
     };
 
     static async listFolders() {
@@ -62,7 +54,7 @@ export default class StorageService {
     };
 
     static async renameOnject(oldKey: string, newKey: string) {
-        console.log("CopySource: ",`${this.BUCKET_NAME}/${oldKey}`)
+        console.log("CopySource: ", `${this.BUCKET_NAME}/${oldKey}`)
         await s3.send(new CopyObjectCommand({
             Bucket: this.BUCKET_NAME,
             CopySource: `${this.BUCKET_NAME}/${encodeURIComponent(oldKey)}`,

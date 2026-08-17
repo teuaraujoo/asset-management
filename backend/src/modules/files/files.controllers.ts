@@ -53,4 +53,15 @@ export default class FilesController {
             message: "Arquivo renomeado com sucesso."
         });
     };
+
+    static async download(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+
+        const result = await FilesServices.download(id, userId);
+
+        return res.status(200).json({
+            data: result
+        });
+    };
 };
