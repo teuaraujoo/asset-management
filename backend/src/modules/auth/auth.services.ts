@@ -13,9 +13,12 @@ export default class AuthServices {
     static async login(body: LoginBody) {
         try {
             const data = loginUserSchema.parse(body);
+            
             const user = await UserRepository.getUserByEmail(data.email);
 
             if (!user) throw new AppError("Senha ou email inválidos.", 401);
+
+            if (!user.is_active) throw new AppError("Usuário desativado.", 403);
 
             const correctPassword = await bcrypt.compare(body.password, user.password_hash);
 
@@ -105,6 +108,8 @@ export default class AuthServices {
 
             if (!user) throw new AppError("Nenhum usuário vinculado a esse token.", 401);
 
+            if (!user.is_active) throw new AppError("Usuário desativado.", 403);
+
             const accessToken = jwt.sign(
                 {
                     sub: user.id,
@@ -136,6 +141,8 @@ export default class AuthServices {
         const user = await UserRepository.getUserByEmail(email);
 
         if (!user) throw new AppError("Usuário não encontrado.", 404);
+
+        if (!user.is_active) throw new AppError("Usuário desativado.", 403);
 
         return {
             id: user.id,
