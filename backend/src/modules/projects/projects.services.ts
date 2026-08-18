@@ -50,11 +50,11 @@ export default class ProjectService {
     static async create(body: CreateProjectBody, userId: string) {
         const data = createProjectSchema.parse(body);
 
-        const folder = await FolderService.create({ name: data.name, description: data.description });
+        const folderData = await FolderService.toPrepareCreate({ name: data.name, description: data.description });
 
-        const project = await ProjectRepository.create(ProjectMapper.toPrismaCreate(data, folder.id, userId));
+        const project = await ProjectRepository.create(ProjectMapper.toPrismaCreate(data, folderData, userId));
 
-        return ProjectMapper.toResponseCreate(project, folder)
+        return ProjectMapper.toResponseCreate(project, project.folders);
     };
 
     static async update() {

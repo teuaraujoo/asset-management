@@ -23,20 +23,17 @@ export default class FolderService {
         return folder;
     };
 
-    static async create(body: CreateFolderBody) {
+    static async toPrepareCreate(body: CreateFolderBody) {
         const data = createFolderSchema.parse(body);
-        const folder = await FolderRepository.getByName(data.name);
 
-        if (folder) throw new AppError("Já existe uma pasta com esse nome.", 409);
+        const existingFolder = await FolderRepository.getByName(data.name);
+
+        if (existingFolder) throw new AppError("Já existe uma pasta com esse nome.", 409);
 
         const slug = this.generateFolderSlug(data.name);
         const folderPath = `${this.MAIN_FOLDER_NAME}/${slug}/`;
 
-        const persistFolder = await FolderRepository.create(
-            FolderMapper.toPrismaCreate(data, slug, folderPath)
-        );
-
-        return persistFolder;
+        return FolderMapper.toPrismaCreate(data, slug,  folderPath);
     };
 
     private static generateFolderSlug(name: string) {

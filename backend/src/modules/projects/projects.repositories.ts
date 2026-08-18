@@ -55,9 +55,12 @@ export default class ProjectRepository {
         });
     };
 
-    static create(project: Prisma.projectsCreateInput) {
+    static create(data: Prisma.projectsCreateInput) {
         return prisma.projects.create({
-            data: project
+            data: data,
+            include: {
+                folders: true
+            }
         });
     };
 
