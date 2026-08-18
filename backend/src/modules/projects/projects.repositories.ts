@@ -67,7 +67,7 @@ export default class ProjectRepository {
 
     static async delete(id: string) {
         await prisma.$transaction(async (tx) => {
-            const deletedProject = await prisma.projects.delete({
+            const deletedProject = await tx.projects.delete({
                 where: {
                     id: id
                 }
