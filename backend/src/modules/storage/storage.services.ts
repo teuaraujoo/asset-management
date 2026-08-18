@@ -51,7 +51,7 @@ export default class StorageService {
         );
     };
 
-    static async renameOnject(oldKey: string, newKey: string) {
+    static async renameObject(oldKey: string, newKey: string) {
         console.log("CopySource: ", `${process.env.STORAGE_BUCKET}/${oldKey}`)
         await s3.send(new CopyObjectCommand({
             Bucket: process.env.STORAGE_BUCKET,

@@ -93,7 +93,7 @@ export default class FilesServices {
 
         if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
 
-        const fileOnBucket = StorageService.getObjectMetaData(file.object_key);
+        const fileOnBucket = await StorageService.getObjectMetaData(file.object_key);
 
         if (!fileOnBucket) {
             await StorageService.deleteObject(file.object_key);
@@ -118,8 +118,8 @@ export default class FilesServices {
         const storageName = this.generateStorageName(file.extension, data.name);
         const objectKey = `${this.MAIN_FOLDER_NAME}/${folder.slug}/${storageName}`;
 
+        await StorageService.renameObject(file.object_key, objectKey);
         await FilesRepository.rename(id, { original_name: data.name, storage_name: storageName, object_key: objectKey });
-        await StorageService.renameOnject(file.object_key, objectKey);
 
         return;
     };
