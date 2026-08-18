@@ -19,7 +19,7 @@ export default function errorHandler(
         }));
 
         return res.status(400).json({
-            message: "Dados inválidos.",
+            message: errors[0].message ?? "Dados inválidos.",
             errors,
         });
     };

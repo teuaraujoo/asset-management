@@ -1,11 +1,32 @@
 import { z } from "zod";
 
+const allowedMimeTypes = [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "video/mp4",
+] as const;
+
 export const requestFileSchema = z.object({
     folder_id: z.string(),
-    original_name: z.string(),
-    mime_type: z.string(),
-    size: z.number(),
-    checksum: z.string().length(44)
+    original_name: z.string()
+        .trim()
+        .min(1, "Nome do arquivo obrigatório.")
+        .max(255, "Nome do arquivo muito longo."),
+    mime_type: z.enum(allowedMimeTypes, {
+        message: "Tipo MIME não permitido"
+    }),
+    size: z.number()
+        .int("Tamanho deve ser inteiro.")
+        .positive("Arquivo não pode estar vazio.")
+        .max(
+            1024 * 1024 * 1024,
+            "Arquivo excede 1 GiB.",
+        ),
+    checksum: z.string()
+        .regex(
+            /^[A-Za-z0-9+/]{43}=$/,
+            "Checksum SHA-256 Base64 inválido.")
 });
 
 export type requestFileBody = z.infer<typeof requestFileSchema>

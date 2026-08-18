@@ -11,28 +11,12 @@ export default class FilesServices {
 
     private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
     private static MAIN_FOLDER_NAME = "projetos";
-    private static BLOCKED_MIME_TYPES = new Set<string>([
-        "application/x-msdownload",      // .exe
-        "application/x-dosexec",         // .exe (Linux)
-        "application/x-msdos-program",   // .exe
-        "application/x-msi",             // .msi
-        "application/x-bat",             // .bat
-        "application/x-msdos-program",   // .bat/.cmd
-        "application/x-sh",              // .sh
-        "application/x-cgi",             // .cgi
-        "application/java-archive",      // .jar
-        "application/x-mach-binary",     // .app (macOS)
-    ]);
-    private static BLOCKED_EXTENSIONS = new Set<string>([
-        ".exe",
-        ".dll",
-        ".bat",
-        ".cmd",
-        ".sh",
-        ".cgi",
-        ".jar",
-        ".app",
-    ]);
+    private static readonly ALLOWED_FILE_TYPES = {
+        "image/png": [".png"],
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/webp": [".webp"],
+        "video/mp4": [".mp4"],
+    };
 
     static async getByFolderId(folderId: string, userId: string) {
         const folder = await FolderService.getById(folderId);
@@ -161,9 +145,8 @@ export default class FilesServices {
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();
 
-        this.validateExtension(extension);
         this.validateFileSize(data.size);
-        this.validateMimeType(mimeType);
+        this.validateFileType(mimeType, extension);
 
         return {
             folder,
@@ -179,16 +162,19 @@ export default class FilesServices {
         throw new AppError("Não foi possível completar o upload.", 500);
     };
 
-    private static validateMimeType(mimeType: string) {
-        if (this.BLOCKED_MIME_TYPES.has(mimeType)) {
-            throw new AppError("Tipo de arquivo não permitido.", 415);
-        };
-    };
+    private static validateFileType(mimeType: string, extension: string) {
+        const allowedExtensions = this.ALLOWED_FILE_TYPES[
+            mimeType as keyof typeof this.ALLOWED_FILE_TYPES
+        ];
 
-    private static validateExtension(extension: string) {
-        if (this.BLOCKED_EXTENSIONS.has(extension)) {
-            throw new AppError("Extensão do arquivo não permitida.", 415);
-        };
+        if (!allowedExtensions) throw new AppError("Tipo MIME não permitido.", 415);
+
+        if (!(allowedExtensions as readonly string[]).includes(extension)) {
+            throw new AppError(
+                "Extensão incompatível com o tipo MIME.",
+                415,
+            );
+        }
     };
 
     private static validateFileSize(size: number) {
