@@ -66,17 +66,7 @@ export default class ProjectService {
 
         if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
 
-        const bucketProject = await StorageService.listObjects(project.folders.path);
-
-        if (!bucketProject) {
-            ProjectRepository.delete(id);
-            throw new AppError("Projeto não existente no bucket.", 409);
-        };
-
-        bucketProject.Contents?.map(async (file) => {
-            await StorageService.deleteObject(file.Key!);
-        });
-
+        await StorageService.deleteObjectByPrefix(project.folders.path);
         await ProjectRepository.delete(id);
 
         return;
