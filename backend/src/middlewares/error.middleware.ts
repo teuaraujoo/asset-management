@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "../error/app-error";
 import jwt from "jsonwebtoken";
+import { ZodError } from "zod";
 import AuthenticationManage from "../shared/auth/authentication-manager";
 
 export default function errorHandler(
@@ -9,6 +10,20 @@ export default function errorHandler(
     res: Response,
     next: NextFunction
 ) {
+    if (err instanceof ZodError) {
+        const errors = err.issues.map((issue) => ({
+            field: issue.path.length > 0
+                ? issue.path.map(String).join(".")
+                : null,
+            message: issue.message,
+        }));
+
+        return res.status(400).json({
+            message: "Dados inválidos.",
+            errors,
+        });
+    };
+
     if (err instanceof AppError) {
 
         if (err.statusCode === 401) {
