@@ -3,11 +3,9 @@ import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectC
 import s3 from "../../libs/r2-bucket";
 export default class StorageService {
 
-    private static BUCKET_NAME = "asset-management";
-
     static async generateDownloadPreSignedUrl(key: string) {
         const command = new GetObjectCommand({
-            Bucket: this.BUCKET_NAME,
+            Bucket: process.env.STORAGE_BUCKET,
             Key: key
         });
 
@@ -19,7 +17,7 @@ export default class StorageService {
     static async listFolders() {
         return s3.send(
             new ListObjectsV2Command({
-                Bucket: this.BUCKET_NAME
+                Bucket: process.env.STORAGE_BUCKET
             }),
         );
     };
@@ -27,7 +25,7 @@ export default class StorageService {
     static async listObjects(prefix: string) {
         return s3.send(
             new ListObjectsV2Command({
-                Bucket: this.BUCKET_NAME,
+                Bucket: process.env.STORAGE_BUCKET,
                 Prefix: prefix,
                 Delimiter: "/"
             }),
@@ -37,7 +35,7 @@ export default class StorageService {
     static async deleteObject(objectKey: string) {
         return s3.send(
             new DeleteObjectCommand({
-                Bucket: "asset-management",
+                Bucket: process.env.STORAGE_BUCKET,
                 Key: objectKey
             }),
         );
@@ -46,7 +44,7 @@ export default class StorageService {
     static async getObjectMetaData(objectKey: string) {
         return s3.send(
             new HeadObjectCommand({
-                Bucket: this.BUCKET_NAME,
+                Bucket: process.env.STORAGE_BUCKET,
                 Key: objectKey,
                 ChecksumMode: "ENABLED",
             })
@@ -54,15 +52,15 @@ export default class StorageService {
     };
 
     static async renameOnject(oldKey: string, newKey: string) {
-        console.log("CopySource: ", `${this.BUCKET_NAME}/${oldKey}`)
+        console.log("CopySource: ", `${process.env.STORAGE_BUCKET}/${oldKey}`)
         await s3.send(new CopyObjectCommand({
-            Bucket: this.BUCKET_NAME,
-            CopySource: `${this.BUCKET_NAME}/${encodeURIComponent(oldKey)}`,
+            Bucket: process.env.STORAGE_BUCKET,
+            CopySource: `${process.env.STORAGE_BUCKET}/${encodeURIComponent(oldKey)}`,
             Key: newKey
         }));
 
         await s3.send(new DeleteObjectCommand({
-            Bucket: this.BUCKET_NAME,
+            Bucket: process.env.STORAGE_BUCKET,
             Key: oldKey
         }));
     };
