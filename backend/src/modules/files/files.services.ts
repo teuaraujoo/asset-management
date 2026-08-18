@@ -87,21 +87,10 @@ export default class FilesServices {
     };
 
     static async delete(id: string, userId: string) {
-        const file = await FilesRepository.getById(id);
+        const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        if (!file) throw new AppError("Arquivo não encontrado.", 400);
-
-        if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
-
-        const fileOnBucket = await StorageService.getObjectMetaData(file.object_key);
-
-        if (!fileOnBucket) {
-            await StorageService.deleteObject(file.object_key);
-            throw new AppError("Arquivo não encontado no bucket.", 409);
-        };
-
-        await FilesRepository.delete(id);
         await StorageService.deleteObject(file.object_key);
+        await FilesRepository.delete(id);
 
         return;
     };
