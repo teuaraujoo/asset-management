@@ -7,6 +7,7 @@ import { useProjects } from "@/hooks/projects/use-projects";
 import { deleteProject } from "@/services/projects.services";
 import type { Project } from "@/@types/projects/projects.types";
 import { UploadFileDialog } from "@/components/dashboard/projects/UploadFileDialog";
+import { DeleteProjectDialog } from "@/components/dashboard/projects/DeleteProjectDialog";
 import toast from "react-hot-toast";
 
 export default function DashboardProjectsPage() {
@@ -15,6 +16,8 @@ export default function DashboardProjectsPage() {
     const { projects, isLoading, error, refetch } = useProjects();
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+    const [isDeletingProject, setIsDeletingProject] = useState(false);
 
     function handleOpenProject(project: Project) {
         navigate(`/dashboard/projects/${project.folder_id}`);
@@ -36,13 +39,35 @@ export default function DashboardProjectsPage() {
         if (!open) setSelectedProject(null);
     };
 
-    async function handleDeleteProject(project: Project) {
-        await toast.promise(deleteProject(project.id), {
-            loading: 'Excluindo...',
-            success: (response) => response.message,
-            error: (error) => error.message || "Error ao conectar com o servidor!",
-        });
-        await refetch();
+    function handleDeleteProject(project: Project) {
+        setProjectToDelete(project);
+    };
+
+    function handleDeleteDialogOpenChange(open: boolean) {
+        if (!open && !isDeletingProject) setProjectToDelete(null);
+    };
+
+    async function confirmDeleteProject() {
+        if (!projectToDelete || isDeletingProject) return;
+
+        setIsDeletingProject(true);
+
+        try {
+            await toast.promise(deleteProject(projectToDelete.id), {
+                loading: "Excluindo...",
+                success: (response) => response.message,
+                error: (error) => error instanceof Error
+                    ? error.message
+                    : "Erro ao conectar com o servidor!",
+            });
+
+            await refetch();
+            setProjectToDelete(null);
+        } catch {
+            // O toast acima apresenta o erro ao usuário.
+        } finally {
+            setIsDeletingProject(false);
+        }
     };
 
     return (
@@ -78,6 +103,13 @@ export default function DashboardProjectsPage() {
                 open={isUploadOpen}
                 onOpenChange={setIsUploadOpen}
                 projects={projects}
+            />
+
+            <DeleteProjectDialog
+                project={projectToDelete}
+                isDeleting={isDeletingProject}
+                onOpenChange={handleDeleteDialogOpenChange}
+                onConfirm={confirmDeleteProject}
             />
         </main>
     );
