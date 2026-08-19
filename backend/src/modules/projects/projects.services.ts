@@ -1,5 +1,5 @@
 import AppError from "../../error/app-error";
-import { CreateProjectBody, createProjectSchema } from "./projects.schema";
+import { CreateProjectBody, createProjectSchema, UpdateProjectBody, updateProjectSchema } from "./projects.schema";
 import ProjectRepository from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
@@ -57,8 +57,21 @@ export default class ProjectService {
         return ProjectMapper.toResponseCreate(project, project.folders);
     };
 
-    static async update() {
+    static async update(projectId: string, userId: string, body: UpdateProjectBody) {
+        const existingProject = await this.validateUpdateProject(projectId, userId);
 
+        const data = updateProjectSchema.parse(body);
+
+        const folderData = await FolderService.toPrepareUpdate(existingProject.folder_id, {
+            name: data.name ?? existingProject.name,
+            description: data.description ?? existingProject.description,
+        },);
+
+        const project = ProjectMapper.toPrismaUpdate(data, folderData);
+
+        const updatedProject = await ProjectRepository.update(projectId, project);
+
+        return ProjectMapper.toResponseUpdate(updatedProject, updatedProject.folders);
     };
 
     static async delete(id: string, userId: string) {
@@ -70,5 +83,16 @@ export default class ProjectService {
         await ProjectRepository.delete(id);
 
         return;
+    };
+
+    private static async validateUpdateProject(projectId: string, userId: string) {
+        const existingProject = await ProjectRepository.getById(projectId, userId);
+
+        if (!existingProject) throw new AppError("Projeto não encontrado.", 404);
+
+        // Comparando para retornar explicitamente o erro
+        if (existingProject.user_id !== userId) throw new AppError("Usuário sem permissão para realizar essa ação.", 403);
+
+        return existingProject;
     };
 };

@@ -1,5 +1,5 @@
 import { Prisma } from "../../generated/prisma/client";
-import { CreateProjectBody } from "./projects.schema";
+import { CreateProjectBody, UpdateProjectBody } from "./projects.schema";
 
 export type ProjectWithRelations = Prisma.projectsGetPayload<{
     include: {
@@ -49,6 +49,18 @@ export default class ProjectMapper {
         };
     };
 
+    static toPrismaUpdate(project: UpdateProjectBody, folder: Prisma.foldersUpdateWithoutProjectsInput) {
+        return {
+            name: project.name,
+            mini_description: project.mini_description,
+            description: project.description,
+            updated_at: new Date(),
+            folders: {
+                update: folder
+            }
+        }
+    };
+
     static toResponseCreate(
         project: Prisma.projectsUncheckedCreateInput,
         folder: Prisma.foldersUncheckedCreateInput
@@ -62,6 +74,22 @@ export default class ProjectMapper {
             slug: folder.slug,
             path: folder.path,
             created_at: project.created_at,
+        };
+    };
+
+    static toResponseUpdate(
+        project: Prisma.projectsUncheckedUpdateInput,
+        folder: Prisma.foldersUncheckedCreateInput
+    ) {
+        return {
+            id: project.id,
+            folder_id: folder.id,
+            name: project.name,
+            mini_description: project.mini_description,
+            description: project.description,
+            slug: folder.slug,
+            path: folder.path,
+            updated_at: project.updated_at,
         };
     };
 };

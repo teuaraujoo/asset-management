@@ -10,6 +10,7 @@ import ProjectService from "../projects/projects.services";
 export default class FilesServices {
 
     private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
+    private static MAIN_FOLDER_NAME = "projetos"
     private static readonly ALLOWED_FILE_TYPES = {
         "image/png": [".png"],
         "image/jpeg": [".jpg", ".jpeg"],

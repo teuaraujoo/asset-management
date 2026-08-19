@@ -1,13 +1,22 @@
-import { CreateFolderBody } from "./folder.schema";
+import { CreateFolderBody, UpdateFolderBody } from "./folder.schema";
 
 export default class FolderMapper {
 
-    static toPrismaCreate(data: CreateFolderBody, slug: string, path: string) {
+    static toPrismaCreate(data: CreateFolderBody, slug: string, path: string, id: string) {
         return {
+            id: id,
             name: data.name,
             description: data.description,
             slug: slug,
             path: path
+        };
+    };
+
+    static toPrismaUpdate(data: UpdateFolderBody, slug: string) {
+        return {
+            name: data.name,
+            description: data.description,
+            slug: slug,
         };
     };
 };

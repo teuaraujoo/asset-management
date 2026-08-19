@@ -64,8 +64,16 @@ export default class ProjectRepository {
         });
     };
 
-    static update() {
-
+    static async update(id: string, data: Prisma.projectsUncheckedUpdateInput) {
+        return prisma.projects.update({
+            where: {
+                id: id
+            },
+            data: data,
+            include: {
+                folders: true
+            },
+        });
     };
 
     static async delete(id: string) {

@@ -1,8 +1,9 @@
 import AppError from "../../error/app-error";
 import slugify from "slugify";
-import { CreateFolderBody, createFolderSchema } from "./folder.schema";
+import { CreateFolderBody, createFolderSchema, UpdateFolderBody, updateFolderSchema } from "./folder.schema";
 import FolderRepository from "./folders.repositories";
 import FolderMapper from "./folder.mapper";
+import { randomUUID } from "node:crypto";
 
 export default class FolderService {
     private static MAIN_FOLDER_NAME = "projetos"
@@ -30,10 +31,25 @@ export default class FolderService {
 
         if (existingFolder) throw new AppError("Já existe uma pasta com esse nome.", 409);
 
+        const folderId = randomUUID();
         const slug = this.generateFolderSlug(data.name);
-        const folderPath = `${this.MAIN_FOLDER_NAME}/${slug}/`;
+        const folderPath = `${this.MAIN_FOLDER_NAME}/${folderId}/`;
 
-        return FolderMapper.toPrismaCreate(data, slug,  folderPath);
+        return FolderMapper.toPrismaCreate(data, slug, folderPath, folderId);
+    };
+
+    static async toPrepareUpdate(folderId: string, body: UpdateFolderBody) {
+        const data = updateFolderSchema.parse(body);
+
+        if (data.name !== undefined) {
+            const duplicateFolder = await FolderRepository.getByNameExcludingId(data.name, folderId);
+
+            if (duplicateFolder) throw new AppError("Já existe pasta com esse nome.", 409);
+        };
+
+        const slug = this.generateFolderSlug(data?.name!);
+
+        return FolderMapper.toPrismaUpdate(data, slug);
     };
 
     private static generateFolderSlug(name: string) {

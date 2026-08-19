@@ -20,6 +20,17 @@ export default class FolderRepository {
         });
     };
 
+    static async getByNameExcludingId(name: string, folderId: string) {
+        return prisma.folders.findFirst({
+            where: {
+                name: name,
+                id: {
+                    not: folderId,
+                },
+            },
+        });
+    };
+
     static async create(folder: Prisma.foldersCreateInput) {
         return prisma.folders.create({
             data: folder

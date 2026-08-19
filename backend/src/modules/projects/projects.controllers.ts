@@ -40,7 +40,13 @@ export default class ProjectController {
     };
 
     static async update(req: Request, res: Response) {
+        const projectId = req.params.id as string;
+        const userId = req.user.sub;
+        const body = req.body;
 
+        const result = await ProjectService.update(projectId, userId, body);
+
+        return res.status(200).json({ message: "Projeto atualizado com sucesso", data: result });
     };
 
     static async delete(req: Request, res: Response) {

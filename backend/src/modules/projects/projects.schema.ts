@@ -5,4 +5,7 @@ export const createProjectSchema = z.object({
     mini_description: z.string().max(255, "A mini descrição do projeto deve ter no máximo 255 caracteres."),
     description: z.string()
 });
+export const updateProjectSchema = createProjectSchema.partial();
+
 export type CreateProjectBody = z.infer<typeof createProjectSchema>;
+export type UpdateProjectBody = z.infer<typeof updateProjectSchema>;
