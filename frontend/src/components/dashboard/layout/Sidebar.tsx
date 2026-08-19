@@ -4,7 +4,7 @@ import {
   Upload,
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
@@ -24,6 +24,8 @@ const footerNavigation = [
 ];
 
 export function DashboardSidebar() {
+  const navigate = useNavigate();
+
   return (
     <aside
       className="
@@ -122,6 +124,7 @@ export function DashboardSidebar() {
               hover:bg-blue-800
               cursor-pointer
             "
+            onClick={() => navigate("/dashboard/projects?upload=true")}
           >
             <Upload size={18} />
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ProjectsHeader } from "@/components/dashboard/projects/ProjectHeader";
 import { ProjectsGrid } from "@/components/dashboard/projects/ProjectsGrid";
 import { NewProjectDialog } from "@/components/dashboard/projects/NewProjectDialog";
@@ -12,12 +12,27 @@ import toast from "react-hot-toast";
 
 export default function DashboardProjectsPage() {
     const navigate = useNavigate();
-    const [isUploadOpen, setIsUploadOpen] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const isUploadOpen = searchParams.get("upload") === "true";
     const { projects, isLoading, error, refetch } = useProjects();
     const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
     const [isDeletingProject, setIsDeletingProject] = useState(false);
+
+    function handleUploadOpenChange(open: boolean) {
+        const nextParams = new URLSearchParams(searchParams);
+
+        if (open) {
+            nextParams.set("upload", "true");
+        } else {
+            nextParams.delete("upload");
+        };
+
+        setSearchParams(nextParams, {
+            replace: true,
+        });
+    }
 
     function handleOpenProject(project: Project) {
         navigate(`/dashboard/projects/${project.folder_id}`);
@@ -74,7 +89,7 @@ export default function DashboardProjectsPage() {
         <main className="mx-auto w-full space-y-8 lg:p-2">
             <ProjectsHeader
                 onNewProject={handleCreateProject}
-                onUploadFiles={() => setIsUploadOpen(true)}
+                onUploadFiles={() => handleUploadOpenChange(true)}
             />
 
             {error && (
@@ -101,7 +116,7 @@ export default function DashboardProjectsPage() {
 
             <UploadFileDialog
                 open={isUploadOpen}
-                onOpenChange={setIsUploadOpen}
+                onOpenChange={handleUploadOpenChange}
                 projects={projects}
             />
 
