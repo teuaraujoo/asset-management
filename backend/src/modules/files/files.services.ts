@@ -10,7 +10,6 @@ import ProjectService from "../projects/projects.services";
 export default class FilesServices {
 
     private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
-    private static MAIN_FOLDER_NAME = "projetos";
     private static readonly ALLOWED_FILE_TYPES = {
         "image/png": [".png"],
         "image/jpeg": [".jpg", ".jpeg"],
@@ -35,7 +34,7 @@ export default class FilesServices {
 
         const { folder, mimeType, extension, bucket } = await this.validateFileOnPrepare(data, userId);
         const storageName = this.generateStorageName(extension, data.original_name);
-        const objectKey = `${this.MAIN_FOLDER_NAME}/${folder?.slug}/${storageName}`;
+        const objectKey = `${folder.path}${storageName}`;
 
         console.log("mimeType: ", mimeType);
         console.log("extensao: ", extension);
@@ -89,7 +88,7 @@ export default class FilesServices {
         if (!folder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
 
         const storageName = this.generateStorageName(file.extension, data.name);
-        const objectKey = `${this.MAIN_FOLDER_NAME}/${folder.slug}/${storageName}`;
+        const objectKey = `${folder.path}${storageName}`;
 
         await StorageService.renameObject(file.object_key, objectKey);
         await FilesRepository.rename(id, { original_name: data.name, storage_name: storageName, object_key: objectKey });
