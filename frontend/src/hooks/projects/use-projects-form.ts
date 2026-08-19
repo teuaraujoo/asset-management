@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useProjects } from "./use-projects";
-import { createProject } from "@/services/projects.services";
+import { createProject, updateProject } from "@/services/projects.services";
 import { createProjectSchema, type CreateProjectFormData } from "@/schemas/projects/projects.schema";
 import toast from "react-hot-toast";
+import type { Project } from "@/@types/projects/projects.types";
 
-export function useProjectsForm() {
-    const { refetch } = useProjects();
-
+export function useProjectsForm(project?: Project | null) {
     const form = useForm<CreateProjectFormData>({
         resolver: zodResolver(createProjectSchema),
         defaultValues: {
@@ -17,11 +16,21 @@ export function useProjectsForm() {
         },
     });
 
-    async function handleCreate(data: CreateProjectFormData) {
+    useEffect(() => {
+        form.reset({
+            name: project?.name ?? "",
+            mini_description: project?.mini_description ?? "",
+            description: project?.description ?? "",
+        });
+    }, [form, project]);
+
+    async function handleSubmit(data: CreateProjectFormData) {
         form.clearErrors("root");
 
         try {
-            const request = await createProject(data);
+            const request = project
+                ? await updateProject(data, project.id)
+                : await createProject(data);
 
             if (request.err) {
                 form.setError("root", {
@@ -31,11 +40,10 @@ export function useProjectsForm() {
             };
 
             toast.success(request.message);
-            await refetch();
             form.reset();
             return true;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Error inesperado ao fazer login. Tente novamente.";
+            const message = err instanceof Error ? err.message : "Erro inesperado ao salvar projeto.";
             form.setError("root", {
                 message: message
             });
@@ -46,6 +54,6 @@ export function useProjectsForm() {
     return {
         form,
         loading: form.formState.isSubmitting,
-        handleCreate
+        handleSubmit,
     };
 };

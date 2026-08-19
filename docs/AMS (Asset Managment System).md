@@ -580,10 +580,13 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 
 - O que é buffer?
     R:
+
+- O que é nested write prisma?
+    R:
     
 
 ## Aprendizado(s):
-
+  
 - R2/S3 retorna no máximo 1000 objetos por listagem. Projeto com mais arquivos precisa várias
   chamadas.
   

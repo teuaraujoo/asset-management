@@ -13,28 +13,32 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useProjectsForm } from "@/hooks/projects/use-projects-form";
 import type { CreateProjectFormData } from "@/schemas/projects/projects.schema";
+import type { Project } from "@/@types/projects/projects.types";
 
 interface NewProjectDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onSuccess: () => void;
+    onSuccess: () => void | Promise<void>;
+    project?: Project | null;
 }
 
 export function NewProjectDialog({
     open,
     onOpenChange,
     onSuccess,
+    project,
 }: NewProjectDialogProps) {
 
-    const { form, loading, handleCreate } = useProjectsForm();
+    const isEditing = project !== null && project !== undefined;
+    const { form, loading, handleSubmit } = useProjectsForm(project);
 
     async function onSubmit(data: CreateProjectFormData) {
-        const success = await handleCreate(data);
+        const success = await handleSubmit(data);
 
         if (!success) return;
 
+        await onSuccess();
         onOpenChange(false);
-        onSuccess();
     };
 
     function handleOpenChange(nextOpen: boolean) {
@@ -46,10 +50,13 @@ export function NewProjectDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-md max-h-[50vh] flex flex-col">
                 <DialogHeader>
-                    <DialogTitle>Novo Projeto</DialogTitle>
+                    <DialogTitle>
+                        {isEditing ? "Editar Projeto" : "Novo Projeto"}
+                    </DialogTitle>
                     <DialogDescription>
-                        Crie um novo projeto para organizar seus ativos digitais. Uma
-                        pasta com o mesmo nome será criada automaticamente.
+                        {isEditing
+                            ? "Atualize o nome e as descrições do projeto."
+                            : "Crie um novo projeto para organizar seus ativos digitais. Uma pasta com o mesmo nome será criada automaticamente."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -60,7 +67,7 @@ export function NewProjectDialog({
                             <Label htmlFor="name">Nome</Label>
                             <Input
                                 id="name"
-                                placeholder="Ex: Marketing Q4 Assets"
+                                placeholder={isEditing ? "Nome do projeto" : "Ex: Marketing Q4 Assets"}
                                 autoFocus
                                 aria-invalid={!!form.formState.errors.name}
                                 {...form.register("name")}
@@ -76,7 +83,7 @@ export function NewProjectDialog({
                             <Label htmlFor="miniDescription">Mini descrição</Label>
                             <Input
                                 id="miniDescription"
-                                placeholder="Resumo curto do projeto"
+                                placeholder={isEditing ? "Atualize o resumo do projeto" : "Resumo curto do projeto"}
                                 aria-invalid={!!form.formState.errors.mini_description}
                                 {...form.register("mini_description")}
                             />
@@ -91,7 +98,7 @@ export function NewProjectDialog({
                             <Label htmlFor="description">Descrição</Label>
                             <Textarea
                                 id="description"
-                                placeholder="Descrição detalhada do projeto"
+                                placeholder={isEditing ? "Atualize a descrição do projeto" : "Descrição detalhada do projeto"}
                                 rows={4}
                                 className="resize-none"
                                 aria-invalid={!!form.formState.errors.description}
@@ -124,7 +131,9 @@ export function NewProjectDialog({
                                 {loading && (
                                     <Loader2 className="size-4 animate-spin" />
                                 )}
-                                {loading ? "Criando..." : "Criar Projeto"}
+                                {loading
+                                    ? isEditing ? "Salvando..." : "Criando..."
+                                    : isEditing ? "Salvar alterações" : "Criar Projeto"}
                             </Button>
                         </DialogFooter>
                     </form>

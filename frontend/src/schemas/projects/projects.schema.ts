@@ -4,7 +4,7 @@ import { z } from "zod";
 export const createProjectSchema = z.object({
     name: z
         .string()
-        .min(3, "O nome deve ter pelo menos 3 caracteres")
+        .min(5, "O nome deve ter pelo menos 5 caracteres")
         .max(120, "O nome deve ter no máximo 120 caracteres"),
     mini_description: z
         .string()

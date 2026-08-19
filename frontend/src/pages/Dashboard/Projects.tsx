@@ -13,10 +13,27 @@ export default function DashboardProjectsPage() {
     const navigate = useNavigate();
     const [isUploadOpen, setIsUploadOpen] = useState(false);
     const { projects, isLoading, error, refetch } = useProjects();
-    const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+    const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
     function handleOpenProject(project: Project) {
         navigate(`/dashboard/projects/${project.folder_id}`);
+    };
+
+    function handleCreateProject() {
+        setSelectedProject(null);
+        setIsProjectDialogOpen(true);
+    };
+
+    function handleEditProject(project: Project) {
+        setSelectedProject(project);
+        setIsProjectDialogOpen(true);
+    };
+
+    function handleProjectDialogOpenChange(open: boolean) {
+        setIsProjectDialogOpen(open);
+
+        if (!open) setSelectedProject(null);
     };
 
     async function handleDeleteProject(project: Project) {
@@ -31,7 +48,7 @@ export default function DashboardProjectsPage() {
     return (
         <main className="mx-auto w-full space-y-8 lg:p-2">
             <ProjectsHeader
-                onNewProject={() => setIsNewProjectOpen(true)}
+                onNewProject={handleCreateProject}
                 onUploadFiles={() => setIsUploadOpen(true)}
             />
 
@@ -44,15 +61,17 @@ export default function DashboardProjectsPage() {
             <ProjectsGrid
                 projects={projects}
                 isLoading={isLoading}
-                onCreateProject={() => setIsNewProjectOpen(true)}
+                onCreateProject={handleCreateProject}
                 onOpenProject={handleOpenProject}
+                onEditProject={handleEditProject}
                 onDeleteProject={handleDeleteProject}
             />
 
             <NewProjectDialog
-                open={isNewProjectOpen}
-                onOpenChange={setIsNewProjectOpen}
+                open={isProjectDialogOpen}
+                onOpenChange={handleProjectDialogOpenChange}
                 onSuccess={refetch}
+                project={selectedProject}
             />
 
             <UploadFileDialog
