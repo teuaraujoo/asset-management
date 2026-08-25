@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { FileItem } from "@/@types/files/files.types";
 import {
@@ -118,33 +118,33 @@ export function FileCard({ file, onDelete, onRename, onDownload }: FileCardProps
     const isVideo = file.mime_type?.startsWith("video/");
     const isPreviewable = isImage || isVideo;
 
-    const loadPreview = useCallback(async () => {
+    useEffect(() => {
         if (!isPreviewable || hasFetched.current) return;
         hasFetched.current = true;
-        setPreviewState("loading");
 
-        try {
-            const response = await getFilePreview(file.id);
-            const previewUrl: string = response?.preview_url;
+        const loadPreview = async () => {
+            try {
+                setPreviewState("loading");
+                const response = await getFilePreview(file.id);
+                const previewUrl: string = response?.preview_url;
 
-            if (!previewUrl) throw new Error("URL de preview inválida.");
+                if (!previewUrl) throw new Error("URL de preview inválida.");
 
-            if (isImage) {
-                setPreviewSrc(previewUrl);
-                setPreviewState("ready");
-            } else if (isVideo) {
-                const frame = await captureVideoFrame(previewUrl);
-                setPreviewSrc(frame);
-                setPreviewState("ready");
-            }
-        } catch {
-            setPreviewState("error");
-        }
+                if (isImage) {
+                    setPreviewSrc(previewUrl);
+                    setPreviewState("ready");
+                } else if (isVideo) {
+                    const frame = await captureVideoFrame(previewUrl);
+                    setPreviewSrc(frame);
+                    setPreviewState("ready");
+                }
+            } catch {
+                setPreviewState("error");
+            };
+        };
+
+        void loadPreview();
     }, [file.id, isPreviewable, isImage, isVideo]);
-
-    useEffect(() => {
-        loadPreview();
-    }, [loadPreview]);
 
     const getBaseName = () => {
         if (!file.original_name) return "";
