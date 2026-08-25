@@ -64,4 +64,13 @@ export default class FilesController {
             data: result
         });
     };
+
+    static async getPreview(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+
+        const result = await FilesServices.getPreview(id, userId);
+
+        return res.status(200).json({ data: result });
+    };
 };

@@ -46,6 +46,7 @@ model files {
   original_name String    @db.VarChar(255)
   storage_name  String    @db.VarChar(255)
   object_key    String    @unique
+  thumbnail_key String?
   bucket        String    @db.VarChar(120)
   mime_type     String    @db.VarChar(120)
   extension     String    @db.VarChar(20)

@@ -72,4 +72,11 @@ export default class FilesRepository {
             }
         });
     };
+
+    static async setThumbnailKey(id: string, thumbnailKey: string) {
+        return prisma.files.update({
+            where: { id },
+            data: { thumbnail_key: thumbnailKey }
+        });
+    };
 };

@@ -21,7 +21,20 @@ export default class StorageService {
         });
 
         return getSignedUrl(s3, command, {
-            expiresIn: 60 * 5
+            expiresIn: 60 * 5 // 5 minutos
+        });
+    };
+
+    static async generatePreviewUrl(key: string) {
+        if (!process.env.STORAGE_BUCKET) throw new AppError("STORAGE_BUCKET não configurado.");
+
+        const command = new GetObjectCommand({
+            Bucket: process.env.STORAGE_BUCKET,
+            Key: key
+        });
+
+        return getSignedUrl(s3, command, {
+            expiresIn: 60 * 2 // 2 minutos
         });
     };
 

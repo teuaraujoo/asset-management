@@ -105,6 +105,21 @@ export default class FilesServices {
         return FilesMapper.toResponseDownload(file, signedUrl);
     };
 
+    static async getPreview(id: string, userId: string) {
+        const file = await this.validateExistingAndIDORFiles(id, userId);
+
+        const isImage = file.mime_type.startsWith("image/");
+        const isVideo = file.mime_type.startsWith("video/");
+
+        if (!isImage && !isVideo) throw new AppError("Arquivo não possui preview disponível.", 422);
+        
+
+        const key = file.thumbnail_key ?? file.object_key;
+        const previewUrl = await StorageService.generatePreviewUrl(key);
+
+        return { preview_url: previewUrl };
+    };
+
     private static async validateExistingAndIDORFiles(fileId: string, userId: string) {
         const file = await FilesRepository.getById(fileId);
 

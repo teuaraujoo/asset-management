@@ -12,6 +12,12 @@ router.get(
 );
 
 router.get(
+    "/files/:id/preview",
+    authenticateMiddleware,
+    FilesController.getPreview
+);
+
+router.get(
     "/files/:folderId",
     authenticateMiddleware,
     FilesController.getByFolderId
