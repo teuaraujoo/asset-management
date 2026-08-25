@@ -26,6 +26,10 @@ export async function downloadFile(fileId: string) {
     return fetchRequest({ method: "GET", url: `${apiRoutes.files}/${fileId}/download` });
 };
 
+export async function getFilePreview(fileId: string) {
+    return fetchRequest({ method: "GET", url: `${apiRoutes.files}/${fileId}/preview` });
+};
+
 export async function uploadToBucket(signedUrl: string, file: File) {
 
     const response = await fetch(signedUrl, {
