@@ -5,7 +5,7 @@ import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
 import FilesServices from "../files/files.services";
 import prisma from "../../libs/prisma";
-import StorageService from "../storage/storage.services";
+import * as StorageService from "../storage/storage.services";
 
 export default class ProjectService {
 

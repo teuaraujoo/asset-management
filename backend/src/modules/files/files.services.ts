@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import FolderService from "../folders/folders.services";
 import { renameFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
-import StorageService from "../storage/storage.services";
+import * as StorageService from "../storage/storage.services";
 import ProjectService from "../projects/projects.services";
 export default class FilesServices {
 
@@ -33,7 +33,7 @@ export default class FilesServices {
     static async prepareUpload(body: requestFileBody, userId: string) {
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension, bucket } = await this.validateFileOnPrepare(data, userId);
+        const { folder, mimeType, extension } = await this.validateFileOnPrepare(data, userId);
         const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${folder.path}${storageName}`;
 
@@ -43,7 +43,7 @@ export default class FilesServices {
         console.log("object_key: ", objectKey);
         console.log("cheksum 1° requisicao: ", data.checksum);
 
-        const signedUrl = await StorageService.generatePressignedUrl(bucket, objectKey, mimeType, data.checksum);
+        const prepareUpload = await StorageService.generatePressignedUrl(objectKey, mimeType, data.checksum);
 
         const file = await FilesRepository.create(
             FilesMapper.toPrismaPendingCreate(
@@ -53,11 +53,11 @@ export default class FilesServices {
                     storageName,
                     objectKey,
                     extension,
-                    bucket,
+                    bucket: prepareUpload.storageLocation,
                     userId
                 }));
 
-        return FilesMapper.toResponsePendingCreate(file, signedUrl);
+        return FilesMapper.toResponsePendingCreate(file, prepareUpload.uploadUrl);
     };
 
     static async complete(id: string, userId: string) {
@@ -112,7 +112,7 @@ export default class FilesServices {
         const isVideo = file.mime_type.startsWith("video/");
 
         if (!isImage && !isVideo) throw new AppError("Arquivo não possui preview disponível.", 422);
-        
+
 
         const key = file.thumbnail_key ?? file.object_key;
         const previewUrl = await StorageService.generatePreviewUrl(key);
@@ -137,11 +137,11 @@ export default class FilesServices {
 
         if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
 
-        const bucketFile = await StorageService.getObjectMetaData(file.object_key);
+        const metada = await StorageService.getObjectMetaData(file.object_key);
 
-        if (!bucketFile) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
+        if (!metada) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
 
-        if (BigInt(bucketFile.ContentLength!) !== file.size) await this.handleFailedUpload(file.id, file.object_key);
+        if (BigInt(metada.contentLength) !== file.size) await this.handleFailedUpload(file.id, file.object_key);
 
         return file;
     };
@@ -153,10 +153,6 @@ export default class FilesServices {
 
         await ProjectService.getByFolderId(folder.id, userId);
 
-        const bucket = process.env.STORAGE_BUCKET;
-
-        if (!bucket) throw new AppError("Nome do bucket não configurado na variável de amebiente.", 500);
-
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();
 
@@ -167,7 +163,6 @@ export default class FilesServices {
             folder,
             mimeType,
             extension,
-            bucket
         };
     };
 
