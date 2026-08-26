@@ -3,73 +3,77 @@ import FilesServices from "./files.services";
 
 export default class FilesController {
 
-    static async getByFolderId(req: Request, res: Response) {
+    constructor(
+        private FilesServices: FilesServices
+    ) { }
+
+    async getByFolderId(req: Request, res: Response) {
         const folderId = req.params.folderId as string;
         const userId = req.user.sub;
 
-        const result = await FilesServices.getByFolderId(folderId, userId);
+        const result = await this.FilesServices.getByFolderId(folderId, userId);
 
         return res.status(200).json({ message: "Arquivos encontrados com sucesso.", data: result });
     };
 
-    static async prepareUpload(req: Request, res: Response) {
+    async prepareUpload(req: Request, res: Response) {
         const body = req.body;
         const userId = req.user.sub;
 
-        const result = await FilesServices.prepareUpload(body, userId);
+        const result = await this.FilesServices.prepareUpload(body, userId);
 
         return res.status(201).json({ message: "Arquivo armazenado com sucesso.", data: result })
 
     };
 
-    static async complete(req: Request, res: Response) {
+    async complete(req: Request, res: Response) {
         const id = req.params.id;
         const userId = req.user.sub;
 
-        await FilesServices.complete(id as string, userId);
+        await this.FilesServices.complete(id as string, userId);
 
         return res.status(200).json({ message: "Status atualizado com sucesso." });
     };
 
-    static async delete(req: Request, res: Response) {
+    async delete(req: Request, res: Response) {
         const id = req.params.id as string;
         const userId = req.user.sub;
 
-        await FilesServices.delete(id, userId)
+        await this.FilesServices.delete(id, userId)
 
         return res.status(200).json({
             message: "Arquivo deletado com sucesso."
         });
     };
 
-    static async rename(req: Request, res: Response) {
+    async rename(req: Request, res: Response) {
         const id = req.params.id as string;
         const userId = req.user.sub;
         const body = req.body;
 
-        await FilesServices.rename(id, userId, body);
+        await this.FilesServices.rename(id, userId, body);
 
         return res.status(200).json({
             message: "Arquivo renomeado com sucesso."
         });
     };
 
-    static async download(req: Request, res: Response) {
+    async download(req: Request, res: Response) {
         const id = req.params.id as string;
         const userId = req.user.sub;
 
-        const result = await FilesServices.download(id, userId);
+        const result = await this.FilesServices.download(id, userId);
 
         return res.status(200).json({
             data: result
         });
     };
 
-    static async getPreview(req: Request, res: Response) {
+    async getPreview(req: Request, res: Response) {
         const id = req.params.id as string;
         const userId = req.user.sub;
 
-        const result = await FilesServices.getPreview(id, userId);
+        const result = await this.FilesServices.getPreview(id, userId);
 
         return res.status(200).json({ data: result });
     };

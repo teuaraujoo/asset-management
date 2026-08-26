@@ -1,53 +1,55 @@
-import express from "express";
+import { Router } from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import FilesController from "./files.controllers";
 import { uploadFileLimiter } from "../../libs/express-rate-limit";
 
-const router = express.Router();
+export function FilesRoutes(controller: FilesController): Router {
+    const router = Router();
 
-router.get(
-    "/files/:id/download",
-    authenticateMiddleware,
-    FilesController.download
-);
+    router.get(
+        "/files/:id/download",
+        authenticateMiddleware,
+        (req, res) => controller.download(req, res)
+    );
 
-router.get(
-    "/files/:id/preview",
-    authenticateMiddleware,
-    FilesController.getPreview
-);
+    router.get(
+        "/files/:id/preview",
+        authenticateMiddleware,
+        (req, res) => controller.getPreview(req, res)
+    );
 
-router.get(
-    "/files/:folderId",
-    authenticateMiddleware,
-    FilesController.getByFolderId
-);
+    router.get(
+        "/files/:folderId",
+        authenticateMiddleware,
+        (req, res) => controller.getByFolderId(req, res)
+    );
 
 
-router.post(
-    "/files/upload-url",
-    uploadFileLimiter,
-    authenticateMiddleware,
-    FilesController.prepareUpload
-);
+    router.post(
+        "/files/upload-url",
+        uploadFileLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.prepareUpload(req, res)
+    );
 
-router.put(
-    "/files/:id/complete",
-    uploadFileLimiter,
-    authenticateMiddleware,
-    FilesController.complete
-);
+    router.put(
+        "/files/:id/complete",
+        uploadFileLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.complete(req, res)
+    );
 
-router.delete(
-    "/files/:id",
-    authenticateMiddleware,
-    FilesController.delete
-);
+    router.delete(
+        "/files/:id",
+        authenticateMiddleware,
+        (req, res) => controller.delete(req, res)
+    );
 
-router.patch(
-    "/files/:id",
-    authenticateMiddleware,
-    FilesController.rename
-);
+    router.patch(
+        "/files/:id",
+        authenticateMiddleware,
+        (req, res) => controller.rename(req, res)
+    );
 
-export default router;
+    return router;
+};

@@ -1,82 +1,23 @@
-import { Prisma } from "../../generated/prisma/client";
-import prisma from "../../libs/prisma";
+import {
+    CreateFileData,
+    FileRecord,
+    RenameFileData
+} from "./files.types";
 
-export default class FilesRepository {
+export interface IFilesRepository {
+    getById(id: string): Promise<FileRecord | null>;
 
-    static async getById(id: string) {
-        return prisma.files.findUnique({
-            where: {
-                id: id
-            }
-        });
-    };
+    getByFolderId(folderId: string, userId: string): Promise<FileRecord[]>;
 
-    static async getByFolderId(folderId: string, userId: string) {
-        return prisma.files.findMany({
-            where: {
-                folder_id: folderId,
-                user_id: userId
-            },
-            orderBy: {
-                created_at: "asc"
-            }
-        });
-    };
+    create(data: CreateFileData): Promise<FileRecord>;
 
-    static async create(file: Prisma.filesUncheckedCreateInput) {
-        return prisma.files.create({
-            data: file
-        });
-    };
+    completeUpload(id: string): Promise<FileRecord>;
 
-    static async completeUpload(id: string) {
-        return prisma.files.update({
-            where: {
-                id: id
-            },
-            data: {
-                status: "COMPLETE",
-                uploaded_at: new Date()
-            },
-        });
-    };
+    delete(id: string): Promise<FileRecord>;
 
-    static async delete(id: string) {
-        return prisma.files.delete({
-            where: {
-                id: id
-            }
-        });
-    };
+    failedUpload(id: string): Promise<FileRecord>;
 
-    static async failedUplaod(id: string) {
-        return prisma.files.update({
-            where: {
-                id: id,
-            },
-            data: {
-                status: "FAILED"
-            }
-        });
-    };
+    rename(id: string, data: RenameFileData): Promise<FileRecord>;
 
-    static async rename(id: string, file: Prisma.filesUncheckedUpdateInput) {
-        return prisma.files.update({
-            where: {
-                id: id,
-            },
-            data: {
-                original_name: file.original_name,
-                storage_name: file.storage_name,
-                object_key: file.object_key
-            }
-        });
-    };
-
-    static async setThumbnailKey(id: string, thumbnailKey: string) {
-        return prisma.files.update({
-            where: { id },
-            data: { thumbnail_key: thumbnailKey }
-        });
-    };
+    setThumbnailKey(id: string, thumbnailKey: string): Promise<FileRecord>;
 };

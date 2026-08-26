@@ -1,36 +1,41 @@
 import path from "node:path";
 import AppError from "../../error/app-error";
-import FilesRepository from "./files.repositories";
+import { IFilesRepository } from "./files.repositories";
 import { randomUUID } from "node:crypto";
 import FolderService from "../folders/folders.services";
 import { renameFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
-import * as StorageService from "../storage/storage.services";
 import ProjectService from "../projects/projects.services";
+import { StorageProvider } from "../../providers/storage/storage.provider";
 export default class FilesServices {
 
-    private static MAX_FILE_SIZE = 1024 * 1024 * 1024;
-    private static MAIN_FOLDER_NAME = "projetos"
-    private static readonly ALLOWED_FILE_TYPES = {
+    constructor(
+        private StorageProvider: StorageProvider,
+        private ProjectsService: ProjectService,
+        private FilesRepository: IFilesRepository,
+    ) { }
+
+    private MAX_FILE_SIZE = 1024 * 1024 * 1024;
+    private readonly ALLOWED_FILE_TYPES = {
         "image/png": [".png"],
         "image/jpeg": [".jpg", ".jpeg"],
         "image/webp": [".webp"],
         "video/mp4": [".mp4"],
     };
 
-    static async getByFolderId(folderId: string, userId: string) {
+    async getByFolderId(folderId: string, userId: string) {
         const folder = await FolderService.getById(folderId);
 
         if (!folder) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
 
-        const files = await FilesRepository.getByFolderId(folderId, userId);
+        const files = await this.FilesRepository.getByFolderId(folderId, userId);
 
         if (!files) throw new AppError("Arquivos não encontrados.", 404);
 
         return files.map((file) => FilesMapper.toResponseGet(file));
     };
 
-    static async prepareUpload(body: requestFileBody, userId: string) {
+    async prepareUpload(body: requestFileBody, userId: string) {
         const data = requestFileSchema.parse(body);
 
         const { folder, mimeType, extension } = await this.validateFileOnPrepare(data, userId);
@@ -43,115 +48,114 @@ export default class FilesServices {
         console.log("object_key: ", objectKey);
         console.log("cheksum 1° requisicao: ", data.checksum);
 
-        const prepareUpload = await StorageService.generatePressignedUrl(objectKey, mimeType, data.checksum);
+        const prepareUpload = await this.StorageProvider.generatePresignedUrl(objectKey, mimeType, data.checksum);
 
-        const file = await FilesRepository.create(
-            FilesMapper.toPrismaPendingCreate(
-                {
-                    data,
-                    mimeType,
-                    storageName,
-                    objectKey,
-                    extension,
-                    bucket: prepareUpload.storageLocation,
-                    userId
-                }));
+        const file = await this.FilesRepository.create(
+            FilesMapper.toPendingCreate({
+                data,
+                mimeType,
+                storageName,
+                objectKey,
+                extension,
+                bucket: prepareUpload.storageLocation,
+                userId
+            }));
 
         return FilesMapper.toResponsePendingCreate(file, prepareUpload.uploadUrl);
     };
 
-    static async complete(id: string, userId: string) {
+    async complete(id: string, userId: string) {
         const file = await this.validateFileOnComplete(id, userId);
 
-        const completedUpload = await FilesRepository.completeUpload(id);
+        const completedUpload = await this.FilesRepository.completeUpload(id);
 
-        if (!completedUpload) await this.handleFailedUpload(file.id, file.object_key);
+        if (!completedUpload) await this.handleFailedUpload(file.id, file.objectKey);
 
         return;
     };
 
-    static async delete(id: string, userId: string) {
+    async delete(id: string, userId: string) {
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        await StorageService.deleteObject(file.object_key);
-        await FilesRepository.delete(id);
+        await this.StorageProvider.delete(file.objectKey);
+        await this.FilesRepository.delete(id);
 
         return;
     };
 
-    static async rename(id: string, userId: string, body: string) {
+    async rename(id: string, userId: string, body: string) {
         const data = renameFileSchema.parse(body);
 
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        const folder = await FolderService.getById(file.folder_id!);
+        const folder = await FolderService.getById(file.folderId!);
 
         if (!folder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
 
         const storageName = this.generateStorageName(file.extension, data.name);
         const objectKey = `${folder.path}${storageName}`;
 
-        await StorageService.renameObject(file.object_key, objectKey);
-        await FilesRepository.rename(id, { original_name: data.name, storage_name: storageName, object_key: objectKey });
+        await this.StorageProvider.rename(file.objectKey, objectKey);
+        await this.FilesRepository.rename(id, { originalName: data.name, storageName: storageName, objectKey: objectKey });
 
         return;
     };
 
-    static async download(id: string, userId: string) {
+    async download(id: string, userId: string) {
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        const signedUrl = await StorageService.generateDownloadPreSignedUrl(file.object_key);
+        const signedUrl = await this.StorageProvider.generateDownloadPresignedUrl(file.objectKey);
 
         return FilesMapper.toResponseDownload(file, signedUrl);
     };
 
-    static async getPreview(id: string, userId: string) {
+    async getPreview(id: string, userId: string) {
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        const isImage = file.mime_type.startsWith("image/");
-        const isVideo = file.mime_type.startsWith("video/");
+        const isImage = file.mimeType.startsWith("image/");
+        const isVideo = file.mimeType.startsWith("video/");
 
         if (!isImage && !isVideo) throw new AppError("Arquivo não possui preview disponível.", 422);
 
 
-        const key = file.thumbnail_key ?? file.object_key;
-        const previewUrl = await StorageService.generatePreviewUrl(key);
+        const key = file.thumbnailKey ?? file.objectKey;
+        const previewUrl = await this.StorageProvider.generatePreviewUrl(key);
 
         return { preview_url: previewUrl };
     };
 
-    private static async validateExistingAndIDORFiles(fileId: string, userId: string) {
-        const file = await FilesRepository.getById(fileId);
+    private async validateExistingAndIDORFiles(fileId: string, userId: string) {
+        const file = await this.FilesRepository.getById(fileId);
 
         if (!file) throw new AppError("Arquivo não encontrado.", 400);
 
-        if (file.user_id !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
+        if (file.userId !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
 
         return file;
     };
 
-    private static async validateFileOnComplete(id: string, userId: string) {
+    private async validateFileOnComplete(id: string, userId: string) {
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
         if (file.status === "COMPLETE") throw new AppError("Arquivo com upload já feito.", 409);
 
         if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
 
-        const metada = await StorageService.getObjectMetaData(file.object_key);
+        const metada = await this.StorageProvider.getObjectMetaData(file.objectKey);
 
         if (!metada) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
 
-        if (BigInt(metada.contentLength) !== file.size) await this.handleFailedUpload(file.id, file.object_key);
+        if (BigInt(metada.contentLength) !== file.size) await this.handleFailedUpload(file.id, file.objectKey);
 
         return file;
     };
 
-    private static async validateFileOnPrepare(data: requestFileBody, userId: string) {
+    private async validateFileOnPrepare(data: requestFileBody, userId: string) {
         const folder = await FolderService.getById(data.folder_id);
 
         if (!folder) throw new AppError("Pasta não foi encontrada", 404);
 
-        await ProjectService.getByFolderId(folder.id, userId);
+        await this.ProjectsService.getByFolderId(folder.id, userId);
 
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();
@@ -166,13 +170,13 @@ export default class FilesServices {
         };
     };
 
-    private static async handleFailedUpload(id: string, objectKey: string) {
-        await StorageService.deleteObject(objectKey);
-        await FilesRepository.failedUplaod(id);
+    private async handleFailedUpload(id: string, objectKey: string) {
+        await this.StorageProvider.delete(objectKey);
+        await this.FilesRepository.failedUpload(id);
         throw new AppError("Não foi possível completar o upload.", 500);
     };
 
-    private static validateFileType(mimeType: string, extension: string) {
+    private validateFileType(mimeType: string, extension: string) {
         const allowedExtensions = this.ALLOWED_FILE_TYPES[
             mimeType as keyof typeof this.ALLOWED_FILE_TYPES
         ];
@@ -187,13 +191,13 @@ export default class FilesServices {
         }
     };
 
-    private static validateFileSize(size: number) {
+    private validateFileSize(size: number) {
         if (size > this.MAX_FILE_SIZE) {
             throw new AppError("O arquivo execede o tamanho máximo permitido de 1gib", 415);
         };
     };
 
-    private static generateStorageName(extension: string, originalName: string) {
+    private generateStorageName(extension: string, originalName: string) {
         const filename = path
             .basename(originalName, extension)
             .toLowerCase()

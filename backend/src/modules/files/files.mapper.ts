@@ -1,5 +1,5 @@
-import { Prisma } from "../../generated/prisma/client";
 import { requestFileBody } from "./files.schemas";
+import { FileRecord } from "./files.types";
 
 type payloadPedingCreate = {
     data: requestFileBody;
@@ -11,25 +11,23 @@ type payloadPedingCreate = {
     userId: string;
 };
 
-// FIXME: TENTAR PEGAR UM TIPO PRONTO AO INVES DE CRIAR UM
-
 type Files = {
-    folder_id: string | null;
-    original_name: string;
-    mime_type: string;
+    folderId: string | null;
+    originalName: string;
+    mimeType: string;
     size: bigint;
     id: string;
-    storage_name: string;
-    object_key: string;
+    storageName: string;
+    objectKey: string;
     bucket: string;
     extension: string;
     checksum: string | null;
     status: string;
-    created_at: Date;
-    uploaded_at: Date | null;
-    updated_at: Date;
-    user_id: string;
-    deleted_at: Date | null;
+    createdAt: Date;
+    uploadedAt: Date | null;
+    updatedAt: Date;
+    userId: string;
+    deletedAt: Date | null;
 };
 
 export default class FilesMapper {
@@ -37,23 +35,23 @@ export default class FilesMapper {
     static toResponseGet(file: Files) {
         return {
             id: file.id,
-            folder_id: file.folder_id,
-            original_name: file.original_name,
-            storage_name: file.storage_name,
-            object_key: file.object_key,
+            folderId: file.folderId,
+            originalName: file.originalName,
+            storageName: file.storageName,
+            objectKey: file.objectKey,
             bucket: file.bucket,
-            mime_type: file.mime_type,
+            mime_type: file.mimeType,
             extension: file.extension,
             size: Number(file.size),
             checksum: file.checksum,
             status: file.status,
-            created_at: file.created_at,
-            uploaded_at: file.uploaded_at,
-            updated_at: file.updated_at,
+            createdAt: file.createdAt,
+            uploadedAt: file.uploadedAt,
+            updatedAt: file.updatedAt,
         }
     };
 
-    static toPrismaPendingCreate({
+    static toPendingCreate({
         data,
         mimeType,
         storageName,
@@ -63,32 +61,32 @@ export default class FilesMapper {
         userId
     }: payloadPedingCreate) {
         return {
-            user_id: userId,
-            folder_id: data.folder_id,
-            mime_type: mimeType,
-            original_name: data.original_name,
-            storage_name: storageName,
-            object_key: objectKey,
-            size: data.size,
+            userId: userId,
+            folderId: data.folder_id,
+            mimeType: mimeType,
+            originalName: data.original_name,
+            storageName: storageName,
+            objectKey: objectKey,
+            size: BigInt(data.size),
             extension: extension,
             bucket: bucket,
             checksum: data.checksum
         };
     };
 
-    static toResponsePendingCreate(file: Prisma.filesUncheckedCreateInput, uploadUrl: string) {
+    static toResponsePendingCreate(file: FileRecord, uploadUrl: string) {
         return {
             file_id: file.id,
             uploadUrl: uploadUrl,
-            objectKey: file.object_key,
-            storageName: file.storage_name
+            objectKey: file.objectKey,
+            storageName: file.storageName
         };
     };
 
-    static toResponseDownload(file: Prisma.filesUncheckedCreateInput, downloadUrl: string) {
+    static toResponseDownload(file: FileRecord, downloadUrl: string) {
         return {
             file_id: file.id,
-            file_name: file.original_name,
+            file_name: file.originalName,
             downloadUrl: downloadUrl
         };
     };
