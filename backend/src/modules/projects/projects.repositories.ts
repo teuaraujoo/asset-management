@@ -1,89 +1,20 @@
-import { Prisma } from "../../generated/prisma/client";
-import prisma from "../../libs/prisma";
-import FolderRepository from "../folders/folders.repositories";
+import {
+    CreateProjectData,
+    ProjectDetails,
+    ProjectWithFolder,
+    UpdateProjectData
+} from "./projects.types";
 
-export default class ProjectRepository {
-    static async get(userId: string) {
-        return prisma.projects.findMany({
-            where: {
-                user_id: userId
-            },
-            include: {
-                folders: true,
-                users: {
-                    select: {
-                        name: true,
-                        email: true,
-                        is_active: true
-                    }
-                }
-            },
-            orderBy: {
-                created_at: "asc"
-            }
-        });
-    };
+export interface IProjectsRepository {
+    get(userId: string): Promise<ProjectDetails[]>;
 
-    static async getById(id: string, userId: string) {
-        return prisma.projects.findUnique({
-            where: {
-                id: id,
-                user_id: userId
-            },
-            include: {
-                folders: true,
-                users: {
-                    select: {
-                        name: true,
-                        email: true,
-                        is_active: true
-                    },
-                },
-            },
-        });
-    };
+    getById(id: string, userId: string): Promise<ProjectDetails | null>;
 
-    static async getByFolderId(folderId: string, userId: string) {
-        return prisma.projects.findFirst({
-            where: {
-                folder_id: folderId,
-                user_id: userId
-            },
-            include: {
-                folders: true
-            }
-        });
-    };
+    getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder | null>;
 
-    static create(data: Prisma.projectsCreateInput) {
-        return prisma.projects.create({
-            data: data,
-            include: {
-                folders: true
-            }
-        });
-    };
+    create(data: CreateProjectData): Promise<ProjectWithFolder>;
 
-    static async update(id: string, data: Prisma.projectsUncheckedUpdateInput) {
-        return prisma.projects.update({
-            where: {
-                id: id
-            },
-            data: data,
-            include: {
-                folders: true
-            },
-        });
-    };
+    update(id: string, data: UpdateProjectData): Promise<ProjectWithFolder>;
 
-    static async delete(id: string) {
-        await prisma.$transaction(async (tx) => {
-            const deletedProject = await tx.projects.delete({
-                where: {
-                    id: id
-                }
-            });
-            await FolderRepository.delete(tx, deletedProject.folder_id);
-        });
-    };
+    delete(id: string): Promise<void>;
 };

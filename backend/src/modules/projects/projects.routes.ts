@@ -1,47 +1,44 @@
-import express from "express";
+import { Router } from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
-import ProjectController from "./projects.controllers";
+import ProjectsController from "./projects.controllers";
 import { createProjectLimiter } from "../../libs/express-rate-limit";
 
-const router = express.Router();
+export function ProjectsRoutes(controller: ProjectsController): Router {
+    const router = Router();
 
-router.get(
-    "/projects",
-    authenticateMiddleware,
-    ProjectController.get
-);
-router.get(
-    "/projects/:id",
-    authenticateMiddleware,
-    ProjectController.getById
-);
+    router.get(
+        "/projects",
+        authenticateMiddleware,
+        (req, res) => controller.get(req, res)
+    );
+    router.get(
+        "/projects/:id",
+        authenticateMiddleware,
+        (req, res) => controller.getById(req, res)
+    );
 
-router.get(
-    "/projects/:folderId/files",
-    authenticateMiddleware,
-    ProjectController.getFiles
-)
+    // router.get("projects/:id/download");
 
-// router.get("projects/:id/download");
-router.post(
-    "/projects",
-    createProjectLimiter,
-    authenticateMiddleware,
-    ProjectController.create
-);
+    router.post(
+        "/projects",
+        createProjectLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.create(req, res)
+    );
 
-router.patch(
-    "/projects/:id",
-    createProjectLimiter,
-    authenticateMiddleware,
-    ProjectController.update
-);
+    router.patch(
+        "/projects/:id",
+        createProjectLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.update(req, res)
+    );
 
-router.delete(
-    "/projects/:id",
-    createProjectLimiter,
-    authenticateMiddleware,
-    ProjectController.delete
-);
+    router.delete(
+        "/projects/:id",
+        createProjectLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.delete(req, res)
+    );
 
-export default router;
+    return router;
+};

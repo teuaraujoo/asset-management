@@ -1,95 +1,96 @@
-import { Prisma } from "../../generated/prisma/client";
+import { Prisma } from "@prisma/client/extension";
 import { CreateProjectBody, UpdateProjectBody } from "./projects.schema";
+import { ProjectDetails, ProjectRecord, ProjectWithFolder } from "./projects.types";
 
-export type ProjectWithRelations = Prisma.projectsGetPayload<{
-    include: {
-        folders: true,
-        users: {
-            select: {
-                name: true,
-                email: true,
-                is_active: true
-            }
-        }
-    };
-}>;
+type Folder = {
+    id: string;
+    name: string;
+    description: string;
+    slug: string;
+    path: string;
+}
 
+type UpdateFolder = {
+    name?: string;
+    description?: string | null;
+    slug: string;
+}
 export default class ProjectMapper {
-    static toResponseGet(project: ProjectWithRelations) {
+    static toResponseGet(project: ProjectDetails) {
         return {
             id: project.id,
-            folder_id: project.folder_id,
+            folder_id: project.folderId,
             name: project.name,
-            mini_description: project.mini_description,
+            mini_description: project.miniDescription,
             description: project.description,
-            slug: project.folders.slug,
-            path: project.folders.path,
-            updated_at: project.updated_at,
+            slug: project.folder.slug,
+            path: project.folder.path,
+            updated_at: project.updatedAt,
             user: {
-                id: project.user_id,
-                name: project.users.name,
-                email: project.users.email,
-            }
-        };
-    };
-
-    static toPrismaCreate(project: CreateProjectBody, folder: Prisma.foldersCreateWithoutProjectsInput, userId: string) {
-        return {
-            name: project.name,
-            mini_description: project.mini_description,
-            description: project.description,
-            users: {
-                connect: {
-                    id: userId
-                }
+                id: project.userId,
+                name: project.user.name,
+                email: project.user.email,
             },
-            folders: {
-                create: folder
+        };
+    };
+
+    static toCreate(project: CreateProjectBody, folder: Folder, userId: string) {
+        return {
+            userId: userId,
+            name: project.name,
+            miniDescription: project.mini_description,
+            description: project.description,
+            folder: {
+                id: folder.id,
+                name: folder.name,
+                description: folder.description,
+                slug: folder.slug,
+                path: folder.path
             }
         };
     };
 
-    static toPrismaUpdate(project: UpdateProjectBody, folder: Prisma.foldersUpdateWithoutProjectsInput) {
+    static toUpdate(project: UpdateProjectBody, folder: UpdateFolder) {
         return {
             name: project.name,
-            mini_description: project.mini_description,
+            miniDescription: project.mini_description,
             description: project.description,
-            updated_at: new Date(),
-            folders: {
-                update: folder
+            updatedAt: new Date(),
+            folder: {
+                name: folder.name,
+                description: folder.description,
+                slug: folder.slug
             }
         }
     };
 
     static toResponseCreate(
-        project: Prisma.projectsUncheckedCreateInput,
-        folder: Prisma.foldersUncheckedCreateInput
+        project: ProjectWithFolder,
     ) {
         return {
             id: project.id,
-            folder_id: project.folder_id,
+            folder_id: project.folderId,
             name: project.name,
-            mini_description: project.mini_description,
+            mini_description: project.miniDescription,
             description: project.description,
-            slug: folder.slug,
-            path: folder.path,
-            created_at: project.created_at,
+            slug: project.folder.slug,
+            path: project.folder.path,
+            created_at: project.createdAt,
         };
     };
 
     static toResponseUpdate(
-        project: Prisma.projectsUncheckedUpdateInput,
-        folder: Prisma.foldersUncheckedCreateInput
+        project: ProjectWithFolder
     ) {
         return {
             id: project.id,
-            folder_id: folder.id,
+            folder_id: project.folderId,
             name: project.name,
-            mini_description: project.mini_description,
+            mini_description: project.miniDescription,
             description: project.description,
-            slug: folder.slug,
-            path: folder.path,
-            updated_at: project.updated_at,
+            slug: project.folder.slug,
+            path: project.folder.path,
+            updated_at: project.updatedAt,
         };
     };
 };
