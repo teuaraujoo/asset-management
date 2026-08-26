@@ -1,18 +1,25 @@
 import { Router } from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import ProjectsController from "./projects.controllers";
-import { createProjectLimiter } from "../../libs/express-rate-limit";
+import {
+    authenticatedReadLimiter,
+    createProjectLimiter,
+    projectMutationLimiter,
+} from "../../libs/express-rate-limit";
 
 export function ProjectsRoutes(controller: ProjectsController): Router {
     const router = Router();
 
     router.get(
         "/projects",
+        authenticatedReadLimiter,
         authenticateMiddleware,
         (req, res) => controller.get(req, res)
     );
+
     router.get(
         "/projects/:id",
+        authenticatedReadLimiter,
         authenticateMiddleware,
         (req, res) => controller.getById(req, res)
     );
@@ -28,14 +35,14 @@ export function ProjectsRoutes(controller: ProjectsController): Router {
 
     router.patch(
         "/projects/:id",
-        createProjectLimiter,
+        projectMutationLimiter,
         authenticateMiddleware,
         (req, res) => controller.update(req, res)
     );
 
     router.delete(
         "/projects/:id",
-        createProjectLimiter,
+        projectMutationLimiter,
         authenticateMiddleware,
         (req, res) => controller.delete(req, res)
     );
