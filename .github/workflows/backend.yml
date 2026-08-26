@@ -14,6 +14,9 @@ on:
       - "backend/**"
       - ".github/workflows/backend.yml"
 
+permissions:
+  contents: read
+
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -24,10 +27,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache-dependency-path: backend/yarn.lock
@@ -44,7 +47,12 @@ jobs:
           yarn -v
 
       - name: Install dependencies
+        env:
+          YARN_ENABLE_HARDENED_MODE: "1"
         run: yarn install --immutable
+
+      - name: Audit dependencies
+        run: yarn npm audit --all --recursive --severity high
 
       - name: Generate Prisma
         run: yarn prisma generate

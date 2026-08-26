@@ -17,6 +17,7 @@ const allowedOrigins = [
 
 if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
 
+app.disable("x-powered-by");
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
@@ -40,4 +41,4 @@ app.use(apiVersion, projectsRoutes);
 app.use(apiVersion, filesRoutes);
 app.use(errorHandler);
 
-export default app; 
+export default app;
