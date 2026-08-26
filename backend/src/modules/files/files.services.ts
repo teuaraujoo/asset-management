@@ -24,23 +24,23 @@ export default class FilesServices {
     };
 
     async getByFolderId(folderId: string, userId: string) {
-        const folder = await FolderService.getById(folderId);
+        const existingFolder = await FolderService.getById(folderId);
 
-        if (!folder) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
+        if (!existingFolder) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
 
-        const files = await this.FilesRepository.getByFolderId(folderId, userId);
+        const existingFiles = await this.FilesRepository.getByFolderId(folderId, userId);
 
-        if (!files) throw new AppError("Arquivos não encontrados.", 404);
+        if (!existingFiles) throw new AppError("Arquivos não encontrados.", 404);
 
-        return files.map((file) => FilesMapper.toResponseGet(file));
+        return existingFiles.map((file) => FilesMapper.toResponseGet(file));
     };
 
     async prepareUpload(body: requestFileBody, userId: string) {
         const data = requestFileSchema.parse(body);
 
-        const { folder, mimeType, extension } = await this.validateFileOnPrepare(data, userId);
+        const { existingFolder, mimeType, extension } = await this.validateFileOnPrepare(data, userId);
         const storageName = this.generateStorageName(extension, data.original_name);
-        const objectKey = `${folder.path}${storageName}`;
+        const objectKey = `${existingFolder.path}${storageName}`;
 
         console.log("mimeType: ", mimeType);
         console.log("extensao: ", extension);
@@ -88,12 +88,12 @@ export default class FilesServices {
 
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        const folder = await FolderService.getById(file.folderId!);
+        const existingFolder = await FolderService.getById(file.folderId!);
 
-        if (!folder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
+        if (!existingFolder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
 
         const storageName = this.generateStorageName(file.extension, data.name);
-        const objectKey = `${folder.path}${storageName}`;
+        const objectKey = `${existingFolder.path}${storageName}`;
 
         await this.StorageProvider.rename(file.objectKey, objectKey);
         await this.FilesRepository.rename(id, { originalName: data.name, storageName: storageName, objectKey: objectKey });
@@ -110,52 +110,52 @@ export default class FilesServices {
     };
 
     async getPreview(id: string, userId: string) {
-        const file = await this.validateExistingAndIDORFiles(id, userId);
+        const existingFile = await this.validateExistingAndIDORFiles(id, userId);
 
-        const isImage = file.mimeType.startsWith("image/");
-        const isVideo = file.mimeType.startsWith("video/");
+        const isImage = existingFile.mimeType.startsWith("image/");
+        const isVideo = existingFile.mimeType.startsWith("video/");
 
         if (!isImage && !isVideo) throw new AppError("Arquivo não possui preview disponível.", 422);
 
 
-        const key = file.thumbnailKey ?? file.objectKey;
+        const key = existingFile.thumbnailKey ?? existingFile.objectKey;
         const previewUrl = await this.StorageProvider.generatePreviewUrl(key);
 
         return { preview_url: previewUrl };
     };
 
     private async validateExistingAndIDORFiles(fileId: string, userId: string) {
-        const file = await this.FilesRepository.getById(fileId);
+        const existingFile = await this.FilesRepository.getById(fileId);
 
-        if (!file) throw new AppError("Arquivo não encontrado.", 400);
+        if (!existingFile) throw new AppError("Arquivo não encontrado.", 400);
 
-        if (file.userId !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
+        if (existingFile.userId !== userId) throw new AppError("Usuário não tem autorização para realizar essa operação.", 403);
 
-        return file;
+        return existingFile;
     };
 
     private async validateFileOnComplete(id: string, userId: string) {
-        const file = await this.validateExistingAndIDORFiles(id, userId);
+        const existingFile = await this.validateExistingAndIDORFiles(id, userId);
 
-        if (file.status === "COMPLETE") throw new AppError("Arquivo com upload já feito.", 409);
+        if (existingFile.status === "COMPLETE") throw new AppError("Arquivo com upload já feito.", 409);
 
-        if (file.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
+        if (existingFile.status !== "PENDING") throw new AppError("O upload não pode ser finalizado nesse estado.", 400);
 
-        const metada = await this.StorageProvider.getObjectMetaData(file.objectKey);
+        const metada = await this.StorageProvider.getObjectMetaData(existingFile.objectKey);
 
         if (!metada) throw new AppError("Não é possível concluir upload de arquivo não existente no bucket.", 409);
 
-        if (BigInt(metada.contentLength) !== file.size) await this.handleFailedUpload(file.id, file.objectKey);
+        if (BigInt(metada.contentLength) !== existingFile.size) await this.handleFailedUpload(existingFile.id, existingFile.objectKey);
 
-        return file;
+        return existingFile;
     };
 
     private async validateFileOnPrepare(data: requestFileBody, userId: string) {
-        const folder = await FolderService.getById(data.folder_id);
+        const existingFolder = await FolderService.getById(data.folder_id);
 
-        if (!folder) throw new AppError("Pasta não foi encontrada", 404);
+        if (!existingFolder) throw new AppError("Pasta não foi encontrada", 404);
 
-        await this.ProjectsService.getByFolderId(folder.id, userId);
+        await this.ProjectsService.getByFolderId(existingFolder.id, userId);
 
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();
@@ -164,7 +164,7 @@ export default class FilesServices {
         this.validateFileType(mimeType, extension);
 
         return {
-            folder,
+            existingFolder,
             mimeType,
             extension,
         };

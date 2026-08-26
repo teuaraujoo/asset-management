@@ -13,23 +13,23 @@ export default class ProjectsService {
     ) { }
 
     async get(userId: string) {
-        const projects = await this.ProjectsRepository.get(userId);
+        const existingProjects = await this.ProjectsRepository.get(userId);
 
-        if (!projects) throw new AppError("Nenhum projeto encontrado.", 404);
+        if (!existingProjects) throw new AppError("Nenhum projeto encontrado.", 404);
 
-        return projects.map((project) => ProjectMapper.toResponseGet(project));
+        return existingProjects.map((project) => ProjectMapper.toResponseGet(project));
     };
 
     async getById(id: string, userId: string) {
-        const project = await this.ProjectsRepository.getById(id, userId);
+        const existingProject = await this.ProjectsRepository.getById(id, userId);
 
-        if (!project) throw new AppError("Projeto não encontrado.", 404);
+        if (!existingProject) throw new AppError("Projeto não encontrado.", 404);
 
         // if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
 
-        await FolderService.getById(project.folderId);
+        await FolderService.getById(existingProject.folderId);
 
-        return ProjectMapper.toResponseGet(project);
+        return ProjectMapper.toResponseGet(existingProject);
     };
 
     async getByFolderId(folderId: string, userId: string) {
