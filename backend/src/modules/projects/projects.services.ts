@@ -25,8 +25,6 @@ export default class ProjectsService {
 
         if (!existingProject) throw new AppError("Projeto não encontrado.", 404);
 
-        // if (project.user_id !== userId) throw new AppError("Você não tem permissão para realizar essa ação.", 403);
-
         await FolderService.getById(existingProject.folderId);
 
         return ProjectMapper.toResponseGet(existingProject);
@@ -42,22 +40,12 @@ export default class ProjectsService {
         return project;
     };
 
-    // async getFiles(folderId: string, userId: string) {
-    //     const files = await FilesServices.getByFolderId(folderId, userId);
-
-    //     if (!files) throw new AppError("Arquivos não encontrados", 404);
-
-    //     return files;
-    // };
-
     async create(body: CreateProjectBody, userId: string) {
         const data = createProjectSchema.parse(body);
 
         const folderData = await FolderService.toPrepareCreate({ name: data.name, description: data.description });
 
         await this.ProjectsRepository.create(ProjectMapper.toCreate(data, folderData, userId));
-
-        // return ProjectMapper.toResponseCreate(project);
     };
 
     async update(projectId: string, userId: string, body: UpdateProjectBody) {
