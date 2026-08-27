@@ -1,4 +1,3 @@
-import { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../../libs/prisma";
 import FolderRepository from "../../folders/folders.repositories";
 import { IProjectsRepository } from "../projects.repositories";
@@ -8,62 +7,7 @@ import {
     ProjectWithFolder,
     UpdateProjectData
 } from "../projects.types";
-
-type PrismaProjectDetails = Prisma.projectsGetPayload<{
-    include: {
-        folders: true;
-        users: {
-            select: {
-                name: true;
-                email: true;
-                is_active: true;
-            };
-        };
-    };
-}>;
-
-type PrismaProjectWithFolder = Prisma.projectsGetPayload<{
-    include: {
-        folders: true;
-    };
-}>;
-
-function toProjectWithFolder(
-    project: PrismaProjectWithFolder,
-): ProjectWithFolder {
-    return {
-        id: project.id,
-        userId: project.user_id,
-        folderId: project.folder_id,
-        name: project.name,
-        miniDescription: project.mini_description,
-        description: project.description,
-        createdAt: project.created_at,
-        updatedAt: project.updated_at,
-        folder: {
-            id: project.folders.id,
-            name: project.folders.name,
-            description: project.folders.description,
-            slug: project.folders.slug,
-            path: project.folders.path,
-            createdAt: project.folders.created_at,
-            updatedAt: project.folders.updated_at,
-        },
-    };
-};
-
-function toProjectDetails(
-    project: PrismaProjectDetails,
-): ProjectDetails {
-    return {
-        ...toProjectWithFolder(project),
-        user: {
-            name: project.users.name,
-            email: project.users.email,
-            isActive: project.users.is_active,
-        },
-    };
-};
+import PrismaProjectsMapper from "./postgres-projects.mapper";
 
 export default class PostgresProjectsRepository implements IProjectsRepository {
     async get(userId: string): Promise<ProjectDetails[]> {
@@ -86,7 +30,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             }
         });
 
-        return projects.map(toProjectDetails);
+        return projects.map(PrismaProjectsMapper.toProjectDetails);
     };
 
     async getById(id: string, userId: string): Promise<ProjectDetails | null> {
@@ -107,7 +51,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             },
         });
 
-        return project ? toProjectDetails(project) : null;
+        return project ? PrismaProjectsMapper.toProjectDetails(project) : null;
     };
 
     async getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder | null> {
@@ -121,7 +65,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             }
         });
 
-        return project ? toProjectWithFolder(project) : null;
+        return project ? PrismaProjectsMapper.toProjectWithFolder(project) : null;
     };
 
     async create(data: CreateProjectData): Promise<ProjectWithFolder> {
@@ -150,7 +94,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             }
         });
 
-        return toProjectWithFolder(project);
+        return PrismaProjectsMapper.toProjectWithFolder(project);
     };
 
     async update(id: string, data: UpdateProjectData): Promise<ProjectWithFolder> {
@@ -176,7 +120,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             },
         });
 
-        return toProjectWithFolder(project);
+        return PrismaProjectsMapper.toProjectWithFolder(project);
     };
 
     async delete(id: string) {

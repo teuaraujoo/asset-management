@@ -1,30 +1,7 @@
 import prisma from "../../../libs/prisma";
 import { IFilesRepository } from "../files.repositories";
 import { CreateFileData, FileRecord, RenameFileData } from "../files.types";
-import type { files } from "../../../generated/prisma/client";
-
-function toFileRecord(file: files): FileRecord {
-    return {
-        id: file.id,
-        userId: file.user_id,
-        folderId: file.folder_id,
-        originalName: file.original_name,
-        storageName: file.storage_name,
-        objectKey: file.object_key,
-        bucket: file.bucket,
-        mimeType: file.mime_type,
-        extension: file.extension,
-        size: file.size,
-        checksum: file.checksum,
-        thumbnailKey: file.thumbnail_key,
-        status: file.status as FileRecord["status"],
-        createdAt: file.created_at,
-        uploadedAt: file.uploaded_at,
-        updatedAt: file.updated_at,
-        deletedAt: file.deleted_at,
-    };
-}
-
+import PrismaFilesMapper from "./postgres-files.mapper";
 export default class PostgresFilesRepository implements IFilesRepository {
 
     async getById(id: string): Promise<FileRecord | null> {
@@ -34,7 +11,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return file ? toFileRecord(file) : null;
+        return file ? PrismaFilesMapper.toFileRecord(file) : null;
     };
 
     async getByFolderId(folderId: string, userId: string): Promise<FileRecord[]> {
@@ -48,7 +25,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return files.map(toFileRecord);
+        return files.map(PrismaFilesMapper.toFileRecord);
     };
 
     async create(data: CreateFileData): Promise<FileRecord> {
@@ -67,7 +44,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return toFileRecord(file);
+        return PrismaFilesMapper.toFileRecord(file);
     };
 
     async completeUpload(id: string): Promise<FileRecord> {
@@ -81,7 +58,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             },
         });
 
-        return toFileRecord(file);
+        return PrismaFilesMapper.toFileRecord(file);
     };
 
     async delete(id: string): Promise<FileRecord> {
@@ -91,7 +68,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return toFileRecord(file);
+        return PrismaFilesMapper.toFileRecord(file);
     };
 
     async failedUpload(id: string): Promise<FileRecord> {
@@ -104,7 +81,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return toFileRecord(file)
+        return PrismaFilesMapper.toFileRecord(file)
     };
 
     async rename(id: string, data: RenameFileData): Promise<FileRecord> {
@@ -119,7 +96,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return toFileRecord(file);
+        return PrismaFilesMapper.toFileRecord(file);
     };
 
     async setThumbnailKey(id: string, thumbnailKey: string): Promise<FileRecord> {
@@ -128,6 +105,6 @@ export default class PostgresFilesRepository implements IFilesRepository {
             data: { thumbnail_key: thumbnailKey }
         });
 
-        return toFileRecord(file);
+        return PrismaFilesMapper.toFileRecord(file);
     };
 };
