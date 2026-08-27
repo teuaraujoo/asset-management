@@ -586,7 +586,7 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
     
 
 ## Aprendizado(s):
-  
+
 - R2/S3 retorna no máximo 1000 objetos por listagem. Projeto com mais arquivos precisa várias
   chamadas.
   
@@ -643,3 +643,12 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
     No entanto, o sistema não verifica se o usuário logado é realmente o usuário 123.
 
     Resultado: Usuário A consegue editar o perfil de Usuário B apenas sabendo o ID.
+
+- TypeScript parameter properties: Quando é adicionado private readonly no parâmetro, o ts automaticamente faz a declaração da propriedade, recebe o argumento e atribui o argumento a propriedade
+    
+    private readonly parametro: tipo
+
+    é a mesma coisa que
+
+    parametro: tipo
+    this.parametro = argumento

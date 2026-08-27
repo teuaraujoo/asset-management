@@ -21,14 +21,11 @@ export default class R2StorageProvider implements StorageProvider {
         private readonly bucket: string
     ) {
         if (!bucket) throw new AppError("Storage bucket não configurado", 500);
-
-        this.storage = storage;
-        this.bucket = bucket;
     };
 
-    async delete(objectKey: string): Promise<unknown> {
+    async delete(objectKey: string): Promise<void> {
 
-        return this.storage.send(
+        await this.storage.send(
             new DeleteObjectCommand({
                 Bucket: this.bucket,
                 Key: objectKey

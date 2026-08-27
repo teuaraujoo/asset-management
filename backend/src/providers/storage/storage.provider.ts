@@ -14,7 +14,7 @@ export interface StorageProvider {
 
     delete(
         objectKey: string
-    ): Promise<unknown>;
+    ): Promise<void>;
 
     deleteByPrefix(
         prefix: string
