@@ -5,13 +5,13 @@ import { randomUUID } from "node:crypto";
 import FolderService from "../folders/folders.services";
 import { PrepareFileUploadDTO, RenameFileDTO, renameFileSchema, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
-import ProjectService from "../projects/projects.services";
 import { StorageProvider } from "../../providers/storage/storage.provider";
+import { ProjectReader } from "../projects/projects.contracts";
 export default class FilesServices {
 
     constructor(
         private StorageProvider: StorageProvider,
-        private ProjectsService: ProjectService,
+        private ProjectReader: ProjectReader,
         private FilesRepository: IFilesRepository,
     ) { }
 
@@ -155,7 +155,7 @@ export default class FilesServices {
 
         if (!existingFolder) throw new AppError("Pasta não foi encontrada", 404);
 
-        await this.ProjectsService.getByFolderId(existingFolder.id, userId);
+        await this.ProjectReader.getByFolderId(existingFolder.id, userId);
 
         const mimeType = data.mime_type;
         const extension = path.extname(data.original_name).toLocaleLowerCase();

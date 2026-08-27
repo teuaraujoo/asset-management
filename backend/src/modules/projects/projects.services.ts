@@ -4,8 +4,10 @@ import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
 import { StorageProvider } from "../../providers/storage/storage.provider";
+import { ProjectWithFolder } from "./projects.types";
+import { ProjectReader } from "./projects.contracts";
 
-export default class ProjectsService {
+export default class ProjectsService implements ProjectReader {
 
     constructor(
         private StorageProvider: StorageProvider,
@@ -30,7 +32,7 @@ export default class ProjectsService {
         return ProjectMapper.toResponseGet(existingProject);
     };
 
-    async getByFolderId(folderId: string, userId: string) {
+    async getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder> {
         const project = await this.ProjectsRepository.getByFolderId(folderId, userId);
 
         if (!project) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
