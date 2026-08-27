@@ -1,5 +1,5 @@
 import AppError from "../../error/app-error";
-import { CreateProjectBody, createProjectSchema, UpdateProjectBody, updateProjectSchema } from "./projects.schema";
+import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
 import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
 import FolderService from "../folders/folders.services";
@@ -40,7 +40,7 @@ export default class ProjectsService {
         return project;
     };
 
-    async create(body: CreateProjectBody, userId: string) {
+    async create(body: CreateProjectDTO, userId: string) {
         const data = createProjectSchema.parse(body);
 
         const folderData = await FolderService.toPrepareCreate({ name: data.name, description: data.description });
@@ -48,7 +48,7 @@ export default class ProjectsService {
         await this.ProjectsRepository.create(ProjectMapper.toCreate(data, folderData, userId));
     };
 
-    async update(projectId: string, userId: string, body: UpdateProjectBody) {
+    async update(projectId: string, userId: string, body: UpdateProjectDTO) {
         const existingProject = await this.validateUpdateProject(projectId, userId);
 
         const data = updateProjectSchema.parse(body);

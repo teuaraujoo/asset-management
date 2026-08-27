@@ -1,8 +1,8 @@
-import { requestFileBody } from "./files.schemas";
+import { PrepareFileUploadDTO } from "./files.schemas";
 import { FileRecord } from "./files.types";
 
 type payloadPedingCreate = {
-    data: requestFileBody;
+    data: PrepareFileUploadDTO;
     mimeType: string;
     storageName: string;
     objectKey: string;

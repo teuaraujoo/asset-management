@@ -3,7 +3,7 @@ import AppError from "../../error/app-error";
 import { IFilesRepository } from "./files.repositories";
 import { randomUUID } from "node:crypto";
 import FolderService from "../folders/folders.services";
-import { renameFileSchema, requestFileBody, requestFileSchema } from "./files.schemas";
+import { PrepareFileUploadDTO, RenameFileDTO, renameFileSchema, requestFileSchema } from "./files.schemas";
 import FilesMapper from "./files.mapper";
 import ProjectService from "../projects/projects.services";
 import { StorageProvider } from "../../providers/storage/storage.provider";
@@ -35,7 +35,7 @@ export default class FilesServices {
         return existingFiles.map((file) => FilesMapper.toResponseGet(file));
     };
 
-    async prepareUpload(body: requestFileBody, userId: string) {
+    async prepareUpload(body: PrepareFileUploadDTO, userId: string) {
         const data = requestFileSchema.parse(body);
 
         const { existingFolder, mimeType, extension } = await this.validateFileOnPrepare(data, userId);
@@ -83,7 +83,7 @@ export default class FilesServices {
         return;
     };
 
-    async rename(id: string, userId: string, body: string) {
+    async rename(id: string, userId: string, body: RenameFileDTO) {
         const data = renameFileSchema.parse(body);
 
         const file = await this.validateExistingAndIDORFiles(id, userId);
@@ -150,7 +150,7 @@ export default class FilesServices {
         return existingFile;
     };
 
-    private async validateFileOnPrepare(data: requestFileBody, userId: string) {
+    private async validateFileOnPrepare(data: PrepareFileUploadDTO, userId: string) {
         const existingFolder = await FolderService.getById(data.folder_id);
 
         if (!existingFolder) throw new AppError("Pasta não foi encontrada", 404);

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client/extension";
-import { CreateProjectBody, UpdateProjectBody } from "./projects.schema";
+import { CreateProjectDTO, UpdateProjectDTO } from "./projects.schema";
 import { ProjectDetails, ProjectRecord, ProjectWithFolder } from "./projects.types";
 
 type Folder = {
@@ -34,7 +34,7 @@ export default class ProjectMapper {
         };
     };
 
-    static toCreate(project: CreateProjectBody, folder: Folder, userId: string) {
+    static toCreate(project: CreateProjectDTO, folder: Folder, userId: string) {
         return {
             userId: userId,
             name: project.name,
@@ -50,7 +50,7 @@ export default class ProjectMapper {
         };
     };
 
-    static toUpdate(project: UpdateProjectBody, folder: UpdateFolder) {
+    static toUpdate(project: UpdateProjectDTO, folder: UpdateFolder) {
         return {
             name: project.name,
             miniDescription: project.mini_description,

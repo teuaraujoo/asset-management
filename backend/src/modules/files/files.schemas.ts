@@ -29,7 +29,7 @@ export const requestFileSchema = z.object({
             "Checksum SHA-256 Base64 inválido.")
 });
 
-export type requestFileBody = z.infer<typeof requestFileSchema>
+export type PrepareFileUploadDTO = z.infer<typeof requestFileSchema>;
 
 export const createFileSchema = z.object({
     user_id: z.string(),
@@ -47,3 +47,5 @@ export const createFileSchema = z.object({
 export type FileSchema = z.infer<typeof createFileSchema>;
 
 export const renameFileSchema = z.object({ name: z.string() });
+
+export type RenameFileDTO = z.infer<typeof renameFileSchema>;
