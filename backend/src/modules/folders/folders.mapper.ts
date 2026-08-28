@@ -1,4 +1,4 @@
-import { CreateFolderBody, UpdateFolderBody } from "./folder.schema";
+import { CreateFolderBody, UpdateFolderBody } from "./folders.schema";
 
 export default class FolderMapper {
 
