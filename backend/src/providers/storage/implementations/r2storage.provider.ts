@@ -1,5 +1,5 @@
 // import { S3Client } from "@aws-sdk/client-s3";
-import { PreparedUpload, StorageProvider } from "../storage.provider";
+import { PreparedUpload, IStorageProvider } from "../storage.provider";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
     DeleteObjectCommand,
@@ -14,7 +14,7 @@ import {
 import { ObjectMetaData } from "../storage.provider";
 import AppError from "../../../error/app-error";
 
-export default class R2StorageProvider implements StorageProvider {
+export default class R2StorageProvider implements IStorageProvider {
 
     constructor(
         private readonly storage: S3Client,

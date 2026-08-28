@@ -10,7 +10,7 @@ export interface PreparedUpload {
     storageLocation: string;
 };
 
-export interface StorageProvider {
+export interface IStorageProvider {
 
     delete(
         objectKey: string

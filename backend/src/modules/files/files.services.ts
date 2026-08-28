@@ -2,16 +2,22 @@ import path from "node:path";
 import AppError from "../../error/app-error";
 import { IFilesRepository } from "./files.repositories";
 import { randomUUID } from "node:crypto";
-import FolderService from "../folders/folders.services";
-import { PrepareFileUploadDTO, RenameFileDTO, renameFileSchema, requestFileSchema } from "./files.schemas";
+import {
+    PrepareFileUploadDTO,
+    RenameFileDTO,
+    renameFileSchema,
+    requestFileSchema
+} from "./files.schemas";
 import FilesMapper from "./files.mapper";
-import { StorageProvider } from "../../providers/storage/storage.provider";
-import { ProjectReader } from "../projects/projects.contracts";
-export default class FilesServices {
+import { IStorageProvider } from "../../providers/storage/storage.provider";
+import { IProjectReader } from "../projects/projects.contracts";
+import { IFolderReader } from "../folders/folders.contracts";
+export class FilesService {
 
     constructor(
-        private StorageProvider: StorageProvider,
-        private ProjectReader: ProjectReader,
+        private StorageProvider: IStorageProvider,
+        private ProjectReader: IProjectReader,
+        private FolderReader: IFolderReader,
         private FilesRepository: IFilesRepository,
     ) { }
 
@@ -24,9 +30,7 @@ export default class FilesServices {
     };
 
     async getByFolderId(folderId: string, userId: string) {
-        const existingFolder = await FolderService.getById(folderId);
-
-        if (!existingFolder) throw new AppError("Projeto sem pasta vinculada ou não encontrado.", 404);
+        await this.FolderReader.getById(folderId);
 
         const existingFiles = await this.FilesRepository.getByFolderId(folderId, userId);
 
@@ -88,9 +92,7 @@ export default class FilesServices {
 
         const file = await this.validateExistingAndIDORFiles(id, userId);
 
-        const existingFolder = await FolderService.getById(file.folderId!);
-
-        if (!existingFolder) throw new AppError("Nenhuma pasta encontrada para esse arquivo.", 404);
+        const existingFolder = await this.FolderReader.getById(file.folderId!);
 
         const storageName = this.generateStorageName(file.extension, data.name);
         const objectKey = `${existingFolder.path}${storageName}`;
@@ -151,7 +153,7 @@ export default class FilesServices {
     };
 
     private async validateFileOnPrepare(data: PrepareFileUploadDTO, userId: string) {
-        const existingFolder = await FolderService.getById(data.folder_id);
+        const existingFolder = await this.FolderReader.getById(data.folder_id);
 
         if (!existingFolder) throw new AppError("Pasta não foi encontrada", 404);
 
