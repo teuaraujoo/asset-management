@@ -1,8 +1,8 @@
-import { CreateFolderBody, UpdateFolderBody } from "./folders.schema";
+import { PrepareFolderInput } from "./folders.types";
 
 export default class FolderMapper {
 
-    static toPrismaCreate(data: CreateFolderBody, slug: string, path: string, id: string) {
+    static toCreate(data: PrepareFolderInput, slug: string, path: string, id: string) {
         return {
             id: id,
             name: data.name,
@@ -12,7 +12,7 @@ export default class FolderMapper {
         };
     };
 
-    static toPrismaUpdate(data: UpdateFolderBody, slug: string) {
+    static toUpdate(data: PrepareFolderInput, slug: string) {
         return {
             name: data.name,
             description: data.description,

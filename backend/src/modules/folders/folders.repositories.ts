@@ -1,47 +1,12 @@
-import { Prisma } from "../../generated/prisma/client";
-import prisma from "../../libs/prisma";
+import { FolderRecord } from "./folders.types";
 
-export default class FolderRepository {
-    static async get() {
-        return prisma.folders.findMany();
-    };
+export interface IFoldersRepository {
 
-    static async getById(id: string) {
-        return prisma.folders.findUnique({
-            where: { id: id }
-        });
-    };
+    get(): Promise<FolderRecord[]>;
 
-    static async getByName(name: string) {
-        return prisma.folders.findFirst({
-            where: {
-                name: name
-            },
-        });
-    };
+    getById(folderId: string): Promise<FolderRecord | null>;
 
-    static async getByNameExcludingId(name: string, folderId: string) {
-        return prisma.folders.findFirst({
-            where: {
-                name: name,
-                id: {
-                    not: folderId,
-                },
-            },
-        });
-    };
+    getByName(name: string): Promise<FolderRecord | null>
 
-    static async create(folder: Prisma.foldersCreateInput) {
-        return prisma.folders.create({
-            data: folder
-        });
-    };
-
-    static async delete(tx: Prisma.TransactionClient, id: string) {
-        return tx.folders.delete({
-            where: {
-                id: id
-            }
-        });
-    };
+    getByNameExcludingId(name: string, folderId: string): Promise<FolderRecord | null>;
 };
