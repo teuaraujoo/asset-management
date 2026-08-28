@@ -650,3 +650,5 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
 
     parametro: tipo
     this.parametro = argumento
+
+- Erro na modelagem: A modelagem feita coloca folder_id em projects, tornando folders a entidade referenciada e permitindo a criação de vários projetos em folders (vários projeto podem compartilhar a mesma pasta). Porém, durante a codificação foi percebido que folders possui um ciclo de vida dependente de projeto, logo, folders deve possuir um project_id único. Assim, o projeto torna-se a entidade principal e sua exclusão pode propagar via cascade para o folders e os arquivos.
