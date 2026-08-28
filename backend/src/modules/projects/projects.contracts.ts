@@ -1,5 +1,5 @@
 import { ProjectWithFolder } from "./projects.types";
 
-export interface ProjectReader {
+export interface IProjectReader {
     getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder>;
 };

@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import ProjectsService from "./projects.services";
+import { ProjectsService } from "./projects.services";
 
 export default class ProjectsController {
 

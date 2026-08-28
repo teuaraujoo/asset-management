@@ -2,15 +2,16 @@ import AppError from "../../error/app-error";
 import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
 import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
-import FolderService from "../folders/folders.services";
-import { StorageProvider } from "../../providers/storage/storage.provider";
+import { IStorageProvider } from "../../providers/storage/storage.provider";
 import { ProjectWithFolder } from "./projects.types";
-import { ProjectReader } from "./projects.contracts";
+import { IProjectReader } from "./projects.contracts";
+import { ProjectFolderService } from "../folders/folders.contracts";
 
-export default class ProjectsService implements ProjectReader {
+export class ProjectsService implements IProjectReader {
 
     constructor(
-        private StorageProvider: StorageProvider,
+        private StorageProvider: IStorageProvider,
+        private FolderContract: ProjectFolderService,
         private ProjectsRepository: IProjectsRepository,
     ) { }
 
@@ -27,7 +28,7 @@ export default class ProjectsService implements ProjectReader {
 
         if (!existingProject) throw new AppError("Projeto não encontrado.", 404);
 
-        await FolderService.getById(existingProject.folderId);
+        await this.FolderContract.getById(existingProject.folderId);
 
         return ProjectMapper.toResponseGet(existingProject);
     };
@@ -45,7 +46,7 @@ export default class ProjectsService implements ProjectReader {
     async create(body: CreateProjectDTO, userId: string) {
         const data = createProjectSchema.parse(body);
 
-        const folderData = await FolderService.toPrepareCreate({ name: data.name, description: data.description });
+        const folderData = await this.FolderContract.toPrepareCreate({ name: data.name, description: data.description });
 
         await this.ProjectsRepository.create(ProjectMapper.toCreate(data, folderData, userId));
     };
@@ -55,7 +56,7 @@ export default class ProjectsService implements ProjectReader {
 
         const data = updateProjectSchema.parse(body);
 
-        const folderData = await FolderService.toPrepareUpdate(existingProject.folderId, {
+        const folderData = await this.FolderContract.toPrepareUpdate(existingProject.folderId, {
             name: data.name ?? existingProject.name,
             description: data.description ?? existingProject.description,
         },);

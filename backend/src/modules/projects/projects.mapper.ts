@@ -1,20 +1,7 @@
-import { Prisma } from "@prisma/client/extension";
+import { PreparedFolder, PreparedFolderUpdate } from "../folders/folders.types";
 import { CreateProjectDTO, UpdateProjectDTO } from "./projects.schema";
-import { ProjectDetails, ProjectRecord, ProjectWithFolder } from "./projects.types";
+import { ProjectDetails, ProjectWithFolder } from "./projects.types";
 
-type Folder = {
-    id: string;
-    name: string;
-    description: string;
-    slug: string;
-    path: string;
-}
-
-type UpdateFolder = {
-    name?: string;
-    description?: string | null;
-    slug: string;
-}
 export default class ProjectMapper {
     static toResponseGet(project: ProjectDetails) {
         return {
@@ -34,7 +21,7 @@ export default class ProjectMapper {
         };
     };
 
-    static toCreate(project: CreateProjectDTO, folder: Folder, userId: string) {
+    static toCreate(project: CreateProjectDTO, folder: PreparedFolder, userId: string) {
         return {
             userId: userId,
             name: project.name,
@@ -50,7 +37,7 @@ export default class ProjectMapper {
         };
     };
 
-    static toUpdate(project: UpdateProjectDTO, folder: UpdateFolder) {
+    static toUpdate(project: UpdateProjectDTO, folder: PreparedFolderUpdate) {
         return {
             name: project.name,
             miniDescription: project.mini_description,
