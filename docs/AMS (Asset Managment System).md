@@ -160,6 +160,7 @@ const putUrl = await getSignedUrl(
         - Pequenas estatísticas de armazenamento (quantidade de arquivo, quantidade de mp4…)
         - Ações rápidas (novo arquivo, renomear, excluir, baixar)
         - filtro de pesquisa
+    - Projetos
 
 ## Requisitos Funcionais (RFs)
 
@@ -168,10 +169,7 @@ const putUrl = await getSignedUrl(
 - Compartilhamento por URL pública ou assinada.
 - Opcional/Futuramente:
     - Compactação de arquivos antes do armazenamento na Cloudflare R2.
-    - Metadados (tamanho, MIME, hash, owner).
     - Busca por nome, tags e tipo.
-    - Organização em pastas.
-    - Download de arquivos.
 
 ## Requisitos Não Funcionais
 
@@ -236,9 +234,10 @@ const putUrl = await getSignedUrl(
     - Me - GET - /auth/me
 
 - Arquivos
+    - Download - GET - /files/:id/download
+    - Preview (Thumbnail) - GET - /files/:id/preview
     - Upload - POST - /files/upload-url
     - Complete upload - PUT - /files/:id/complete
-    - Download - GET - /files/:id/download
     - Editar - PATCH - /files/:id
     - Deletar - DELETE - /files/:id
     - Listar arquivos de uma pasta - GET - /files/:folderId
@@ -246,7 +245,6 @@ const putUrl = await getSignedUrl(
 - Projetos
     - GET - /projects
     - GET - /projects/:id
-    - GET - /projects/:folderId/files
     - POST - Upload - /projects
     - PATCH - /projects/:id
     - DELETE - /projects/:id
