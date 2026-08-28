@@ -6,7 +6,7 @@ import {
 
 type PrismaProjectDetails = Prisma.projectsGetPayload<{
     include: {
-        folders: true;
+        folder: true;
         users: {
             select: {
                 name: true;
@@ -19,7 +19,7 @@ type PrismaProjectDetails = Prisma.projectsGetPayload<{
 
 type PrismaProjectWithFolder = Prisma.projectsGetPayload<{
     include: {
-        folders: true;
+        folder: true;
     };
 }>;
 
@@ -28,23 +28,27 @@ export default class PrismaProjectsMapper {
     static toProjectWithFolder(
         project: PrismaProjectWithFolder,
     ): ProjectWithFolder {
+        if (!project.folder) {
+            throw new Error(`Projeto ${project.id} não possui pasta vinculada.`);
+        }
+
         return {
             id: project.id,
             userId: project.user_id,
-            folderId: project.folder_id,
+            folderId: project.folder.id,
             name: project.name,
             miniDescription: project.mini_description,
             description: project.description,
             createdAt: project.created_at,
             updatedAt: project.updated_at,
             folder: {
-                id: project.folders.id,
-                name: project.folders.name,
-                description: project.folders.description,
-                slug: project.folders.slug,
-                path: project.folders.path,
-                createdAt: project.folders.created_at,
-                updatedAt: project.folders.updated_at,
+                id: project.folder.id,
+                name: project.folder.name,
+                description: project.folder.description,
+                slug: project.folder.slug,
+                path: project.folder.path,
+                createdAt: project.folder.created_at,
+                updatedAt: project.folder.updated_at,
             },
         };
     };

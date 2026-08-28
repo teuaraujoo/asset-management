@@ -15,7 +15,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 user_id: userId
             },
             include: {
-                folders: true,
+                folder: true,
                 users: {
                     select: {
                         name: true,
@@ -39,7 +39,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 user_id: userId
             },
             include: {
-                folders: true,
+                folder: true,
                 users: {
                     select: {
                         name: true,
@@ -56,11 +56,15 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
     async getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder | null> {
         const project = await prisma.projects.findFirst({
             where: {
-                folder_id: folderId,
-                user_id: userId
+                user_id: userId,
+                folder: {
+                    is: {
+                        id: folderId
+                    }
+                }
             },
             include: {
-                folders: true
+                folder: true
             }
         });
 
@@ -78,7 +82,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                         id: data.userId
                     },
                 },
-                folders: {
+                folder: {
                     create: {
                         id: data.folder.id,
                         name: data.folder.name,
@@ -89,7 +93,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 },
             },
             include: {
-                folders: true
+                folder: true
             }
         });
 
@@ -106,7 +110,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 mini_description: data.miniDescription,
                 description: data.description,
                 updated_at: data.updatedAt,
-                folders: {
+                folder: {
                     update: {
                         name: data.folder.name,
                         description: data.folder.description,
@@ -115,7 +119,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 },
             },
             include: {
-                folders: true
+                folder: true
             },
         });
 
@@ -123,18 +127,10 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
     };
 
     async delete(id: string): Promise<void> {
-        await prisma.$transaction(async (tx) => {
-            const deletedProject = await tx.projects.delete({
-                where: {
-                    id: id
-                }
-            });
-
-            await tx.folders.delete({
-                where: {
-                    id: deletedProject.folder_id
-                }
-            });
+        await prisma.projects.delete({
+            where: {
+                id: id
+            }
         });
     };
 };

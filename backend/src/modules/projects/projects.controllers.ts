@@ -34,15 +34,6 @@ export default class ProjectsController {
         return res.status(201).json({ message: "Projeto criado com sucesso." });
     };
 
-    // async getFiles(req: Request, res: Response) {
-    //     const folderId = req.params.folderId as string;
-    //     const userId = req.user.sub;
-
-    //     const result = await this.ProjectsService.getFiles(folderId, userId);
-
-    //     return res.status(200).json({ message: "Arquivos do projeto encontrados com sucesso.", data: result });
-    // };
-
     async update(req: Request, res: Response) {
         const projectId = req.params.id as string;
         const userId = req.user.sub;
