@@ -25,7 +25,7 @@ export default class PostgresFilesRepository implements IFilesRepository {
             }
         });
 
-        return files.map(PrismaFilesMapper.toFileRecord);
+        return files.map((file) => PrismaFilesMapper.toFileRecord(file));
     };
 
     async create(data: CreateFileData): Promise<FileRecord> {

@@ -30,7 +30,7 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             }
         });
 
-        return projects.map(PrismaProjectsMapper.toProjectDetails);
+        return projects.map((project) => PrismaProjectsMapper.toProjectDetails(project));
     };
 
     async getById(id: string, userId: string): Promise<ProjectDetails | null> {
