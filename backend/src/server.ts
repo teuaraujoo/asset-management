@@ -1,8 +1,10 @@
 import "dotenv/config";
 import app from "./app";
 import logger from "./libs/logger";
+import { startMemoryMonitor } from "./monitoring/memory.monitor";
 
 const PORT = process.env.PORT ?? 3000;
+const memoryMonitor = startMemoryMonitor();
 const server = app.listen(PORT, () => {
     logger.info({
         event: "server.started",
@@ -12,6 +14,8 @@ const server = app.listen(PORT, () => {
 });
 
 function shutdown(signal: string) {
+    clearInterval(memoryMonitor);
+
     logger.info(
         {
             event: "server.shutdown_started",

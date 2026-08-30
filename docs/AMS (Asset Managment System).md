@@ -663,3 +663,18 @@ const folder_path = `${mainFolder_name}/${childFolder_name}`;
   - Qual usuário participou?
   - A operação terminou ou falhou?
   - Quanto tempo levou?
+
+- Uso de memória
+
+| Métrica              | O que significa                                            |
+| -------------------- | ---------------------------------------------------------- |
+| `rssMb`              | Memória total ocupada pelo processo no sistema operacional |
+| `heapTotalMb`        | Heap que o V8 reservou                                     |
+| `heapUsedMb`         | Heap realmente utilizado pelos objetos JS                  |
+| `externalMb`         | Memória fora do heap do V8                                 |
+| `arrayBuffersMb`     | Parte da memória externa usada por Buffers e ArrayBuffers  |
+| `limitMb`            | Limite de memória                                          |
+| `rssUsagePercentage` | Percentual de uso                                          |
+
+- O que é heap?
+    Heap é uma região da memória RAM usada pelo Node.js/V8 para armazenar dados que são criados dinamicamente durante a execução do programa.
