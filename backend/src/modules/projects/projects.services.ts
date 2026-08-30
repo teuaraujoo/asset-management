@@ -2,7 +2,7 @@ import AppError from "../../error/app-error";
 import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
 import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
-import { IStorageProvider } from "../../providers/storage/storage.provider";
+import { IProjectStorageCleanner } from "../../providers/storage/storage.provider";
 import { ProjectWithFolder } from "./projects.types";
 import { IProjectReader } from "./projects.contracts";
 import { ProjectFolderService } from "../folders/folders.contracts";
@@ -10,7 +10,7 @@ import { ProjectFolderService } from "../folders/folders.contracts";
 export class ProjectsService implements IProjectReader {
 
     constructor(
-        private StorageProvider: IStorageProvider,
+        private StorageCleanner: IProjectStorageCleanner,
         private FolderContract: ProjectFolderService,
         private ProjectsRepository: IProjectsRepository,
     ) { }
@@ -73,7 +73,7 @@ export class ProjectsService implements IProjectReader {
 
         if (!project) throw new AppError("Projeto não encontrado ou já deletado.", 404);
 
-        await this.StorageProvider.deleteByPrefix(project.folder.path);
+        await this.StorageCleanner.deleteByPrefix(project.folder.path);
         await this.ProjectsRepository.delete(id);
 
         return;

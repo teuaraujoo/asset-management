@@ -9,13 +9,13 @@ import {
     requestFileSchema
 } from "./files.schemas";
 import FilesMapper from "./files.mapper";
-import { IStorageProvider } from "../../providers/storage/storage.provider";
+import { IFileStorage } from "../../providers/storage/storage.provider";
 import { IProjectReader } from "../projects/projects.contracts";
 import { IFolderReader } from "../folders/folders.contracts";
 export class FilesService {
 
     constructor(
-        private StorageProvider: IStorageProvider,
+        private StorageProvider: IFileStorage,
         private ProjectReader: IProjectReader,
         private FolderReader: IFolderReader,
         private FilesRepository: IFilesRepository,

@@ -10,15 +10,11 @@ export interface PreparedUpload {
     storageLocation: string;
 };
 
-export interface IStorageProvider {
+export interface IFileStorage {
 
     delete(
         objectKey: string
     ): Promise<void>;
-
-    deleteByPrefix(
-        prefix: string
-    ): Promise<unknown>;
 
     getObjectMetaData(
         objectKey: string
@@ -27,7 +23,7 @@ export interface IStorageProvider {
     rename(
         oldKey: string,
         newKey: string
-    ): Promise<unknown>;
+    ): Promise<void>;
 
     generatePresignedUrl(
         objectKey: string,
@@ -42,4 +38,9 @@ export interface IStorageProvider {
     generatePreviewUrl(
         key: string
     ): Promise<string>;
+};
+export interface IProjectStorageCleanner {
+    deleteByPrefix(
+        prefix: string
+    ): Promise<void>;
 };
