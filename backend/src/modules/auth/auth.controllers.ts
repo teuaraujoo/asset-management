@@ -15,7 +15,7 @@ export default class AuthController {
 
             req.log.info({
                 event: "auth.login_succeeded",
-                user: req.user.sub
+                // user: req.user.sub
             }, "Login succeeded");
 
             return res.status(200).json({
@@ -24,7 +24,6 @@ export default class AuthController {
         } catch (err) {
             req.log.warn({
                 event: "auth.login_failed",
-                userId: req.user.sub
             }, "Login failed");
 
             return next(err);
