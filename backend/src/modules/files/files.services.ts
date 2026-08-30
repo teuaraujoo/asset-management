@@ -46,12 +46,6 @@ export class FilesService {
         const storageName = this.generateStorageName(extension, data.original_name);
         const objectKey = `${existingFolder.path}${storageName}`;
 
-        console.log("mimeType: ", mimeType);
-        console.log("extensao: ", extension);
-        console.log("tamanho do arquivo: ", data.size);
-        console.log("object_key: ", objectKey);
-        console.log("cheksum 1° requisicao: ", data.checksum);
-
         const prepareUpload = await this.StorageProvider.generatePresignedUrl(objectKey, mimeType, data.checksum);
 
         const file = await this.FilesRepository.create(

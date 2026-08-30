@@ -7,6 +7,7 @@ import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
 import UserRoutes from "./modules/users/users.routes";
 import { filesRoutes, projectsRoutes } from "./composition-root";
+import loggerMiddleware from "./middlewares/logger.middleware";
 
 const app = express();
 const apiVersion = "/api/v1";
@@ -18,6 +19,7 @@ const allowedOrigins = [
 if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
 
 app.disable("x-powered-by");
+app.use(loggerMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());

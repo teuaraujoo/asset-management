@@ -93,7 +93,6 @@ export default class R2StorageProvider implements IFileStorage, IProjectStorageC
 
     async rename(oldKey: string, newKey: string): Promise<void> {
 
-        console.log("CopySource: ", `${this.bucket}/${oldKey}`)
         await this.storage.send(new CopyObjectCommand({
             Bucket: this.bucket,
             CopySource: `${this.bucket}/${encodeURIComponent(oldKey)}`,

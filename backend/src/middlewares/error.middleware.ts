@@ -55,7 +55,11 @@ export default function errorHandler(
         });
     };
 
-    console.error(err);
+    req.log.error({
+        err,
+        event: "http.request.unexpected_error",
+        requestId: req.id
+    }, "Unexpected application error");
 
     return res.status(500).json({
         message: "Error interno do servidor."

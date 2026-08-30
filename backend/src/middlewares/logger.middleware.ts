@@ -32,7 +32,7 @@ const loggerMiddleware = pinoHttp({
             return {
                 id: req.id,
                 method: req.method,
-                url: req.url
+                path: req.url?.split("?", 1)[0]
             };
         },
 

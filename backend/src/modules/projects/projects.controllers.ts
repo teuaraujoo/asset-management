@@ -31,6 +31,11 @@ export default class ProjectsController {
 
         await this.ProjectsService.create(body, userId);
 
+        req.log.info({
+            event: "project.created",
+            userId,
+        }, "Project created");
+
         return res.status(201).json({ message: "Projeto criado com sucesso." });
     };
 
@@ -41,6 +46,12 @@ export default class ProjectsController {
 
         const result = await this.ProjectsService.update(projectId, userId, body);
 
+        req.log.info({
+            event: "project.updated",
+            projectId,
+            userId,
+        }, "Project updated");
+
         return res.status(200).json({ message: "Projeto atualizado com sucesso", data: result });
     };
 
@@ -49,6 +60,12 @@ export default class ProjectsController {
         const userId = req.user.sub;
 
         await this.ProjectsService.delete(id, userId);
+
+        req.log.info({
+            event: "project.deleted",
+            projectId: id,
+            userId,
+        }, "Project deleted");
 
         return res.status(200).json({ message: "Projeto excluído com sucesso." });
     };
