@@ -2,7 +2,7 @@ import AppError from "../../error/app-error";
 import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
 import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
-import { IProjectStorageCleanner } from "../../providers/storage/storage.provider";
+import { IProjectStorageCleaner } from "../../providers/storage/storage.provider";
 import { ProjectWithFolder } from "./projects.types";
 import { IProjectReader } from "./projects.contracts";
 import { ProjectFolderService } from "../folders/folders.contracts";
@@ -10,7 +10,7 @@ import { ProjectFolderService } from "../folders/folders.contracts";
 export class ProjectsService implements IProjectReader {
 
     constructor(
-        private StorageCleanner: IProjectStorageCleanner,
+        private StorageCleanner: IProjectStorageCleaner,
         private FolderContract: ProjectFolderService,
         private ProjectsRepository: IProjectsRepository,
     ) { }

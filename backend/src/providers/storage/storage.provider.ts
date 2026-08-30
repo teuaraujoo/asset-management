@@ -39,7 +39,7 @@ export interface IFileStorage {
         key: string
     ): Promise<string>;
 };
-export interface IProjectStorageCleanner {
+export interface IProjectStorageCleaner {
     deleteByPrefix(
         prefix: string
     ): Promise<void>;
