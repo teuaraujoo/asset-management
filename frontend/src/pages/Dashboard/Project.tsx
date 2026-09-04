@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFiles } from "@/hooks/files/use-files";
+import { useProject } from "@/hooks/projects/use-project";
 import { useParams, useNavigate } from "react-router-dom";
 import { FileCard } from "@/components/dashboard/files/FileCard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { deleteFile, downloadFile, downloadFromBucket, renameFile } from "@/services/files.services";
+import { removeCover, setCover } from "@/services/projects.services";
 import type { FileItem } from "@/@types/files/files.types";
 import {
     Dialog,
@@ -21,10 +23,24 @@ import {
 export default function DashboardProjectPage() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { files, isLoading, error, refetch } = useFiles(id);
+    const {
+        project,
+        isLoading: isProjectLoading,
+        error: projectError,
+        refetch: refetchProject,
+    } = useProject(id);
+    const {
+        files,
+        isLoading: areFilesLoading,
+        error: filesError,
+        refetch: refetchFiles,
+    } = useFiles(id);
     const [downloadTarget, setDownloadTarget] = useState<string | null>(null);
+    const [coverTarget, setCoverTarget] = useState<string | null>(null);
 
     if (!id) return null;
+
+    const error = projectError ?? filesError;
 
     if (error) {
         return (
@@ -41,7 +57,7 @@ export default function DashboardProjectPage() {
             error: (error) => error.message || "Error ao conectar com o servidor!",
         });
 
-        await refetch();
+        await Promise.all([refetchFiles(), refetchProject()]);
     };
 
     async function handleRename(id: string, name: string) {
@@ -51,11 +67,39 @@ export default function DashboardProjectPage() {
             error: (error) => error.message || "Error ao conectar com o servidor!",
         });
 
-        await refetch();
+        await refetchFiles();
     };
 
     function handleDownload(id: string) {
         setDownloadTarget(id);
+    };
+
+    async function handleToggleCover(file: FileItem) {
+        if (!project || coverTarget) return;
+
+        const isCover = project.cover_file_id === file.id;
+        setCoverTarget(file.id);
+
+        try {
+            await toast.promise(
+                isCover
+                    ? removeCover(project.id, { fileId: file.id })
+                    : setCover(project.id, { fileId: file.id }),
+                {
+                    loading: isCover ? "Removendo capa..." : "Definindo capa...",
+                    success: (response) => response.message,
+                    error: (error) => error instanceof Error
+                        ? error.message
+                        : "Erro ao alterar a capa do projeto.",
+                },
+            );
+
+            await refetchProject();
+        } catch {
+            // O toast apresenta o erro ao usuário.
+        } finally {
+            setCoverTarget(null);
+        }
     };
 
     async function confirmDownload() {
@@ -89,10 +133,26 @@ export default function DashboardProjectPage() {
                     Voltar
                 </Button>
                 <div className="h-4 w-px bg-border" aria-hidden="true" />
-                <h2 className="text-2xl font-bold tracking-tight">Arquivos do Projeto</h2>
+                <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        {project?.name ?? "Arquivos do Projeto"}
+                    </h2>
+                    {project && (
+                        <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span
+                                className={`size-2.5 rounded-full ring-4 ${project.published
+                                    ? "bg-emerald-500 ring-emerald-500/15"
+                                    : "bg-zinc-400 ring-zinc-400/15"
+                                    }`}
+                                aria-hidden="true"
+                            />
+                            {project.published ? "Publicado" : "Não publicado"}
+                        </span>
+                    )}
+                </div>
             </div>
 
-            {isLoading ? (
+            {isProjectLoading || areFilesLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {Array.from({ length: 10 }).map((_, i) => (
                         <div key={i} className="flex flex-col h-[200px] border rounded-xl overflow-hidden">
@@ -115,7 +175,16 @@ export default function DashboardProjectPage() {
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {files.map((file) => (
-                        <FileCard key={file.id} file={file} onDelete={handleDeleteFile} onRename={handleRename} onDownload={handleDownload} />
+                        <FileCard
+                            key={file.id}
+                            file={file}
+                            isCover={project?.cover_file_id === file.id}
+                            isUpdatingCover={coverTarget === file.id}
+                            onToggleCover={handleToggleCover}
+                            onDelete={handleDeleteFile}
+                            onRename={handleRename}
+                            onDownload={handleDownload}
+                        />
                     ))}
                 </div>
             )}

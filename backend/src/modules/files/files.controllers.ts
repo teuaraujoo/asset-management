@@ -16,6 +16,18 @@ export default class FilesController {
         return res.status(200).json({ message: "Arquivos encontrados com sucesso.", data: result });
     };
 
+    async getByProjectId(req: Request, res: Response) {
+        const projectId = req.params.projectId as string;
+        const userId = req.user.sub;
+
+        const result = await this.FilesService.getByProjectId(projectId, userId);
+
+        return res.status(200).json({
+            message: "Arquivos encontrados com sucesso.",
+            data: result,
+        });
+    };
+
     async prepareUpload(req: Request, res: Response) {
         const body = req.body;
         const userId = req.user.sub;

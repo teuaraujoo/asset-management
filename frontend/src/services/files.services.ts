@@ -2,8 +2,8 @@ import fetchRequest from "@/lib/http/client";
 import apiRoutes from "@/lib/http/api";
 import type { CreateFileBody } from "@/schemas/files/files.schema";
 
-export async function getFilesByFolderiId(folderId: string) {
-    return fetchRequest({ method: "GET", url: `${apiRoutes.files}/${folderId}` });
+export async function getFilesByProjectId(projectId: string) {
+    return fetchRequest({ method: "GET", url: `${apiRoutes.projects}/${projectId}/files` });
 };
 
 export async function createFile(data: CreateFileBody) {

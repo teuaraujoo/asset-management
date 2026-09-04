@@ -39,6 +39,13 @@ export class FilesService {
         return existingFiles.map((file) => FilesMapper.toResponseGet(file));
     };
 
+    async getByProjectId(projectId: string, userId: string) {
+        const folder = await this.ProjectReader.getFolderByProjectId(projectId, userId);
+        const files = await this.FilesRepository.getByFolderId(folder.id, userId);
+
+        return files.map((file) => FilesMapper.toResponseGet(file));
+    };
+
     async prepareUpload(body: PrepareFileUploadDTO, userId: string) {
         const data = requestFileSchema.parse(body);
 

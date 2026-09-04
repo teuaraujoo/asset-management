@@ -12,6 +12,13 @@ export function FilesRoutes(controller: FilesController): Router {
     const router = Router();
 
     router.get(
+        "/projects/:projectId/files",
+        authenticateMiddleware,
+        authenticatedReadLimiter,
+        (req, res) => controller.getByProjectId(req, res),
+    );
+
+    router.get(
         "/files/:id/download",
         authenticateMiddleware,
         authenticatedReadLimiter,

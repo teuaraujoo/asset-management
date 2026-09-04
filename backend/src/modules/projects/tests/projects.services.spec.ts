@@ -90,6 +90,28 @@ describe("ProjectsService.getByFolderId", () => {
     });
 });
 
+describe("ProjectsService.getFolderByProjectId", () => {
+    it("retorna a pasta do projeto pertencente ao usuário", async () => {
+        const { service, repo } = sut();
+
+        await expect(service.getFolderByProjectId(ids.project, ids.user))
+            .resolves.toMatchObject({ id: ids.folder });
+        expect(repo.getById).toHaveBeenCalledWith(ids.project, ids.user);
+    });
+
+    it("rejeita projeto inexistente ou pertencente a outro usuário", async () => {
+        const { service } = sut(repository({
+            getById: vi.fn(async () => null),
+        }));
+
+        await expect(service.getFolderByProjectId("missing", ids.user))
+            .rejects.toMatchObject({
+                message: "Projeto não encontrado.",
+                statusCode: 404,
+            });
+    });
+});
+
 describe("ProjectsService.create", () => {
     const body = { name: "Novo projeto", mini_description: "Descrição curta", description: "Descrição completa" };
 

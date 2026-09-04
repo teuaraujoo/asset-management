@@ -35,19 +35,19 @@ export default class FilesMapper {
     static toResponseGet(file: Files) {
         return {
             id: file.id,
-            folderId: file.folderId,
-            originalName: file.originalName,
-            storageName: file.storageName,
-            objectKey: file.objectKey,
+            folder_id: file.folderId,
+            original_name: file.originalName,
+            storage_name: file.storageName,
+            object_key: file.objectKey,
             bucket: file.bucket,
             mime_type: file.mimeType,
             extension: file.extension,
             size: Number(file.size),
             checksum: file.checksum,
             status: file.status,
-            createdAt: file.createdAt,
-            uploadedAt: file.uploadedAt,
-            updatedAt: file.updatedAt,
+            created_at: file.createdAt,
+            uploaded_at: file.uploadedAt,
+            updated_at: file.updatedAt,
         }
     };
 

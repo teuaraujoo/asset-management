@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getFilesByFolderiId } from "@/services/files.services";
+import { getFilesByProjectId } from "@/services/files.services";
 import type { FileItem } from "@/@types/files/files.types";
 
 interface UseFilesReturn {
@@ -9,7 +9,7 @@ interface UseFilesReturn {
     refetch: () => Promise<void>;
 }
 
-export function useFiles(id?: string): UseFilesReturn {
+export function useFiles(projectId?: string): UseFilesReturn {
     const [files, setFiles] = useState<FileItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -18,10 +18,10 @@ export function useFiles(id?: string): UseFilesReturn {
         let isMounted = true;
         
         const load = async () => {
-            if (!id) return;
+            if (!projectId) return;
             if (isMounted) setIsLoading(true);
             try {
-                const data = await getFilesByFolderiId(id);
+                const data = await getFilesByProjectId(projectId);
                 if (isMounted) {
                     setFiles(data);
                     setError(null);
@@ -40,13 +40,13 @@ export function useFiles(id?: string): UseFilesReturn {
         return () => {
             isMounted = false;
         };
-    }, [id]);
+    }, [projectId]);
 
     const refetch = useCallback(async () => {
-        if (!id) return;
+        if (!projectId) return;
         setIsLoading(true);
         try {
-            const data = await getFilesByFolderiId(id);
+            const data = await getFilesByProjectId(projectId);
             setFiles(data);
             setError(null);
         } catch (err) {
@@ -54,7 +54,7 @@ export function useFiles(id?: string): UseFilesReturn {
         } finally {
             setIsLoading(false);
         }
-    }, [id]);
+    }, [projectId]);
 
     return { files, isLoading, error, refetch };
 };

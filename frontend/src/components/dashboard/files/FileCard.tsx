@@ -10,7 +10,9 @@ import {
     Pencil,
     MoreVertical,
     Trash2,
-    Download
+    Download,
+    Crown,
+    LoaderCircle,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -37,6 +39,9 @@ interface FileCardProps {
     onDelete?: (file: FileItem) => void;
     onRename?: (id: string, name: string) => void;
     onDownload?: (id: string) => void;
+    onToggleCover?: (file: FileItem) => void;
+    isCover?: boolean;
+    isUpdatingCover?: boolean;
 }
 
 const renderIcon = (mimeType: string | undefined, className: string) => {
@@ -108,7 +113,15 @@ function captureVideoFrame(videoUrl: string): Promise<string> {
 
 type PreviewState = "idle" | "loading" | "ready" | "error";
 
-export function FileCard({ file, onDelete, onRename, onDownload }: FileCardProps) {
+export function FileCard({
+    file,
+    onDelete,
+    onRename,
+    onDownload,
+    onToggleCover,
+    isCover = false,
+    isUpdatingCover = false,
+}: FileCardProps) {
     const [isRenameOpen, setIsRenameOpen] = useState(false);
     const [previewSrc, setPreviewSrc] = useState<string | null>(null);
     const [previewState, setPreviewState] = useState<PreviewState>("idle");
@@ -202,6 +215,16 @@ export function FileCard({ file, onDelete, onRename, onDownload }: FileCardProps
     return (
         <>
             <Card className="relative flex flex-col overflow-hidden transition-all hover:shadow-md h-72 gap-0 p-0">
+                {isCover && (
+                    <div
+                        className="absolute left-2 top-2 z-10 flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-1 text-xs font-semibold text-amber-950 shadow-sm"
+                        title="Este arquivo é a capa do projeto"
+                    >
+                        <Crown className="size-3.5" aria-hidden="true" />
+                        Capa
+                    </div>
+                )}
+
                 <div className="absolute top-2 right-2 z-10">
                     <DropdownMenu>
                         <DropdownMenuTrigger
@@ -227,6 +250,19 @@ export function FileCard({ file, onDelete, onRename, onDownload }: FileCardProps
                             >
                                 <Pencil className="size-4" />
                                 Renomear
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                disabled={!isPreviewable || file.status !== "COMPLETE" || isUpdatingCover}
+                                onClick={() => onToggleCover?.(file)}
+                                className="cursor-pointer"
+                            >
+                                {isUpdatingCover ? (
+                                    <LoaderCircle className="size-4 animate-spin" />
+                                ) : (
+                                    <Crown className="size-4" />
+                                )}
+                                {isCover ? "Remover como capa" : "Definir como capa"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

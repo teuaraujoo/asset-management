@@ -43,6 +43,14 @@ export class ProjectsService implements IProjectReader {
         return project;
     };
 
+    async getFolderByProjectId(projectId: string, userId: string) {
+        const project = await this.ProjectsRepository.getById(projectId, userId);
+
+        if (!project) throw new AppError("Projeto não encontrado.", 404);
+
+        return project.folder;
+    };
+
     async create(body: CreateProjectDTO, userId: string) {
         const data = createProjectSchema.parse(body);
 
