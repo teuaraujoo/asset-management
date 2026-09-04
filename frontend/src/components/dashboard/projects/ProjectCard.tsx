@@ -1,4 +1,4 @@
-import { Folder, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { EyeOff, Folder, Globe2, LoaderCircle, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,6 +18,8 @@ interface ProjectCardProps {
     onOpen?: (project: Project) => void;
     onEdit?: (project: Project) => void;
     onDelete?: (project: Project) => void;
+    onPublish?: (project: Project) => void;
+    isPublishing?: boolean;
 }
 
 export function ProjectCard({
@@ -26,6 +28,8 @@ export function ProjectCard({
     onOpen,
     onEdit,
     onDelete,
+    onPublish,
+    isPublishing = false,
 }: ProjectCardProps) {
     return (
         <Card
@@ -78,9 +82,19 @@ export function ProjectCard({
                 </div>
 
                 <div className="space-y-1">
-                    <h3 className="truncate font-semibold text-foreground">
-                        {project.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                        <span
+                            className={`size-2.5 shrink-0 rounded-full ring-4 ${project.published
+                                ? "bg-emerald-500 ring-emerald-500/15"
+                                : "bg-zinc-400 ring-zinc-400/15"
+                                }`}
+                            title={project.published ? "Projeto publicado" : "Projeto não publicado"}
+                            aria-label={project.published ? "Projeto publicado" : "Projeto não publicado"}
+                        />
+                        <h3 className="truncate font-semibold text-foreground">
+                            {project.name}
+                        </h3>
+                    </div>
                     <p className="line-clamp-1 text-sm text-muted-foreground">
                         {project.mini_description}
                     </p>
@@ -88,8 +102,28 @@ export function ProjectCard({
 
                 <Progress value={progress} className="h-1.5" />
 
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                     <span>{formatRelativeDate(project.updated_at)}</span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 gap-1.5 px-2 text-xs"
+                        disabled={isPublishing}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            onPublish?.(project);
+                        }}
+                        aria-label={project.published ? `Despublicar ${project.name}` : `Publicar ${project.name}`}
+                    >
+                        {isPublishing ? (
+                            <LoaderCircle className="size-3.5 animate-spin" />
+                        ) : project.published ? (
+                            <EyeOff className="size-3.5" />
+                        ) : (
+                            <Globe2 className="size-3.5" />
+                        )}
+                        {project.published ? "Despublicar" : "Publicar"}
+                    </Button>
                 </div>
             </CardContent>
         </Card>

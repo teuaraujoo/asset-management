@@ -21,3 +21,15 @@ export async function updateProject(data: ProjectBody, id: string) {
 export async function deleteProject(id: string) {
     return fetchRequest({ method: "DELETE", url: `${apiRoutes.projects}/${id}` });
 };
+
+export async function publishProject(id: string) {
+    return fetchRequest({ method: "POST", url: `${apiRoutes.projects}/${id}/publish` });
+};
+
+export async function setCover(id: string, data: { fileId: string }) {
+    return fetchRequest({ method: "PUT", url: `${apiRoutes.projects}/${id}/cover`, body: data });
+};
+
+export async function removeCover(id: string, data: { fileId: string }) {
+    return fetchRequest({ method: "DELETE", url: `${apiRoutes.projects}/${id}/cover`, body: data });
+};

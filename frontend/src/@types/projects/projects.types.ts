@@ -7,6 +7,9 @@ export type ProjectBody = {
 export type Project = {
     id: string;
     folder_id: string;
+    cover_file_id: string | null;
+    published: boolean;
+    published_at: string | null;
     name: string;
     mini_description: string;
     description: string;

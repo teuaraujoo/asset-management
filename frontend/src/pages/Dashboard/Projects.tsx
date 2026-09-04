@@ -4,7 +4,7 @@ import { ProjectsHeader } from "@/components/dashboard/projects/ProjectHeader";
 import { ProjectsGrid } from "@/components/dashboard/projects/ProjectsGrid";
 import { NewProjectDialog } from "@/components/dashboard/projects/NewProjectDialog";
 import { useProjects } from "@/hooks/projects/use-projects";
-import { deleteProject } from "@/services/projects.services";
+import { deleteProject, publishProject } from "@/services/projects.services";
 import type { Project } from "@/@types/projects/projects.types";
 import { UploadFileDialog } from "@/components/dashboard/projects/UploadFileDialog";
 import { DeleteProjectDialog } from "@/components/dashboard/projects/DeleteProjectDialog";
@@ -19,6 +19,7 @@ export default function DashboardProjectsPage() {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
     const [isDeletingProject, setIsDeletingProject] = useState(false);
+    const [publishingProjectId, setPublishingProjectId] = useState<string | null>(null);
 
     function handleUploadOpenChange(open: boolean) {
         const nextParams = new URLSearchParams(searchParams);
@@ -35,7 +36,7 @@ export default function DashboardProjectsPage() {
     }
 
     function handleOpenProject(project: Project) {
-        navigate(`/dashboard/projects/${project.folder_id}`);
+        navigate(`/dashboard/projects/${project.id}`);
     };
 
     function handleCreateProject() {
@@ -85,6 +86,28 @@ export default function DashboardProjectsPage() {
         }
     };
 
+    async function handlePublishProject(project: Project) {
+        if (publishingProjectId) return;
+
+        setPublishingProjectId(project.id);
+
+        try {
+            await toast.promise(publishProject(project.id), {
+                loading: project.published ? "Despublicando..." : "Publicando...",
+                success: (response) => response.message,
+                error: (error) => error instanceof Error
+                    ? error.message
+                    : "Erro ao alterar publicação do projeto.",
+            });
+
+            await refetch();
+        } catch {
+            // O toast apresenta o erro ao usuário.
+        } finally {
+            setPublishingProjectId(null);
+        }
+    };
+
     return (
         <main className="mx-auto w-full space-y-8 lg:p-2">
             <ProjectsHeader
@@ -105,6 +128,8 @@ export default function DashboardProjectsPage() {
                 onOpenProject={handleOpenProject}
                 onEditProject={handleEditProject}
                 onDeleteProject={handleDeleteProject}
+                onPublishProject={handlePublishProject}
+                publishingProjectId={publishingProjectId}
             />
 
             <NewProjectDialog

@@ -10,6 +10,8 @@ interface ProjectsGridProps {
   onOpenProject?: (project: Project) => void;
   onEditProject?: (project: Project) => void;
   onDeleteProject?: (project: Project) => void;
+  onPublishProject?: (project: Project) => void;
+  publishingProjectId?: string | null;
 }
 
 function ProjectCardSkeleton() {
@@ -36,6 +38,8 @@ export function ProjectsGrid({
   onOpenProject,
   onEditProject,
   onDeleteProject,
+  onPublishProject,
+  publishingProjectId,
 }: ProjectsGridProps) {
   if (isLoading) {
     return (
@@ -56,6 +60,8 @@ export function ProjectsGrid({
           onOpen={onOpenProject}
           onEdit={onEditProject}
           onDelete={onDeleteProject}
+          onPublish={onPublishProject}
+          isPublishing={publishingProjectId === project.id}
         />
       ))}
       <CreateProjectCard onClick={onCreateProject} />
