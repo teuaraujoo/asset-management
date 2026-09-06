@@ -5,7 +5,8 @@ const apiRoutes = {
     logout: `${API_BASE_URL}/auth/logout`,
     me: `${API_BASE_URL}/auth/me`,
     projects: `${API_BASE_URL}/projects`,
-    files: `${API_BASE_URL}/files`
+    files: `${API_BASE_URL}/files`,
+    users: `${API_BASE_URL}/users`,
 };
 
 export default apiRoutes;

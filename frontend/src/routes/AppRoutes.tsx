@@ -7,6 +7,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardProjectPage from "@/pages/Dashboard/Project";
 import { NotFound } from "@/NotFound";
+import DashboardProfilePage from "@/pages/Dashboard/Profile";
+import DashboardSettingsPage from "@/pages/Dashboard/Settings";
 
 export function AppRoutes() {
     return (
@@ -22,6 +24,8 @@ export function AppRoutes() {
                 <Route element={<DashboardLayout />}>
                     <Route path="/dashboard/projects" element={<DashboardProjectsPage />} />
                     <Route path="/dashboard/projects/:id" element={<DashboardProjectPage />} />
+                    <Route path="/dashboard/profile" element={<DashboardProfilePage />} />
+                    <Route path="/dashboard/settings" element={<DashboardSettingsPage />} />
                 </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
