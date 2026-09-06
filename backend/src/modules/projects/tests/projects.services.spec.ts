@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { IProjectStorageCleaner } from "../../../providers/storage/storage.provider";
+import type { IFileReader } from "../../files/files.contracts";
 import type { ProjectFolderService } from "../../folders/folders.contracts";
 import type { IProjectsRepository } from "../projects.repositories";
 import type { ProjectDetails } from "../projects.types";
@@ -12,6 +13,7 @@ function project(overrides: Partial<ProjectDetails> = {}): ProjectDetails {
         id: ids.project, userId: ids.user, folderId: ids.folder,
         name: "Meu projeto", miniDescription: "Descrição curta", description: "Descrição completa",
         createdAt: new Date("2026-01-01"), updatedAt: new Date("2026-01-02"),
+        published: false, publishedAt: null, coverFileId: null,
         folder: { id: ids.folder, name: "Meu projeto", description: "Descrição completa", slug: "meu-projeto", path: "projects/meu-projeto/", createdAt: new Date("2026-01-01"), updatedAt: new Date("2026-01-02") },
         user: { name: "Usuário", email: "usuario@example.com", isActive: true },
         ...overrides,
@@ -23,7 +25,10 @@ function repository(overrides: Partial<IProjectsRepository> = {}) {
     return {
         get: vi.fn(async () => [value]), getById: vi.fn(async () => value),
         getByFolderId: vi.fn(async () => value), create: vi.fn(async () => value),
-        update: vi.fn(async () => value), delete: vi.fn(async () => undefined), ...overrides,
+        getByFileId: vi.fn(async () => null), update: vi.fn(async () => value),
+        delete: vi.fn(async () => undefined), publish: vi.fn(async () => undefined),
+        unPublish: vi.fn(async () => undefined), setCover: vi.fn(async () => undefined),
+        removeCover: vi.fn(async () => undefined), ...overrides,
     } satisfies IProjectsRepository;
 }
 
@@ -41,8 +46,12 @@ function storage(overrides: Partial<IProjectStorageCleaner> = {}) {
     return { deleteByPrefix: vi.fn(async () => undefined), ...overrides } satisfies IProjectStorageCleaner;
 }
 
-function sut(repo = repository(), folder = folders(), store = storage()) {
-    return { service: new ProjectsService(store, folder, repo), repo, folder, store };
+function fileReader(overrides: Partial<IFileReader> = {}) {
+    return { getById: vi.fn(async () => null), ...overrides } satisfies IFileReader;
+}
+
+function sut(repo = repository(), folder = folders(), store = storage(), files = fileReader()) {
+    return { service: new ProjectsService(store, folder, repo, files), repo, folder, store, files };
 }
 
 describe("ProjectsService.get", () => {
