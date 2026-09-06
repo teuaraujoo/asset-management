@@ -137,8 +137,8 @@ export default class AuthServices {
         };
     };
 
-    static async me(email: string) {
-        const user = await UserRepository.getUserByEmail(email);
+    static async me(userId: string) {
+        const user = await UserRepository.getUserById(userId);
 
         if (!user) throw new AppError("Usuário não encontrado.", 404);
 

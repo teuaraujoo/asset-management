@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import ApiError from "../../error/app-error";
-import { CreateUserBody, createUserSchema } from "./users.schemas";
+import {
+    CreateUserBody,
+    createUserSchema,
+    UpdateUserBody,
+    updateUserSchema,
+} from "./users.schemas";
 import UserRepository from "./users.repositories";
 import AppError from "../../error/app-error";
-
 export class UserServices {
 
     static async create(body: CreateUserBody) {
@@ -41,5 +44,26 @@ export class UserServices {
         if (!user) throw new AppError("Usuário não encontrado", 401);
 
         return user;
+    };
+
+    static async update(id: string, body: UpdateUserBody) {
+        const data = updateUserSchema.parse(body);
+        const user = await UserRepository.getUserById(id);
+
+        if (!user) throw new AppError("Usuário não encontrado.", 404);
+
+        if (data.email && data.email !== user.email) {
+            const emailInUse = await UserRepository.getUserByEmailExcludingId(data.email, id);
+
+            if (emailInUse) throw new AppError("Já existe um usuário com esse email.", 409);
+        };
+
+        const updatedUser = await UserRepository.updateUser(id, {
+            name: data.name,
+            email: data.email,
+            updated_at: new Date(),
+        });
+
+        return updatedUser;
     };
 };

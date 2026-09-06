@@ -14,3 +14,13 @@ export const createUserSchema = z.object({
 });
 
 export type CreateUserBody = z.infer<typeof createUserSchema>;
+
+export const updateUserSchema = z.object({
+    name: z.string().trim().min(4, "O nome deve ter pelo menos 4 caracteres.").optional(),
+    email: z.email("Informe um email válido.").optional(),
+}).refine(
+    (data) => data.name !== undefined || data.email !== undefined,
+    { message: "Informe pelo menos um campo para atualização." },
+);
+
+export type UpdateUserBody = z.infer<typeof updateUserSchema>;

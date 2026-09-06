@@ -111,3 +111,14 @@ export const projectMutationLimiter = rateLimit({
         message: "Muitas alterações em projetos. Tente novamente mais tarde.",
     },
 });
+
+export const userMutationLimiter = rateLimit({
+    ...defaultOptions,
+    identifier: "user-mutation",
+    windowMs: 15 * MINUTE_IN_MILLISECONDS,
+    limit: 15,
+    keyGenerator: authenticatedUserKey,
+    message: {
+        message: "Muitas alterações no perfil. Tente novamente mais tarde.",
+    },
+});
