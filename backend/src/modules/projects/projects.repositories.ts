@@ -17,4 +17,8 @@ export interface IProjectsRepository {
     update(id: string, data: UpdateProjectData): Promise<ProjectWithFolder>;
 
     delete(id: string): Promise<void>;
+
+    publish(id: string): Promise<void>;
+
+    unPublish(id: string): Promise<void>;
 };

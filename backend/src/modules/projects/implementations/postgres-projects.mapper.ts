@@ -41,6 +41,8 @@ export default class PrismaProjectsMapper {
             description: project.description,
             createdAt: project.created_at,
             updatedAt: project.updated_at,
+            published: project.published,
+            publishedAt: project.published_at,
             folder: {
                 id: project.folder.id,
                 name: project.folder.name,

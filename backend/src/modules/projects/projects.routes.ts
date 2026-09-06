@@ -33,11 +33,44 @@ export function ProjectsRoutes(controller: ProjectsController): Router {
         (req, res) => controller.create(req, res)
     );
 
+    router.put(
+        "/projects/:id/publish",
+        projectMutationLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.publish(req, res)
+    );
+
+    router.put(
+        "/projects/:id/unpublish",
+        projectMutationLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.unPublish(req, res)
+    );
+    
+    router.put(
+        "/projects/:id/publish",
+        projectMutationLimiter,
+        authenticateMiddleware,
+        (req, res) => controller.publish(req, res)
+    );
+
+    router.put(
+        "/projects/:id/cover",
+        authenticateMiddleware,
+        (req, res) => controller.setCover(req, res),
+    );
+
     router.patch(
         "/projects/:id",
         projectMutationLimiter,
         authenticateMiddleware,
         (req, res) => controller.update(req, res)
+    );
+
+    router.delete(
+        "/projects/:id/cover",
+        authenticateMiddleware,
+        (req, res) => controller.removeCover(req, res),
     );
 
     router.delete(

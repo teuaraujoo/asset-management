@@ -7,6 +7,8 @@ export interface ProjectRecord {
     description: string;
     createdAt: Date;
     updatedAt: Date;
+    published: boolean;
+    publishedAt: Date | null;
 };
 
 export interface ProjectFolderRecord {

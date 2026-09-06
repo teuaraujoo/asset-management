@@ -13,6 +13,8 @@ export default class ProjectMapper {
             slug: project.folder.slug,
             path: project.folder.path,
             updated_at: project.updatedAt,
+            published: project.published,
+            published_at: project.publishedAt,
             user: {
                 id: project.userId,
                 name: project.user.name,

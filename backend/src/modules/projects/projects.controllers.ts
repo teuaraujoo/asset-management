@@ -69,4 +69,41 @@ export default class ProjectsController {
 
         return res.status(200).json({ message: "Projeto excluído com sucesso." });
     };
+
+    async publish(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+
+        await this.ProjectsService.publish(id, userId);
+
+        req.log.info({
+            event: "project.published",
+            projectId: id,
+            userId,
+        }, "Project published");
+
+        return res.status(200).json({ message: "Projeto publicado com sucesso." });
+    };
+
+    async unPublish(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
+        await this.ProjectsService.unPublish(id, userId);
+
+        req.log.info({
+            event: "project.unpublished",
+            projectId: id,
+            userId,
+        }, "Project unpublished");
+
+        return res.status(200).json({ message: "Projeto despublicado com sucesso." });
+    }
+
+    async setCover(req: Request, res: Response) {
+
+    };
+
+    async removeCover(req: Request, res: Response) {
+
+    };
 };

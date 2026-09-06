@@ -133,4 +133,27 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
             }
         });
     };
-};
+
+    async publish(id: string): Promise<void> {
+        await prisma.projects.update({
+            where: {
+                id: id
+            },
+            data: {
+                published: true,
+                published_at: new Date()
+            }
+        });
+    };
+
+    async unPublish(id: string): Promise<void> {
+        await prisma.projects.update({
+            where: {
+                id: id
+            },
+            data: {
+                published: false,
+            },
+        });
+    }
+}

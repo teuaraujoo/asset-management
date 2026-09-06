@@ -87,6 +87,22 @@ export class ProjectsService implements IProjectReader {
         return;
     };
 
+    async publish(projectId: string, userId: string) {
+        await this.validateUpdateProject(projectId, userId);
+
+        const publishedProject = await this.ProjectsRepository.publish(projectId);
+
+        return publishedProject;
+    };
+
+    async unPublish(projectId: string, userId: string) {
+        await this.validateUpdateProject(projectId, userId);
+
+        const unpublishedProject = await this.ProjectsRepository.unPublish(projectId);
+
+        return unpublishedProject;
+    };
+
     private async validateUpdateProject(projectId: string, userId: string) {
         const existingProject = await this.ProjectsRepository.getById(projectId, userId);
 
