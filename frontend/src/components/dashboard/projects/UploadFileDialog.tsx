@@ -246,7 +246,7 @@ export function UploadFileDialog({
             <Button
               type="submit"
               disabled={!file || loading}
-              className="w-full bg-blue-600"
+              className="w-full bg-primary hover:bg-sidebar-primary"
             >
               {loading && (
                 <Loader2 className="size-4 animate-spin" />

@@ -18,14 +18,14 @@ export default function App() {
           duration: 4000,
 
           style: {
-            background: "#FAFAFA",
-            color: "#131313",
-            border: "1px solid #155efc13",
+            background: "#19151F",
+            color: "#F7F5FF",
+            border: "1px solid #31283D",
             borderRadius: "12px",
             fontSize: "14px",
             padding: "14px 16px",
             boxShadow:
-              "0 10px 30px rgba(0,0,0,0.15)",
+              "0 10px 30px rgba(0,0,0,0.45)",
           },
 
           success: {

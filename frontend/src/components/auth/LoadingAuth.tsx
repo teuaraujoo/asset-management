@@ -9,7 +9,7 @@ export default function LoadingAuth() {
         <div className="flex min-h-screen items-center justify-center bg-background">
             <Card className="w-[380px]">
                 <CardContent className="flex flex-col items-center gap-6 py-10">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15">
                         <ShieldCheck className="h-8 w-8 text-primary" />
                     </div>
 

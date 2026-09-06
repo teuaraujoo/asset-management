@@ -14,6 +14,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type AvatarDropdownProps = {
   user: {
@@ -28,6 +29,8 @@ export function AvatarDropdown({
   user,
   onLogout,
 }: AvatarDropdownProps) {
+  const navigate = useNavigate();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -65,12 +68,18 @@ export function AvatarDropdown({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-accent">
+        <DropdownMenuItem
+          onClick={() => navigate("/dashboard/profile")}
+          className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-accent"
+        >
           <User size={16} />
           Meu Perfil
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-accent">
+        <DropdownMenuItem
+          onClick={() => navigate("/dashboard/settings")}
+          className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 hover:bg-accent"
+        >
           <Settings size={16} />
           Configurações
         </DropdownMenuItem>
@@ -79,7 +88,7 @@ export function AvatarDropdown({
 
         <DropdownMenuItem
           onClick={() => void onLogout()}
-          className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600"
+          className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-red-600"
         >
           <LogOut size={16} />
           Sair

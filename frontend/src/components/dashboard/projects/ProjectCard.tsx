@@ -41,7 +41,7 @@ export function ProjectCard({
         >
             <CardContent className="flex flex-col gap-4 p-5">
                 <div className="flex items-start justify-between">
-                    <div className="flex size-11 items-center justify-center rounded-lg bg-blue-50">
+                    <div className="flex size-11 items-center justify-center rounded-lg bg-primary/15 ring-1 ring-primary/20">
                         <Folder className="size-5 text-primary" />
                     </div>
 

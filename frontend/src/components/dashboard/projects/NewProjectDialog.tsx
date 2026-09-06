@@ -127,7 +127,7 @@ export function NewProjectDialog({
                             >
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={loading} className="cursor-pointer bg-blue-600 hover:bg-blue-800">
+                            <Button type="submit" disabled={loading} className="cursor-pointer bg-primary hover:bg-sidebar-primary">
                                 {loading && (
                                     <Loader2 className="size-4 animate-spin" />
                                 )}

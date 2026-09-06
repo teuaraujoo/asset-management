@@ -27,7 +27,7 @@ export function ProjectsHeader({
                     <Plus className="size-4" />
                     Novo Projeto
                 </Button>
-                <Button onClick={() => onUploadFiles()} className="bg-blue-600 hover:bg-blue-800">
+                <Button onClick={() => onUploadFiles()} className="bg-primary hover:bg-sidebar-primary">
                     <Upload className="size-4" />
                     Upload Arquivos
                 </Button>

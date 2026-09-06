@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 const navigation = [
   {
-    name: "Projects",
+    name: "Projetos",
     icon: Folder,
     href: "/dashboard/projects",
   },
@@ -17,7 +17,7 @@ const navigation = [
 
 const footerNavigation = [
   {
-    name: "Documentation",
+    name: "Documentação",
     icon: BookText,
     href: "/documentation",
   },
@@ -35,18 +35,16 @@ export function DashboardSidebar() {
         flex-col
         border-r
         border-border
-        bg-background
+        bg-sidebar
       "
     >
       {/* Logo */}
       <div className="px-5 pt-6 pb-8">
-        <h1 className="text-xl font-bold tracking-tight">
-          Teteu Asset Manager
-        </h1>
-
-        <p className="mt-1 text-xs text-muted-foreground">
-          Assets de projetos pessoais
-        </p>
+        <img
+          src="/logo.png"
+          alt="Logomarca"
+          className="h-8 w-auto px-5"
+        />
       </div>
 
       {/* Navigation */}
@@ -70,8 +68,8 @@ export function DashboardSidebar() {
                 font-medium
                 transition-all
                 ${isActive
-                  ? "bg-blue-600 text-primary-foreground"
-                  : "text-muted-foreground hover:bg-blue-100 hover:text-foreground"
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_8px_24px_rgba(72,17,237,0.24)]"
+                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 }
               `
               }
@@ -103,8 +101,8 @@ export function DashboardSidebar() {
                   font-medium
                   text-muted-foreground
                   transition-all
-                  hover:bg-blue-100
-                  hover:text-foreground
+                  hover:bg-sidebar-accent
+                  hover:text-sidebar-accent-foreground
                 "
               >
                 <item.icon size={18} />
@@ -120,8 +118,9 @@ export function DashboardSidebar() {
               h-11
               w-full
               gap-2
-              bg-blue-600
-              hover:bg-blue-800
+              bg-primary
+              text-primary-foreground
+              hover:bg-sidebar-primary
               cursor-pointer
             "
             onClick={() => navigate("/dashboard/projects?upload=true")}

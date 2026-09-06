@@ -38,7 +38,7 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="cursor-pointer h-12 w-full rounded-xl bg-white text-lg font-bold uppercase text-[#2F4BCB] hover:bg-gray-100"
+          className="h-12 w-full cursor-pointer rounded-xl bg-primary text-lg font-bold uppercase text-primary-foreground hover:bg-sidebar-primary"
         >
           {loading ? "Carregando" : "Login"}
         </Button>
