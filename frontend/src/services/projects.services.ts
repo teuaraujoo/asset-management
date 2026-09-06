@@ -23,7 +23,11 @@ export async function deleteProject(id: string) {
 };
 
 export async function publishProject(id: string) {
-    return fetchRequest({ method: "POST", url: `${apiRoutes.projects}/${id}/publish` });
+    return fetchRequest({ method: "PUT", url: `${apiRoutes.projects}/${id}/publish` });
+};
+
+export async function unPublishProject(id: string) {
+    return fetchRequest({ method: "PUT", url: `${apiRoutes.projects}/${id}/unpublish` });
 };
 
 export async function setCover(id: string, data: { fileId: string }) {

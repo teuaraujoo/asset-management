@@ -103,7 +103,7 @@ export function ProjectCard({
                 <Progress value={progress} className="h-1.5" />
 
                 <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                    <span>{formatRelativeDate(project.updated_at)}</span>
+                    <span>atualizado {formatRelativeDate(project.updated_at)}</span>
                     <Button
                         variant="outline"
                         size="sm"

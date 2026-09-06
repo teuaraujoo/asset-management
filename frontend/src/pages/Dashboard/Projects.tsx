@@ -4,7 +4,7 @@ import { ProjectsHeader } from "@/components/dashboard/projects/ProjectHeader";
 import { ProjectsGrid } from "@/components/dashboard/projects/ProjectsGrid";
 import { NewProjectDialog } from "@/components/dashboard/projects/NewProjectDialog";
 import { useProjects } from "@/hooks/projects/use-projects";
-import { deleteProject, publishProject } from "@/services/projects.services";
+import { deleteProject, publishProject, unPublishProject } from "@/services/projects.services";
 import type { Project } from "@/@types/projects/projects.types";
 import { UploadFileDialog } from "@/components/dashboard/projects/UploadFileDialog";
 import { DeleteProjectDialog } from "@/components/dashboard/projects/DeleteProjectDialog";
@@ -92,7 +92,7 @@ export default function DashboardProjectsPage() {
         setPublishingProjectId(project.id);
 
         try {
-            await toast.promise(publishProject(project.id), {
+            await toast.promise(project.published ? unPublishProject(project.id) : publishProject(project.id), {
                 loading: project.published ? "Despublicando..." : "Publicando...",
                 success: (response) => response.message,
                 error: (error) => error instanceof Error
