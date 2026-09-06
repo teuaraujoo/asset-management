@@ -12,6 +12,8 @@ import FilesMapper from "./files.mapper";
 import { IFileStorage } from "../../providers/storage/storage.provider";
 import { IProjectReader } from "../projects/projects.contracts";
 import { IFolderReader } from "../folders/folders.contracts";
+import { IFileReader } from "./files.contracts";
+import { FileRecord } from "./files.types";
 export class FilesService {
 
     constructor(
@@ -44,6 +46,20 @@ export class FilesService {
         const files = await this.FilesRepository.getByFolderId(folder.id, userId);
 
         return files.map((file) => FilesMapper.toResponseGet(file));
+    };
+
+    async getOwnedFile(fileId: string, userId: string): Promise<FileRecord | null> {
+        const file = await this.FilesRepository.getById(fileId);
+
+        if (!file || file.deletedAt) {
+            throw new AppError("Arquivo não encontrado.", 404);
+        };
+
+        if (file.userId !== userId) {
+            throw new AppError("Usuário não possui acesso ao arquivo.", 403);
+        };
+
+        return file;
     };
 
     async prepareUpload(body: PrepareFileUploadDTO, userId: string) {

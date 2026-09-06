@@ -3,9 +3,10 @@ import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectS
 import { IProjectsRepository } from "./projects.repositories";
 import ProjectMapper from "./projects.mapper";
 import { IProjectStorageCleaner } from "../../providers/storage/storage.provider";
-import { ProjectWithFolder } from "./projects.types";
+import { ProjectDetails, ProjectWithFolder } from "./projects.types";
 import { IProjectReader } from "./projects.contracts";
 import { ProjectFolderService } from "../folders/folders.contracts";
+import { IFileReader } from "../files/files.contracts";
 
 export class ProjectsService implements IProjectReader {
 
@@ -13,6 +14,8 @@ export class ProjectsService implements IProjectReader {
         private StorageCleanner: IProjectStorageCleaner,
         private FolderContract: ProjectFolderService,
         private ProjectsRepository: IProjectsRepository,
+        private FileReader: IFileReader
+
     ) { }
 
     async get(userId: string) {
@@ -103,6 +106,21 @@ export class ProjectsService implements IProjectReader {
         return unpublishedProject;
     };
 
+    async setCover(projectId: string, fileId: string, userId: string) {
+        const project = await this.validateUpdateProject(projectId, userId);
+        await this.validateCoverFile(project, fileId, userId);
+
+        await this.ProjectsRepository.setCover(projectId, fileId);
+    };
+
+    async removeCover(projectId: string, userId: string) {
+        const project = await this.validateUpdateProject(projectId, userId);
+
+        if (!project.coverFileId) throw new AppError("O arquivo não é a capa do projeto.", 400);
+
+        await this.ProjectsRepository.removeCover(projectId);
+    };
+
     private async validateUpdateProject(projectId: string, userId: string) {
         const existingProject = await this.ProjectsRepository.getById(projectId, userId);
 
@@ -112,5 +130,21 @@ export class ProjectsService implements IProjectReader {
         if (existingProject.userId !== userId) throw new AppError("Usuário sem permissão para realizar essa ação.", 403);
 
         return existingProject;
+    };
+
+    private async validateCoverFile(project: ProjectDetails, fileId: string, userId: string) {
+        const file = await this.FileReader.getById(fileId);
+
+        if (!file) throw new AppError("Arquivo não encontrado.", 404);
+
+        if (file?.userId !== userId) throw new AppError("Usuário não possui acesso ao arquivo.", 403);
+
+        if (file?.folderId !== project.folderId) throw new AppError("O arquivo não pertence ao projeto.", 400);
+
+        if (file.status !== "COMPLETE") throw new AppError("O arquivo ainda não está disponível", 409);
+
+        if (!file.mimeType.startsWith("image/")) throw new AppError("A capa deve ser uma imagem.", 422);
+
+        return file;
     };
 };

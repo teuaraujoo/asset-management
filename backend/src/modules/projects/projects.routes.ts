@@ -32,8 +32,8 @@ export function ProjectsRoutes(controller: ProjectsController): Router {
         authenticateMiddleware,
         (req, res) => controller.create(req, res)
     );
-
-    router.put(
+    
+    router.post(
         "/projects/:id/publish",
         projectMutationLimiter,
         authenticateMiddleware,
@@ -45,13 +45,6 @@ export function ProjectsRoutes(controller: ProjectsController): Router {
         projectMutationLimiter,
         authenticateMiddleware,
         (req, res) => controller.unPublish(req, res)
-    );
-    
-    router.put(
-        "/projects/:id/publish",
-        projectMutationLimiter,
-        authenticateMiddleware,
-        (req, res) => controller.publish(req, res)
     );
 
     router.put(

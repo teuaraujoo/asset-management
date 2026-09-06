@@ -9,6 +9,7 @@ export interface ProjectRecord {
     updatedAt: Date;
     published: boolean;
     publishedAt: Date | null;
+    coverFileId: string | null;
 };
 
 export interface ProjectFolderRecord {

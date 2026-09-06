@@ -100,10 +100,33 @@ export default class ProjectsController {
     }
 
     async setCover(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const fileId = req.body.fileId as string;
+        const userId = req.user.sub;
 
+        await this.ProjectsService.setCover(id, fileId, userId);
+
+        req.log.info({
+            event: "project.cover.set",
+            projectId: id,
+            userId,
+        }, "Project cover set");
+
+        return res.status(200).json({ message: "Capa do projeto definida com sucesso." });
     };
 
     async removeCover(req: Request, res: Response) {
+        const id = req.params.id as string;
+        const userId = req.user.sub;
 
+        await this.ProjectsService.removeCover(id, userId);
+
+        req.log.info({
+            event: "project.cover.removed",
+            projectId: id,
+            userId,
+        }, "Project cover removed");
+
+        return res.status(200).json({ message: "Capa do projeto removida com sucesso." });
     };
 };

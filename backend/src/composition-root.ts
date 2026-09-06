@@ -33,7 +33,7 @@ const postgresProjectsRepository = new PostgresProjectsRepository();
 const postgresFoldersRepository = new PostgresFoldersRepository();
 
 const foldersService = new FoldersService(postgresFoldersRepository);
-export const projectsService = new ProjectsService(storageProvider, foldersService, postgresProjectsRepository);
+export const projectsService = new ProjectsService(storageProvider, foldersService, postgresProjectsRepository, postgresFilesRepository);
 export const filesService = new FilesService(storageProvider, projectsService, foldersService, postgresFilesRepository);
 
 export const projectsController = new ProjectsController(projectsService);

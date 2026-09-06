@@ -43,6 +43,7 @@ export default class PrismaProjectsMapper {
             updatedAt: project.updated_at,
             published: project.published,
             publishedAt: project.published_at,
+            coverFileId: project.cover_file_id,
             folder: {
                 id: project.folder.id,
                 name: project.folder.name,

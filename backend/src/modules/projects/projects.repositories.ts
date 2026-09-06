@@ -12,6 +12,8 @@ export interface IProjectsRepository {
 
     getByFolderId(folderId: string, userId: string): Promise<ProjectWithFolder | null>;
 
+    getByFileId(fileId: string, userId: string): Promise<ProjectDetails | null>;
+
     create(data: CreateProjectData): Promise<ProjectWithFolder>;
 
     update(id: string, data: UpdateProjectData): Promise<ProjectWithFolder>;
@@ -21,4 +23,8 @@ export interface IProjectsRepository {
     publish(id: string): Promise<void>;
 
     unPublish(id: string): Promise<void>;
+
+    setCover(id: string, fileId: string): Promise<void>;
+
+    removeCover(id: string): Promise<void>;
 };

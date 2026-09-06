@@ -1,10 +1,11 @@
+import { IFileReader } from "./files.contracts";
 import {
     CreateFileData,
     FileRecord,
     RenameFileData
 } from "./files.types";
 
-export interface IFilesRepository {
+export interface IFilesRepository extends IFileReader {
     getById(id: string): Promise<FileRecord | null>;
 
     getByFolderId(folderId: string, userId: string): Promise<FileRecord[]>;

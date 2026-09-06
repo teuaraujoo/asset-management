@@ -12,7 +12,9 @@ export default class ProjectMapper {
             description: project.description,
             slug: project.folder.slug,
             path: project.folder.path,
+            created_at: project.createdAt,
             updated_at: project.updatedAt,
+            cover_file_id: project.coverFileId,
             published: project.published,
             published_at: project.publishedAt,
             user: {

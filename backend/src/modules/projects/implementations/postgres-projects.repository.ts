@@ -71,6 +71,26 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
         return project ? PrismaProjectsMapper.toProjectWithFolder(project) : null;
     };
 
+    async getByFileId(fileId: string, userId: string): Promise<ProjectDetails | null> {
+        const project = await prisma.projects.findFirst({
+            where: {
+                user_id: userId,
+                cover_file_id: fileId
+            },
+            include: {
+                folder: true,
+                users: {
+                    select: {
+                        name: true,
+                        email: true,
+                        is_active: true
+                    },
+                },
+            },
+        });
+        return project ? PrismaProjectsMapper.toProjectDetails(project) : null;
+    }
+
     async create(data: CreateProjectData): Promise<ProjectWithFolder> {
         const project = await prisma.projects.create({
             data: {
@@ -155,5 +175,27 @@ export default class PostgresProjectsRepository implements IProjectsRepository {
                 published: false,
             },
         });
-    }
+    };
+
+    async setCover(id: string, fileId: string): Promise<void> {
+        await prisma.projects.update({
+            where: {
+                id: id
+            },
+            data: {
+                cover_file_id: fileId
+            }
+        });
+    };
+
+    async removeCover(id: string): Promise<void> {
+        await prisma.projects.update({
+            where: {
+                id: id
+            },
+            data: {
+                cover_file_id: null
+            }
+        });
+    };
 }
