@@ -83,7 +83,7 @@ export default function DashboardProjectPage() {
         try {
             await toast.promise(
                 isCover
-                    ? removeCover(project.id, { fileId: file.id })
+                    ? removeCover(project.id)
                     : setCover(project.id, { fileId: file.id }),
                 {
                     loading: isCover ? "Removendo capa..." : "Definindo capa...",
@@ -104,7 +104,7 @@ export default function DashboardProjectPage() {
 
     async function confirmDownload() {
         if (!downloadTarget) return;
-        setDownloadTarget(null); 
+        setDownloadTarget(null);
         await toast.promise(
             // Uma única Promise encadeia as duas operações
             (async () => {

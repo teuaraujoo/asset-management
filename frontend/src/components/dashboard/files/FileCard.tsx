@@ -119,9 +119,10 @@ export function FileCard({
     onRename,
     onDownload,
     onToggleCover,
-    isCover = false,
+    isCover,
     isUpdatingCover = false,
 }: FileCardProps) {
+    console.log("iscover: ", isCover);
     const [isRenameOpen, setIsRenameOpen] = useState(false);
     const [previewSrc, setPreviewSrc] = useState<string | null>(null);
     const [previewState, setPreviewState] = useState<PreviewState>("idle");
