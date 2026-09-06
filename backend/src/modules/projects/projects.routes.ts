@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
-import ProjectsController from "./projects.controllers";
+import ProjectsController from "./projects.controller";
 import {
     authenticatedReadLimiter,
     createProjectLimiter,

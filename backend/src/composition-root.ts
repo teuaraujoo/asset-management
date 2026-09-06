@@ -5,8 +5,8 @@ import s3 from "./libs/r2-bucket";
 import { FilesRoutes } from "./modules/files/files.routes";
 
 // Controllers
-import FilesController from "./modules/files/files.controllers";
-import ProjectsController from "./modules/projects/projects.controllers";
+import FilesController from "./modules/files/files.controller";
+import ProjectsController from "./modules/projects/projects.controller";
 
 
 // Services

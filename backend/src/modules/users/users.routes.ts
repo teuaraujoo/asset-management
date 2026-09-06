@@ -1,5 +1,5 @@
 import express  from "express"
-import { UserController } from "./users.controllers";
+import { UserController } from "./users.controller";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import {
     authenticatedReadLimiter,

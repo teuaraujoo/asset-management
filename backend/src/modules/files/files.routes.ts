@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
-import FilesController from "./files.controllers";
+import FilesController from "./files.controller";
 import {
     authenticatedReadLimiter,
     completeUploadLimiter,

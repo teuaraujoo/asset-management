@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { IProjectStorageCleaner } from "../../../providers/storage/storage.provider";
 import type { IFileReader } from "../../files/files.contracts";
 import type { ProjectFolderService } from "../../folders/folders.contracts";
-import type { IProjectsRepository } from "../projects.repositories";
+import type { IProjectsRepository } from "../projects.repository";
 import type { ProjectDetails } from "../projects.types";
 import { ProjectsService } from "../projects.services";
 

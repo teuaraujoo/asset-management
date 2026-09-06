@@ -1,6 +1,6 @@
 import path from "node:path";
 import AppError from "../../error/app-error";
-import { IFilesRepository } from "./files.repositories";
+import { IFilesRepository } from "./files.repository";
 import { randomUUID } from "node:crypto";
 import {
     PrepareFileUploadDTO,

@@ -1,5 +1,5 @@
 import prisma from "../../../libs/prisma";
-import { IProjectsRepository } from "../projects.repositories";
+import { IProjectsRepository } from "../projects.repository";
 import {
     CreateProjectData,
     ProjectDetails,

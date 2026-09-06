@@ -1,5 +1,5 @@
 import express from "express";
-import AuthController from "./auth.controllers";
+import AuthController from "./auth.controller";
 import refreshTokenMiddleware from "../../middlewares/refresh-token.middleware";
 import authenticateMiddleware from "../../middlewares/authenticate.middleware";
 import {

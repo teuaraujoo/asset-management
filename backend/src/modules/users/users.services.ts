@@ -6,7 +6,7 @@ import {
     UpdateUserBody,
     updateUserSchema,
 } from "./users.schemas";
-import UserRepository from "./users.repositories";
+import UserRepository from "./users.repository";
 import AppError from "../../error/app-error";
 export class UserServices {
 

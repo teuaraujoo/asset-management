@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { LoginBody, loginUserSchema } from "./auth.schema";
-import AuthRepository from "./auth.repositories";
-import UserRepository from "../users/users.repositories";
+import AuthRepository from "./auth.repository";
+import UserRepository from "../users/users.repository";
 export default class AuthServices {
 
     private static FIFTEEN_MINUTES = 15;

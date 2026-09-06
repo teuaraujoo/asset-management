@@ -1,5 +1,5 @@
 import prisma from "../../../libs/prisma";
-import { IFilesRepository } from "../files.repositories";
+import { IFilesRepository } from "../files.repository";
 import { CreateFileData, FileRecord, RenameFileData } from "../files.types";
 import PrismaFilesMapper from "./postgres-files.mapper";
 export default class PostgresFilesRepository implements IFilesRepository {

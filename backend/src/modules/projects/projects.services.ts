@@ -1,6 +1,6 @@
 import AppError from "../../error/app-error";
 import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
-import { IProjectsRepository } from "./projects.repositories";
+import { IProjectsRepository } from "./projects.repository";
 import ProjectMapper from "./projects.mapper";
 import { IProjectStorageCleaner } from "../../providers/storage/storage.provider";
 import { ProjectDetails, ProjectWithFolder } from "./projects.types";
