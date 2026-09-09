@@ -99,3 +99,14 @@
     @apply font-sans;
     }
 }
+
+.json-response {
+  color: #c8bfd8;
+  tab-size: 2;
+}
+
+.json-key { color: #c084fc; }
+.json-string { color: #86efac; }
+.json-number { color: #fbbf24; }
+.json-boolean { color: #67e8f9; }
+.json-null { color: #a78bfa; }

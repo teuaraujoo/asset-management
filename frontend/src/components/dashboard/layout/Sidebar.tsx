@@ -19,7 +19,7 @@ const footerNavigation = [
   {
     name: "Documentação",
     icon: BookText,
-    href: "/documentation",
+    href: "/dashboard/documentation",
   },
 ];
 
