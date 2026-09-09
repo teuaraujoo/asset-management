@@ -1,4 +1,4 @@
-import { PublicProjectSummaryRecord } from "./public.types";
+import { PublicProjectDetailsRecord, PublicProjectSummaryRecord, PublicFileResponseDTO } from "./public.types";
 
 export default class PublicMapper {
 
@@ -18,6 +18,27 @@ export default class PublicMapper {
                 }
                 : null,
         };
+    };
+
+    static toResponseGetProject(
+        project: PublicProjectDetailsRecord,
+        coverUrl: string | null,
+        files: PublicFileResponseDTO[]
+    ) {
+        return {
+            id: project.id,
+            slug: project.slug,
+            name: project.name,
+            description: project.description,
+            miniDescription: project.miniDescription,
+            createdAt: project.createdAt,
+            publishedAt: project.publishedAt,
+            cover_url: {
+                id: project.coverFile?.id,
+                url: coverUrl
+            },
+            files: files
+        }
     };
 
 };
