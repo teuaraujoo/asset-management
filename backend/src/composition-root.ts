@@ -22,6 +22,10 @@ import PostgresFilesRepository from "./modules/files/implementations/postgres-fi
 
 // Storage
 import R2StorageProvider from "./providers/storage/implementations/r2storage.provider";
+import PostgresPublicRepository from "./modules/public/implementations/postgres-public.repository";
+import PublicService from "./modules/public/public.services";
+import PublicController from "./modules/public/public.controller";
+import { PublicRoutes } from "./modules/public/public.routes";
 
 const bucket = process.env.STORAGE_BUCKET;
 
@@ -31,13 +35,17 @@ const storageProvider = new R2StorageProvider(s3, bucket);
 const postgresFilesRepository = new PostgresFilesRepository();
 const postgresProjectsRepository = new PostgresProjectsRepository();
 const postgresFoldersRepository = new PostgresFoldersRepository();
+const postgresPublicRepository = new PostgresPublicRepository();
 
 const foldersService = new FoldersService(postgresFoldersRepository);
 export const projectsService = new ProjectsService(storageProvider, foldersService, postgresProjectsRepository, postgresFilesRepository);
 export const filesService = new FilesService(storageProvider, projectsService, foldersService, postgresFilesRepository);
+export const publicService = new PublicService(postgresPublicRepository, storageProvider);
 
 export const projectsController = new ProjectsController(projectsService);
 export const filesController = new FilesController(filesService);
+export const publicController = new PublicController(publicService);
 
 export const projectsRoutes = ProjectsRoutes(projectsController);
 export const filesRoutes = FilesRoutes(filesController);
+export const publicRoutes = PublicRoutes(publicController);

@@ -44,3 +44,9 @@ export interface IProjectStorageCleaner {
         prefix: string
     ): Promise<void>;
 };
+
+export interface IStoragePreview {
+    generatePreviewUrl(
+        key: string
+    ): Promise<string>;
+};

@@ -6,13 +6,14 @@ import compression from "compression";
 import errorHandler from "./middlewares/error.middleware";
 import AuthRoutes from "./modules/auth/auth.routes";
 import UserRoutes from "./modules/users/users.routes";
-import { filesRoutes, projectsRoutes } from "./composition-root";
+import { filesRoutes, projectsRoutes, publicRoutes } from "./composition-root";
 import loggerMiddleware from "./middlewares/logger.middleware";
 
 const app = express();
 const apiVersion = "/api/v1";
 const allowedOrigins = [
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://ams-teuaraujo.netlify.app"
 ];
 
@@ -41,6 +42,7 @@ app.use(apiVersion, AuthRoutes);
 app.use(apiVersion, UserRoutes);
 app.use(apiVersion, projectsRoutes);
 app.use(apiVersion, filesRoutes);
+app.use(apiVersion, publicRoutes);
 app.use(errorHandler);
 
 export default app;
