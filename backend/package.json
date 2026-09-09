@@ -10,7 +10,8 @@
     "test:watch": "vitest"
   },
   "resolutions": {
-    "deepmerge-ts": "8.0.2"
+    "deepmerge-ts": "8.0.2",
+    "mysql2": "3.22.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1105.0",
