@@ -646,19 +646,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hugeicons/core-free-icons@npm:^4.2.3":
-  version: 4.2.3
-  resolution: "@hugeicons/core-free-icons@npm:4.2.3"
-  checksum: 10c0/ae018f740d65f6c51e8599645ec847a65e37173a01573e144617e7a6ab8290bfa4475024e777d437ac0bc970b98abf6a5dd901192d08ff5581eadbfdb01e6504
+"@hugeicons/core-free-icons@npm:^4.3.4":
+  version: 4.3.4
+  resolution: "@hugeicons/core-free-icons@npm:4.3.4"
+  checksum: 10c0/10fc6eea30db34cce324a1ea583f33ae0052905db3239b6dd850aa75e4181ad9f1e707ff6e2408b1e8540dbba89407822ff5ac2ef37e718a1a5658f639523073
   languageName: node
   linkType: hard
 
-"@hugeicons/react@npm:^1.1.9":
-  version: 1.1.9
-  resolution: "@hugeicons/react@npm:1.1.9"
+"@hugeicons/react@npm:^1.1.10":
+  version: 1.1.10
+  resolution: "@hugeicons/react@npm:1.1.10"
   peerDependencies:
     react: ">=16.0.0"
-  checksum: 10c0/5727d67c293cf0efbef5de0cccdcb81ce5430e84e59e885c421ce8674015139a430f8251d36559b546021f3b95a727095ada94c41af040b269e104c89389026e
+  checksum: 10c0/4e427a6a76220c098fce2ecef95fa2c243eacbbd3f9a85dcd56b44187f82e16056c3bf475ffe4e4ec2ffd8a47632905496f909192ef37fb26302c0ca8b1fe236
   languageName: node
   linkType: hard
 
@@ -2474,8 +2474,8 @@ __metadata:
     "@eslint/js": "npm:^10.0.1"
     "@fontsource-variable/figtree": "npm:^5.3.0"
     "@hookform/resolvers": "npm:^5.7.1"
-    "@hugeicons/core-free-icons": "npm:^4.2.3"
-    "@hugeicons/react": "npm:^1.1.9"
+    "@hugeicons/core-free-icons": "npm:^4.3.4"
+    "@hugeicons/react": "npm:^1.1.10"
     "@tailwindcss/vite": "npm:^4.3.3"
     "@types/node": "npm:^26.1.2"
     "@types/react": "npm:^19.2.17"

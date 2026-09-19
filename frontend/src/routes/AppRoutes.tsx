@@ -1,4 +1,6 @@
+import { lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { NotFound } from "@/NotFound";
 import LoginPage from "@/pages/Login/LoginPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
@@ -6,10 +8,9 @@ import DashboardProjectsPage from "@/pages/Dashboard/Projects";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardProjectPage from "@/pages/Dashboard/Project";
-import { NotFound } from "@/NotFound";
-import DashboardProfilePage from "@/pages/Dashboard/Profile";
-import DashboardSettingsPage from "@/pages/Dashboard/Settings";
-import DashboardDocumentationPage from "@/pages/Dashboard/Documentation";
+const DashboardProfilePage = lazy(() => import('@/pages/Dashboard/Profile'))
+const DashboardSettingsPage = lazy(() => import("@/pages/Dashboard/Settings"))
+const DashboardDocumentationPage = lazy(() => import("@/pages/Dashboard/Documentation"))
 
 export function AppRoutes() {
     return (
