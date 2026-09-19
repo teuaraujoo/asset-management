@@ -14,8 +14,8 @@ const apiVersion = "/api/v1";
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
-    "ams-teuaraujo.vercel.app",
-    "ams-teuaraujo.netlify.app"
+    "https://ams-teuaraujo.vercel.app",
+    "https://ams-teuaraujo.netlify.app"
 ];
 
 if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);

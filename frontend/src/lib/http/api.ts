@@ -1,4 +1,5 @@
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}api/v1`;
+const rawBaseUrl = (import.meta.env.VITE_API_URL ?? "http://localhost:3000/").replace(/\/$/, "");
+const API_BASE_URL = `${rawBaseUrl}/api/v1`;
 
 const apiRoutes = {
     login: `${API_BASE_URL}/auth/login`,
