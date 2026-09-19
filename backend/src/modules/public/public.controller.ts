@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import PublicServices from "./public.services";
+import PublicServices from "./public.service";
 
 export default class PublicController {
     constructor(

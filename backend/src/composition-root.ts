@@ -10,10 +10,10 @@ import ProjectsController from "./modules/projects/projects.controller";
 
 
 // Services
-import { FilesService } from "./modules/files/files.services";
-import { FoldersService } from "./modules/folders/folders.services";
+import { FilesService } from "./modules/files/files.service";
+import { FoldersService } from "./modules/folders/folders.service";
 import { ProjectsRoutes } from "./modules/projects/projects.routes";
-import { ProjectsService } from "./modules/projects/projects.services";
+import { ProjectsService } from "./modules/projects/projects.service";
 
 // Repositories
 import PostgresFoldersRepository from "./modules/folders/implementations/postgres-folders.repository";
@@ -23,7 +23,7 @@ import PostgresFilesRepository from "./modules/files/implementations/postgres-fi
 // Storage
 import R2StorageProvider from "./providers/storage/implementations/r2storage.provider";
 import PostgresPublicRepository from "./modules/public/implementations/postgres-public.repository";
-import PublicService from "./modules/public/public.services";
+import PublicService from "./modules/public/public.service";
 import PublicController from "./modules/public/public.controller";
 import { PublicRoutes } from "./modules/public/public.routes";
 

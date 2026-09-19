@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { FilesService } from "./files.services";
+import { FilesService } from "./files.service";
 
 export default class FilesController {
 

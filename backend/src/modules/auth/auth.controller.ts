@@ -1,4 +1,4 @@
-import AuthServices from "./auth.services";
+import AuthServices from "./auth.service";
 import { NextFunction, Request, Response } from "express";
 import AuthenticationManage from "../../shared/auth/authentication-manager";
 

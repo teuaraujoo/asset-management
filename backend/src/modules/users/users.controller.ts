@@ -1,4 +1,4 @@
-import { UserServices } from "./users.services"
+import { UserServices } from "./users.service"
 import { Request, Response } from "express";
 
 export class UserController {

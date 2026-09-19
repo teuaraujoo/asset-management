@@ -4,7 +4,7 @@ import type { IFileReader } from "../../files/files.contracts";
 import type { ProjectFolderService } from "../../folders/folders.contracts";
 import type { IProjectsRepository } from "../projects.repository";
 import type { ProjectDetails } from "../projects.types";
-import { ProjectsService } from "../projects.services";
+import { ProjectsService } from "../projects.service";
 
 const ids = { project: "project-1", user: "user-1", folder: "folder-1" };
 

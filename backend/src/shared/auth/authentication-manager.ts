@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import AuthServices from "../../modules/auth/auth.services";
+import AuthServices from "../../modules/auth/auth.service";
 
 export default class AuthenticationManage {
 
