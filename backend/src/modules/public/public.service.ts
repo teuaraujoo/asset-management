@@ -1,4 +1,4 @@
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 import { IPublicRepository } from "./public.repository";
 import PublicMapper from "./public.mapper";
 import { IStoragePreview } from "../../providers/storage/storage.provider";

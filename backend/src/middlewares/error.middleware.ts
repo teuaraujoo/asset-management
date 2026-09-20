@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import AppError from "../error/app-error";
+import AppError from "../shared/error/app-error";
 import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
 import AuthenticationManage from "../shared/auth/authentication-manager";

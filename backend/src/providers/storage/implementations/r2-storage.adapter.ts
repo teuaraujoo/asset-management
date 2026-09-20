@@ -11,9 +11,9 @@ import {
     S3Client
 } from "@aws-sdk/client-s3";
 import { ObjectMetaData } from "../storage.provider";
-import AppError from "../../../error/app-error";
+import AppError from "../../../shared/error/app-error";
 
-export default class R2StorageProvider implements IFileStorage, IProjectStorageCleaner {
+export class R2StorageAdapeter implements IFileStorage, IProjectStorageCleaner {
 
     constructor(
         private readonly storage: S3Client,

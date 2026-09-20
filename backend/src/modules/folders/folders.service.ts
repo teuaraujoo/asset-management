@@ -1,4 +1,4 @@
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 import slugify from "slugify";
 import { IFoldersRepository } from "./folders.repositories";
 import FolderMapper from "./folders.mapper";

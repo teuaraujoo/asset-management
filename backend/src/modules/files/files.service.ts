@@ -1,5 +1,5 @@
 import path from "node:path";
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 import { IFilesRepository } from "./files.repository";
 import { randomUUID } from "node:crypto";
 import {

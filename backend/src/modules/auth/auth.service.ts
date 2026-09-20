@@ -1,4 +1,4 @@
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";

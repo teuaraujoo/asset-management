@@ -1,4 +1,4 @@
-import AppError from "./error/app-error";
+import AppError from "./shared/error/app-error";
 import s3 from "./libs/r2-bucket";
 
 // Routes
@@ -21,7 +21,7 @@ import PostgresProjectsRepository from "./modules/projects/implementations/postg
 import PostgresFilesRepository from "./modules/files/implementations/postgres-files.repository";
 
 // Storage
-import R2StorageProvider from "./providers/storage/implementations/r2storage.provider";
+import { R2StorageAdapeter } from "./providers/storage/implementations/r2-storage.adapter";
 import PostgresPublicRepository from "./modules/public/implementations/postgres-public.repository";
 import PublicService from "./modules/public/public.service";
 import PublicController from "./modules/public/public.controller";
@@ -31,7 +31,7 @@ const bucket = process.env.STORAGE_BUCKET;
 
 if (!bucket) throw new AppError("Storage Bucket não configurado.", 500);
 
-const storageProvider = new R2StorageProvider(s3, bucket);
+const storageProvider = new R2StorageAdapeter(s3, bucket);
 const postgresFilesRepository = new PostgresFilesRepository();
 const postgresProjectsRepository = new PostgresProjectsRepository();
 const postgresFoldersRepository = new PostgresFoldersRepository();

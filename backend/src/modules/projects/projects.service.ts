@@ -1,4 +1,4 @@
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 import { CreateProjectDTO, createProjectSchema, UpdateProjectDTO, updateProjectSchema } from "./projects.schema";
 import { IProjectsRepository } from "./projects.repository";
 import ProjectMapper from "./projects.mapper";

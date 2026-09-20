@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import AppError from "../error/app-error";
+import AppError from "../shared/error/app-error";
 
 export default function refreshTokenMiddleware(req: Request, res: Response, next: NextFunction) {
     const refreshToken = req.cookies.refreshToken;

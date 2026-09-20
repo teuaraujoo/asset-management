@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import ApiError from "../../error/app-error";
+import ApiError from "../../shared/error/app-error";
 import {
     CreateUserBody,
     createUserSchema,
@@ -7,7 +7,7 @@ import {
     updateUserSchema,
 } from "./users.schemas";
 import UserRepository from "./users.repository";
-import AppError from "../../error/app-error";
+import AppError from "../../shared/error/app-error";
 export class UserServices {
 
     static async create(body: CreateUserBody) {
