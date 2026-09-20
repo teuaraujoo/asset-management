@@ -8,6 +8,7 @@ import DashboardProjectsPage from "@/pages/Dashboard/Projects";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardProjectPage from "@/pages/Dashboard/Project";
+import DashboardNewsletterPage from "@/pages/Dashboard/Newsletter";
 const DashboardProfilePage = lazy(() => import('@/pages/Dashboard/Profile'))
 const DashboardSettingsPage = lazy(() => import("@/pages/Dashboard/Settings"))
 const DashboardDocumentationPage = lazy(() => import("@/pages/Dashboard/Documentation"))
@@ -29,6 +30,7 @@ export function AppRoutes() {
                     <Route path="/dashboard/profile" element={<DashboardProfilePage />} />
                     <Route path="/dashboard/settings" element={<DashboardSettingsPage />} />
                     <Route path="/dashboard/documentation" element={<DashboardDocumentationPage />} />
+                    <Route path="/dashboard/newsletter" element={<DashboardNewsletterPage />} />
                 </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
