@@ -6,6 +6,16 @@ import { loginSchema, type LoginFormData } from "@/schemas/auth/login.schema";
 import { useAuthContext } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 
+const rememberedEmailKey = "ams:remembered-email";
+
+function getRememberedEmail(): string {
+    try {
+        return window.localStorage.getItem(rememberedEmailKey) ?? "";
+    } catch {
+        return "";
+    }
+}
+
 export function useLoginForm() {
     const navigate = useNavigate();
     const { refreshUser } = useAuthContext();
@@ -13,12 +23,12 @@ export function useLoginForm() {
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: "",
+            email: getRememberedEmail(),
             password: ""
         },
     });
 
-    async function handleLogin(data: LoginFormData) {
+    async function handleLogin(data: LoginFormData, rememberEmail = false) {
         form.clearErrors("root");
 
         try {
@@ -30,6 +40,16 @@ export function useLoginForm() {
                 });
                 return;
             };
+
+            try {
+                if (rememberEmail) {
+                    window.localStorage.setItem(rememberedEmailKey, data.email);
+                } else {
+                    window.localStorage.removeItem(rememberedEmailKey);
+                }
+            } catch {
+                // O login continua funcionando quando o armazenamento local está indisponível.
+            }
 
             toast.success(request.message);
             navigate("/dashboard/projects", { replace: true });

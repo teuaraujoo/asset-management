@@ -110,3 +110,197 @@
 .json-number { color: #fbbf24; }
 .json-boolean { color: #67e8f9; }
 .json-null { color: #a78bfa; }
+
+/* Login */
+.login-page {
+  background:
+    radial-gradient(circle at 15% 85%, rgba(72, 17, 237, 0.2), transparent 32rem),
+    radial-gradient(circle at 88% 12%, rgba(118, 73, 250, 0.16), transparent 28rem),
+    #080709;
+}
+
+.login-grid {
+  background-image:
+    linear-gradient(rgba(118, 73, 250, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(118, 73, 250, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+}
+
+.login-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform, opacity;
+}
+
+.login-glow-one {
+  left: 8%;
+  top: 22%;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(72, 17, 237, 0.2);
+  animation: login-glow-float 9s ease-in-out infinite alternate;
+}
+
+.login-glow-two {
+  right: 7%;
+  bottom: 12%;
+  width: 15rem;
+  height: 15rem;
+  background: rgba(118, 73, 250, 0.14);
+  animation: login-glow-float 11s ease-in-out -3s infinite alternate-reverse;
+}
+
+.login-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(46rem, 92vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(118, 73, 250, 0.08);
+  border-radius: 9999px;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  box-shadow: inset 0 0 80px rgba(72, 17, 237, 0.025);
+}
+
+.login-card-frame {
+  --login-light-x: 50%;
+  --login-light-y: 50%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 1px;
+  border-radius: 1.55rem;
+  background: rgba(255, 255, 255, 0.11);
+  box-shadow:
+    0 32px 90px rgba(0, 0, 0, 0.56),
+    0 0 55px rgba(72, 17, 237, 0.13);
+  transition: box-shadow 250ms ease;
+  animation: login-card-enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.login-card-frame:hover {
+  box-shadow:
+    0 38px 105px rgba(0, 0, 0, 0.62),
+    0 0 70px rgba(72, 17, 237, 0.19);
+}
+
+.login-card-surface {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: calc(1.55rem - 1px);
+  padding: clamp(1.75rem, 6vw, 2.65rem);
+  background:
+    radial-gradient(circle at var(--login-light-x) var(--login-light-y), rgba(118, 73, 250, 0.1), transparent 17rem),
+    linear-gradient(145deg, rgba(28, 23, 34, 0.89), rgba(11, 9, 13, 0.94));
+  backdrop-filter: blur(24px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.075),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.login-card-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.035) 48%, transparent 66%);
+  transform: translateX(-120%);
+  animation: login-surface-light 7s ease-in-out 1.5s infinite;
+}
+
+.login-card-beam {
+  position: absolute;
+  z-index: 0;
+  left: 12%;
+  right: 12%;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b8a5ff, transparent);
+  box-shadow: 0 0 14px rgba(154, 122, 255, 0.82);
+  animation: login-beam 4.5s ease-in-out infinite;
+}
+
+.login-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: login-reveal 650ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.login-reveal-logo { animation-delay: 140ms; }
+.login-reveal-heading { animation-delay: 220ms; }
+.login-reveal-form { animation-delay: 320ms; }
+
+.login-checkbox {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+
+.login-checkbox:focus-visible {
+  box-shadow: 0 0 0 3px rgba(118, 73, 250, 0.28);
+}
+
+.login-submit-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.login-submit-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.2), transparent 68%);
+  transform: translateX(-120%);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-submit-button:hover::after {
+  transform: translateX(120%);
+}
+
+@keyframes login-card-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes login-reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes login-surface-light {
+  0%, 72% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes login-beam {
+  0%, 100% { opacity: 0.38; transform: scaleX(0.38); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes login-glow-float {
+  from { opacity: 0.58; transform: translate3d(-1.5rem, 1rem, 0) scale(0.94); }
+  to { opacity: 1; transform: translate3d(2rem, -1.5rem, 0) scale(1.08); }
+}
+
+@media (max-width: 480px) {
+  .login-card-surface {
+    padding: 1.55rem 1.25rem 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-glow,
+  .login-card-frame,
+  .login-card-surface::after,
+  .login-card-beam,
+  .login-reveal {
+    animation: none;
+  }
+
+  .login-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
