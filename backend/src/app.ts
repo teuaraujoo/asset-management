@@ -15,7 +15,9 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://ams-teuaraujo.vercel.app",
-    "https://ams-teuaraujo.netlify.app"
+    "https://ams-teuaraujo.netlify.app",
+    "https://stg-ams.teuaraujo.dev",
+    "https://ams.teuaraujo.dev"
 ];
 
 if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
